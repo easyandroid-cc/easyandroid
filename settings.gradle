@@ -1,1 +1,1 @@
-include ':app', ':easyandroid'
+include ':app'
