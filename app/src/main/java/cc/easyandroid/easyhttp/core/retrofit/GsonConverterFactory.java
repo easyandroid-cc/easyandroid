@@ -15,47 +15,55 @@
  */
 package cc.easyandroid.easyhttp.core.retrofit;
 
-import java.lang.reflect.Type;
-
-import cc.easyandroid.easycache.volleycache.Cache;
-
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
 import com.google.gson.reflect.TypeToken;
 
-/** A {@linkplain Converter.Factory converter} which uses Gson for JSON. */
+import java.lang.reflect.Type;
+
+import cc.easyandroid.easycache.volleycache.Cache;
+import cc.easyandroid.easyhttp.core.StateCodeProcessing;
+
+/**
+ * A {@linkplain Converter.Factory converter} which uses Gson for JSON.
+ */
 public final class GsonConverterFactory implements Converter.Factory {
-	/**
-	 * Create an instance using a default {@link Gson} instance for conversion. Encoding to JSON and decoding from JSON (when no charset is specified by a header) will use UTF-8.
-	 */
-	public static GsonConverterFactory create() {
-		return create(new Gson(), null);
-	}
+    /**
+     * Create an instance using a default {@link Gson} instance for conversion. Encoding to JSON and decoding from JSON (when no charset is specified by a header) will use UTF-8.
+     */
+    public static GsonConverterFactory create() {
+        return create(new Gson(), null, null);
+    }
 
-	/**
-	 * Create an instance using {@code gson} for conversion. Encoding to JSON and decoding from JSON (when no charset is specified by a header) will use UTF-8.
-	 */
-	public static GsonConverterFactory create(Gson gson, Cache cache) {
-		return new GsonConverterFactory(gson,cache);
-	}
+    /**
+     * Create an instance using {@code gson} for conversion. Encoding to JSON and decoding from JSON (when no charset is specified by a header) will use UTF-8.
+     */
+    public static GsonConverterFactory create(Gson gson, Cache cache, StateCodeProcessing stateCodeProcessing) {
+        return new GsonConverterFactory(gson, cache, stateCodeProcessing);
+    }
 
-	public static GsonConverterFactory create(Cache cache) {
-		return create(new Gson(), cache);
-	}
+    public static GsonConverterFactory create(Cache cache) {
+        return create(new Gson(), cache, null);
+    }
 
-	private final Gson gson;
-	private final Cache cache;
-	private GsonConverterFactory(Gson gson,Cache cache) {
-		if (gson == null)
-			throw new NullPointerException("gson == null");
-		this.gson = gson;
-		this.cache = cache;
-	}
+    private final Gson gson;
+    private final Cache cache;
+    private final StateCodeProcessing stateCodeProcessing;
 
-	/** Create a converter for {@code type}. */
-	@Override
-	public Converter<?> get(Type type) {
-		TypeAdapter<?> adapter = gson.getAdapter(TypeToken.get(type));
-		return new GsonConverter<>(adapter,cache);
-	}
+    private GsonConverterFactory(Gson gson, Cache cache, StateCodeProcessing stateCodeProcessing) {
+        if (gson == null)
+            throw new NullPointerException("gson == null");
+        this.gson = gson;
+        this.cache = cache;
+        this.stateCodeProcessing = stateCodeProcessing;
+    }
+
+    /**
+     * Create a converter for {@code type}.
+     */
+    @Override
+    public Converter<?> get(Type type) {
+        TypeAdapter<?> adapter = gson.getAdapter(TypeToken.get(type));
+        return new GsonConverter<>(adapter, cache, stateCodeProcessing);
+    }
 }

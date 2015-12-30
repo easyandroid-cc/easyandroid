@@ -1,11 +1,14 @@
 package cc.easyandroid.easyhttp;
 
+import com.google.gson.Gson;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+
 import java.lang.reflect.Type;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSession;
 
-import rx.Observable;
 import cc.easyandroid.easycache.volleycache.DiskBasedCache;
 import cc.easyandroid.easyhttp.config.EAConfiguration;
 import cc.easyandroid.easyhttp.core.EAOkHttpCall;
@@ -13,20 +16,18 @@ import cc.easyandroid.easyhttp.core.OkHttpDownloadUtils;
 import cc.easyandroid.easyhttp.core.OkHttpGetUtils;
 import cc.easyandroid.easyhttp.core.OkHttpPostUtils;
 import cc.easyandroid.easyhttp.core.OkHttpUpLoadUtil;
+import cc.easyandroid.easyhttp.core.StateCodeProcessing;
 import cc.easyandroid.easyhttp.core.retrofit.Call;
 import cc.easyandroid.easyhttp.core.retrofit.Converter;
 import cc.easyandroid.easyhttp.core.retrofit.EACallAdapterFactory.SimpleCallAdapter;
 import cc.easyandroid.easyhttp.core.retrofit.GsonConverterFactory;
-
-import com.google.gson.Gson;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
+import rx.Observable;
 
 public class EasyHttpUtils {
 	private static final EasyHttpUtils mInstance = new EasyHttpUtils();
 	private OkHttpClient mOkHttpClient;
 	public Gson mGson;
-
+	private StateCodeProcessing stateCodeProcessing;
 	private EasyHttpUtils() {
 	}
 
@@ -38,11 +39,12 @@ public class EasyHttpUtils {
 
 	public void init(EAConfiguration config) {
 		if (config == null) {
-			new IllegalArgumentException("EAConfiguration config 不能为null");
+			new IllegalArgumentException("EAConfiguration config can not is null");
 		}
 		cache = config.getCache();
 		mGson = config.getGson();
 		mOkHttpClient = config.getOkHttpClient();
+		stateCodeProcessing=config.getStateCodeProcessing();
 		// cookie enabled
 		mOkHttpClient.setHostnameVerifier(new HostnameVerifier() {
 			@Override
@@ -123,8 +125,6 @@ public class EasyHttpUtils {
 		Converter responseConverter = getConverterFactory().get(type);
 		Call<T> call = new EAOkHttpCall<T>(mOkHttpClient, responseConverter, request);
 		
-		 
-		
 		return call;
 	}
 
@@ -137,7 +137,7 @@ public class EasyHttpUtils {
 				if (converterFactory == null) {
 					checkNull(mGson);
 					checkNull(cache);
-					converterFactory = GsonConverterFactory.create(mGson, cache);
+					converterFactory = GsonConverterFactory.create(mGson, cache,stateCodeProcessing);
 				}
 			}
 		}

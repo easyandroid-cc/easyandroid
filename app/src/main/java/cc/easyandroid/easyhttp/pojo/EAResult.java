@@ -9,4 +9,6 @@ public interface EAResult {
 	public boolean isSuccess();
 
 	public String getFailureDesc();
+
+	public String getCode();
 }

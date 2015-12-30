@@ -35,7 +35,7 @@ public abstract class KOKHttpPresenter<V extends ISimpleView<T>, T> extends KPre
 		cancel();// 先取消之前的事件
 		Call<T> originalCall = createCall(bundle);
 		if (originalCall == null) {
-			throw new IllegalArgumentException("please Override onCreatObservable method, And can not be null，");
+			throw new IllegalArgumentException("please Override onCreateCall method, And can not be null，");
 		}
 		call = originalCall.clone();
 
@@ -60,6 +60,7 @@ public abstract class KOKHttpPresenter<V extends ISimpleView<T>, T> extends KPre
 			if (t != null && t instanceof EAResult) {
 				EAResult kResult = (EAResult) t;
 				if (kResult == null || !kResult.isSuccess()) {
+//					kResult.
 					mController.error(kResult != null ? kResult.getFailureDesc() : "服务器或网络异常");
 					return;
 				}
