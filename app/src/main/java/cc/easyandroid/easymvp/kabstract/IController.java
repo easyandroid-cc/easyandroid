@@ -12,7 +12,7 @@ public interface IController<T> {
 	/**
      * @hide
      */
-	void error(String errorDesc);
+	void error(Throwable e);
 	/**
      * @hide
      */

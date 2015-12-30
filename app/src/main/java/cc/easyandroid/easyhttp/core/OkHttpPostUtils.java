@@ -1,15 +1,17 @@
 package cc.easyandroid.easyhttp.core;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Map;
-
 import com.squareup.okhttp.FormEncodingBuilder;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Map;
+
+import cc.easyandroid.easylog.EALog;
 
 public class OkHttpPostUtils extends OkHttpUtils {
     public OkHttpPostUtils(OkHttpClient client) {
@@ -38,7 +40,7 @@ public class OkHttpPostUtils extends OkHttpUtils {
         FormEncodingBuilder builder = new FormEncodingBuilder();
         if (paras != null && paras.size() > 0) {
             for (String key : paras.keySet()) {
-                System.out.println("key=" + key+"-----value="+paras.get(key));
+                EALog.d("key = %1$s ---- value = %2$s", key, paras.get(key));
                 builder.add(key, paras.get(key));
             }
         }

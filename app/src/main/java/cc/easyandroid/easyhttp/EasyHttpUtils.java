@@ -16,7 +16,7 @@ import cc.easyandroid.easyhttp.core.OkHttpDownloadUtils;
 import cc.easyandroid.easyhttp.core.OkHttpGetUtils;
 import cc.easyandroid.easyhttp.core.OkHttpPostUtils;
 import cc.easyandroid.easyhttp.core.OkHttpUpLoadUtil;
-import cc.easyandroid.easyhttp.core.StateCodeProcessing;
+import cc.easyandroid.easyhttp.core.StateCodeHandler;
 import cc.easyandroid.easyhttp.core.retrofit.Call;
 import cc.easyandroid.easyhttp.core.retrofit.Converter;
 import cc.easyandroid.easyhttp.core.retrofit.EACallAdapterFactory.SimpleCallAdapter;
@@ -27,7 +27,7 @@ public class EasyHttpUtils {
 	private static final EasyHttpUtils mInstance = new EasyHttpUtils();
 	private OkHttpClient mOkHttpClient;
 	public Gson mGson;
-	private StateCodeProcessing stateCodeProcessing;
+	private StateCodeHandler stateCodeProcessing;
 	private EasyHttpUtils() {
 	}
 

@@ -22,7 +22,7 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 
 import cc.easyandroid.easycache.volleycache.Cache;
-import cc.easyandroid.easyhttp.core.StateCodeProcessing;
+import cc.easyandroid.easyhttp.core.StateCodeHandler;
 
 /**
  * A {@linkplain Converter.Factory converter} which uses Gson for JSON.
@@ -38,7 +38,7 @@ public final class GsonConverterFactory implements Converter.Factory {
     /**
      * Create an instance using {@code gson} for conversion. Encoding to JSON and decoding from JSON (when no charset is specified by a header) will use UTF-8.
      */
-    public static GsonConverterFactory create(Gson gson, Cache cache, StateCodeProcessing stateCodeProcessing) {
+    public static GsonConverterFactory create(Gson gson, Cache cache, StateCodeHandler stateCodeProcessing) {
         return new GsonConverterFactory(gson, cache, stateCodeProcessing);
     }
 
@@ -48,9 +48,9 @@ public final class GsonConverterFactory implements Converter.Factory {
 
     private final Gson gson;
     private final Cache cache;
-    private final StateCodeProcessing stateCodeProcessing;
+    private final StateCodeHandler stateCodeProcessing;
 
-    private GsonConverterFactory(Gson gson, Cache cache, StateCodeProcessing stateCodeProcessing) {
+    private GsonConverterFactory(Gson gson, Cache cache, StateCodeHandler stateCodeProcessing) {
         if (gson == null)
             throw new NullPointerException("gson == null");
         this.gson = gson;

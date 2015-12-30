@@ -45,7 +45,7 @@ public abstract class BaseLoader<T> extends AsyncTaskLoader<T> {
 	@Override
 	protected void onStartLoading() {
 		super.onStartLoading();
-		System.out.println("onStartLoading-------");
+
 		if (mListData != null) {
 			deliverResult(mListData);
 		}

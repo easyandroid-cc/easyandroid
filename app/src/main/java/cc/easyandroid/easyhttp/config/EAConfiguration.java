@@ -14,16 +14,16 @@ import java.util.concurrent.TimeUnit;
 import cc.easyandroid.easycache.CacheUtils;
 import cc.easyandroid.easycache.volleycache.DiskBasedCache;
 import cc.easyandroid.easyhttp.cookiestore.PersistentCookieStore;
-import cc.easyandroid.easyhttp.core.StateCodeProcessing;
+import cc.easyandroid.easyhttp.core.StateCodeHandler;
 
 public class EAConfiguration {
     private Gson mGson;
     private DiskBasedCache mCache;
     private CookieStore mCookieStore;
     private OkHttpClient mOkHttpClient;
-    private StateCodeProcessing stateCodeProcessing;
+    private StateCodeHandler stateCodeProcessing;
 
-    public StateCodeProcessing getStateCodeProcessing() {
+    public StateCodeHandler getStateCodeProcessing() {
         return stateCodeProcessing;
     }
 
@@ -57,14 +57,14 @@ public class EAConfiguration {
         private final Cache okHttpCache;
         private final CookieStore cookieStore;
         private OkHttpClient okHttpClient;
-        private StateCodeProcessing stateCodeProcessing;
+        private StateCodeHandler stateCodeProcessing;
 
         public Builder setGson(Gson gson) {
             this.gson = gson;
             return this;
         }
 
-        public Builder setStateCodeProcessing(StateCodeProcessing stateCodeProcessing) {
+        public Builder setStateCodeProcessing(StateCodeHandler stateCodeProcessing) {
             this.stateCodeProcessing = stateCodeProcessing;
             return this;
         }

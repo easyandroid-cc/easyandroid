@@ -21,8 +21,8 @@ public abstract class KPresenter<V extends ISimpleView<T>, T> implements Present
 		}
 
 		@Override
-		public void error(String errorDesc) {
-			onHandleError(errorDesc);
+		public void error(Throwable e) {
+			onHandleError(e);
 		}
 
 		@Override
@@ -106,9 +106,9 @@ public abstract class KPresenter<V extends ISimpleView<T>, T> implements Present
 			getView().onCompleted(presenterId);
 	}
 
-	private void onHandleError(String errorDesc) {
+	private void onHandleError(Throwable e) {
 		if (isViewAttached())
-			getView().onError(presenterId, errorDesc);
+			getView().onError(presenterId, e);
 	}
 
 	private void onDeliverResult(final T results) {

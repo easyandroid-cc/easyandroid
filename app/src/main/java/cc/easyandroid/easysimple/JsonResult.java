@@ -30,6 +30,16 @@ public class JsonResult<T> implements EAResult {
 		return "C0000".equals(code);
 	}
 
+	@Override
+	public String getEADesc() {
+		return null;
+	}
+
+	@Override
+	public String getEACode() {
+		return null;
+	}
+
 	public String getCode() {
 		return code;
 	}
@@ -46,9 +56,5 @@ public class JsonResult<T> implements EAResult {
 		this.desc = desc;
 	}
 
-	@Override
-	public String getFailureDesc() {
-		return desc;
-	}
 
 }

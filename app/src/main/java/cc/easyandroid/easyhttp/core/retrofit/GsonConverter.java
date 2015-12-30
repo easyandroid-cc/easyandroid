@@ -29,17 +29,18 @@ import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 
 import cc.easyandroid.easycache.volleycache.Cache;
-import cc.easyandroid.easyhttp.core.StateCodeProcessing;
+import cc.easyandroid.easyhttp.core.StateCodeHandler;
 import cc.easyandroid.easyhttp.pojo.EAResult;
+import cc.easyandroid.easylog.EALog;
 
 public final class GsonConverter<T> implements Converter<T> {
     public static final MediaType MEDIA_TYPE = MediaType.parse("application/json; charset=UTF-8");
     public static final String UTF8 = "UTF-8";
     private final TypeAdapter<T> typeAdapter;
     private final Cache cache;
-    private final StateCodeProcessing stateCodeProcessing;
+    private final StateCodeHandler stateCodeProcessing;
 
-    public GsonConverter(TypeAdapter<T> adapter, Cache cache, StateCodeProcessing stateCodeProcessing) {
+    public GsonConverter(TypeAdapter<T> adapter, Cache cache, StateCodeHandler stateCodeProcessing) {
         this.typeAdapter = adapter;
         this.cache = cache;
         this.stateCodeProcessing = stateCodeProcessing;
@@ -61,11 +62,11 @@ public final class GsonConverter<T> implements Converter<T> {
 
     public T fromBody(ResponseBody value, Request request) throws IOException {
         String string = value.string();
-        System.out.println("网络请求到的字符串:" + string);
+        EALog.d("Network request string : %1$s", string);
         Reader reader = new InputStreamReader((new ByteArrayInputStream(string.getBytes(UTF8))), Util.UTF_8);
         try {
             T t = typeAdapter.fromJson(reader);
-            System.out.println("转换的最终对象：" + t);
+            EALog.d(" Finally converted to : %1$s", t.toString());
             String mimeType = value.contentType().toString();
             parseCache(request, t, string, mimeType);
             parseStateCode(t);
@@ -80,7 +81,7 @@ public final class GsonConverter<T> implements Converter<T> {
             if (stateCodeProcessing != null) {
                 EAResult eaResult = (EAResult) object;
                 if (eaResult != null) {
-                    stateCodeProcessing.handleCode(eaResult.getCode());
+                    stateCodeProcessing.handleCode(eaResult.getEACode());
                 }
             }
         }
@@ -96,14 +97,13 @@ public final class GsonConverter<T> implements Converter<T> {
                         long now = System.currentTimeMillis();
                         long maxAge = cacheControl.maxAgeSeconds();
                         long softExpire = now + maxAge * 1000;
-                        System.out.println("缓存时长:" + (softExpire - now) / 1000 + "秒");
+                        EALog.d("缓存时长: %1$s秒", (softExpire - now) / 1000+"");
                         Cache.Entry entry = new Cache.Entry();
                         entry.softTtl = softExpire;
                         entry.ttl = entry.softTtl;
                         // entry.serverDate = serverDate;
                         // entry.responseHeaders = headers;
                         entry.mimeType = mimeType;
-                        System.out.println("request.cacheControl()==" + request.cacheControl());
                         entry.data = string.getBytes(UTF8);
                         cache.put(request.urlString(), entry);
                     }

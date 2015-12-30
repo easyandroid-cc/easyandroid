@@ -78,7 +78,7 @@ public abstract class EARunnable<T> implements Runnable {
 				@Override
 				public void run() {
 					if (!isCancel()) {
-						callback.error(handled.getMessage());
+						callback.error(handled);
 					}
 				}
 			});

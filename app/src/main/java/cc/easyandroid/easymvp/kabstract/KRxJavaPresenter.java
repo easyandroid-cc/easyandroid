@@ -1,13 +1,13 @@
 package cc.easyandroid.easymvp.kabstract;
 
+import android.os.Bundle;
+
+import cc.easyandroid.easymvp.utils.RxUtils;
+import cc.easyandroid.easymvp.view.ISimpleView;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-import android.os.Bundle;
-import cc.easyandroid.easymvp.exception.MvpException;
-import cc.easyandroid.easymvp.utils.RxUtils;
-import cc.easyandroid.easymvp.view.ISimpleView;
 
 public abstract class KRxJavaPresenter<V extends ISimpleView<T>, T> extends KPresenter<V, T> {
 
@@ -82,11 +82,7 @@ public abstract class KRxJavaPresenter<V extends ISimpleView<T>, T> extends KPre
 
 		@Override
 		public void onError(Throwable e) {
-			if (e != null && e instanceof MvpException) {
-				this.mController.error(e.getMessage());
-			} else {
-				this.mController.error("服务器或网络异常");
-			}
+			this.mController.error(e);
 		}
 	}
 }

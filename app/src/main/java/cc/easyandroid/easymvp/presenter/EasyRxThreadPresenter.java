@@ -1,13 +1,14 @@
 package cc.easyandroid.easymvp.presenter;
 
+import android.os.Bundle;
+
+import cc.easyandroid.easymvp.PresenterLoader;
+import cc.easyandroid.easymvp.kabstract.KRxJavaPresenter;
+import cc.easyandroid.easymvp.view.ISimpleThreadView;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-import android.os.Bundle;
-import cc.easyandroid.easymvp.PresenterLoader;
-import cc.easyandroid.easymvp.kabstract.KRxJavaPresenter;
-import cc.easyandroid.easymvp.view.ISimpleThreadView;
 
 public class EasyRxThreadPresenter<T> extends KRxJavaPresenter<ISimpleThreadView<T>, T> {
 
@@ -22,7 +23,7 @@ public class EasyRxThreadPresenter<T> extends KRxJavaPresenter<ISimpleThreadView
 			@Override
 			public void call(Subscriber<? super T> sub) {
 				if (!sub.isUnsubscribed()) {
-					PresenterLoader<T> presenterLoader = getView().onCreatPresenterLoader(getPresenterId(), bundle);
+					PresenterLoader<T> presenterLoader = getView().onCreatePresenterLoader(getPresenterId(), bundle);
 					try {
 						T t = presenterLoader.loadInBackground();
 						sub.onNext(t);

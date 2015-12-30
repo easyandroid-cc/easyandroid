@@ -15,7 +15,7 @@ public abstract class SimpleNetWorkViewImpl<T> implements ISimpleNetWorkView<T> 
 	}
 
 	@Override
-	public void onError(int presenterId, String errorDesc) {
+	public void onError(int presenterId, Throwable e) {
 
 	}
 

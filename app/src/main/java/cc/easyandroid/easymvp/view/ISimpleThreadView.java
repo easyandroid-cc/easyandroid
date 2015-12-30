@@ -10,5 +10,5 @@ import cc.easyandroid.easymvp.PresenterLoader;
  */
 public interface ISimpleThreadView<T> extends ISimpleView<T> {
 
-	PresenterLoader<T> onCreatPresenterLoader(int loaderId, Bundle bundle);
+	PresenterLoader<T> onCreatePresenterLoader(int loaderId, Bundle bundle);
 }

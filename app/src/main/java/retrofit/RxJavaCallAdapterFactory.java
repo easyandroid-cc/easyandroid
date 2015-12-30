@@ -117,7 +117,7 @@ public final class RxJavaCallAdapterFactory implements CallAdapter.Factory {
 						if (t != null && t instanceof EAResult) {
 							EAResult kResult = (EAResult) t;
 							if (kResult == null || !kResult.isSuccess()) {
-								subscriber.onError(new MvpException(kResult != null ? kResult.getFailureDesc() : "服务器或网络异常"));
+								subscriber.onError(new MvpException(kResult != null ? kResult.getEADesc() : ""));
 								return;
 							}
 						}

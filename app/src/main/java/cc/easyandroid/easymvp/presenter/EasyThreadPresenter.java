@@ -1,13 +1,14 @@
 package cc.easyandroid.easymvp.presenter;
 
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
-
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Process;
+
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
+
 import cc.easyandroid.easymvp.PresenterLoader;
 import cc.easyandroid.easymvp.kabstract.KPresenter;
 import cc.easyandroid.easymvp.utils.EARunnable;
@@ -40,7 +41,7 @@ public class EasyThreadPresenter<T> extends KPresenter<ISimpleThreadView<T>, T> 
 		eaRunnable = new EARunnable<T>(mController, mainExecutor) {
 			@Override
 			public PresenterLoader<T> creatPresenterLoader() {
-				return getView().onCreatPresenterLoader(getPresenterId(), bundle);
+				return getView().onCreatePresenterLoader(getPresenterId(), bundle);
 			}
 		};
 		ioExecutor.execute(eaRunnable);

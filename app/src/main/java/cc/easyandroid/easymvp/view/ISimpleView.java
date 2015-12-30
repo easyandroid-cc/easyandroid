@@ -6,7 +6,12 @@ public interface ISimpleView<T> extends IView {
 
 	void onCompleted(int presenterId);
 
-	void onError(int presenterId, String errorDesc);
+	/**
+	 *使用 e.getMessage() 获取信息
+	 * @param presenterId
+	 * @param e
+	 */
+	void onError(int presenterId, Throwable e);
 
 	void deliverResult(int presenterId, final T results);
 
