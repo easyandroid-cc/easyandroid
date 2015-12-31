@@ -59,18 +59,25 @@ public abstract class KOKHttpPresenter<V extends ISimpleView<T>, T> extends KPre
         @Override
         public void onResponse(Response<T> response) {
             T t = response.body();
-            if (t != null && t instanceof EAResult) {
+            String defaultMessage = "";//"服务器或网络异常";
+            if (t == null) {
+                error(defaultMessage);
+                return;
+            } else if (t instanceof EAResult) {
                 EAResult kResult = (EAResult) t;
                 if (kResult == null || !kResult.isSuccess()) {
-                    String defaultMessage = "";//"服务器或网络异常";
                     String errorMessage = kResult != null ? kResult.getEADesc() : defaultMessage;
-                    MvpException mvpException = new MvpException(errorMessage);
-                    mController.error(mvpException);
+                    error(errorMessage);
                     return;
                 }
             }
             mController.deliverResult(t);
             mController.completed();
+        }
+
+        private void error(String errorMessage) {
+            MvpException mvpException = new MvpException(errorMessage);
+            onFailure(mvpException);
         }
 
         @Override
