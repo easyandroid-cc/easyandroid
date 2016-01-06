@@ -47,6 +47,6 @@ public abstract class EasyFragmentTabsSaveState extends EasyTabBaseFragment {
 	 */
 	  void addTab(EasyTab eaTab) {
 		mFragmentTabHost.addTab(mFragmentTabHost.newTabSpec(eaTab.getTabSpec())//
-				.setIndicator(eaTab.getTabView()), eaTab.getClass(), eaTab.getBundle());
+				.setIndicator(eaTab.getTabView()), eaTab.getYourFragment(), eaTab.getBundle());
 	}
 }

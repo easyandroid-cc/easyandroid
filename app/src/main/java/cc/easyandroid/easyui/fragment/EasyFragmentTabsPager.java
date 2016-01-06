@@ -67,7 +67,7 @@ public abstract class EasyFragmentTabsPager extends EasyTabBaseFragment {
 	 */
 	void addTab(EasyTab eaTab) {
 		mTabsAdapter.addTab(mTabHost.newTabSpec(eaTab.getTabSpec())//
-				.setIndicator(eaTab.getTabView()), eaTab.getClass(), eaTab.getBundle());
+				.setIndicator(eaTab.getTabView()), eaTab.getYourFragment(), eaTab.getBundle());
 	}
 
 	/**
