@@ -15,7 +15,16 @@
  */
 package cc.easyandroid.easyhttp.core.retrofit;
 
-import static android.os.Process.THREAD_PRIORITY_BACKGROUND;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Process;
+import android.text.TextUtils;
+
+import com.squareup.okhttp.MediaType;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Protocol;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.ResponseBody;
 
 import java.io.IOException;
 import java.util.Locale;
@@ -23,19 +32,10 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Process;
-import android.text.TextUtils;
 import cc.easyandroid.easycache.volleycache.Cache;
 import cc.easyandroid.easycache.volleycache.Cache.Entry;
-import cc.easyandroid.easyhttp.core.EAOkHttpCall;
 
-import com.squareup.okhttp.MediaType;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Protocol;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.ResponseBody;
+import static android.os.Process.THREAD_PRIORITY_BACKGROUND;
 
 public abstract class KOkHttpCall<T> implements Call<T> {
 	protected final OkHttpClient client;
@@ -238,7 +238,6 @@ public abstract class KOkHttpCall<T> implements Call<T> {
 			rawCall.cancel();
 		}
 		this.rawCall = rawCall;
-
 		// ----------------------------------------------------------------------cgp
 		String cacheMode = getCacheMode(request);
 		if (!TextUtils.isEmpty(cacheMode)) {
@@ -267,7 +266,6 @@ public abstract class KOkHttpCall<T> implements Call<T> {
 			}
 		}
 		// ----------------------------------------------------------------------cgp
-
 		return parseResponse(rawCall.execute(), request);
 	}
 

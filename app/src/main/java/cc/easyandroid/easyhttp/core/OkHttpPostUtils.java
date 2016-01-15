@@ -37,15 +37,36 @@ public class OkHttpPostUtils extends OkHttpUtils {
     }
 
     public Request buildPostFormRequest(String url, Map<String, String> paras) {
-        FormEncodingBuilder builder = new FormEncodingBuilder();
+        return buildPostFormRequest(url, null, paras);
+    }
+
+    /**
+     * post 请求构建request
+     *
+     * @param url     请求地址
+     * @param headers 请求头
+     * @param paras   请求参数
+     * @return
+     */
+    public Request buildPostFormRequest(String url, Map<String, String> headers, Map<String, String> paras) {
+        FormEncodingBuilder formEncodingBuilder = new FormEncodingBuilder();
+        //add prars
         if (paras != null && paras.size() > 0) {
             for (String key : paras.keySet()) {
-                EALog.d("key = %1$s ---- value = %2$s", key, paras.get(key));
-                builder.add(key, paras.get(key));
+                EALog.d("para key = %1$s ---- value = %2$s", key, paras.get(key));
+                formEncodingBuilder.add(key, paras.get(key));
             }
         }
-        RequestBody requestBody = builder.build();
-        return new Request.Builder().url(url).post(requestBody).build();
+        RequestBody requestBody = formEncodingBuilder.build();
+        Request.Builder builder = new Request.Builder().url(url).post(requestBody);
+        //add headers
+        if (headers != null && headers.size() > 0) {
+            for (String key : paras.keySet()) {
+                EALog.d("header key = %1$s ---- value = %2$s", key, paras.get(key));
+                builder.addHeader(key, headers.get(key));
+            }
+        }
+        return builder.build();
     }
 
     /**
