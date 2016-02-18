@@ -53,11 +53,11 @@ public abstract class EARunnable<T> implements Runnable {
 					}
 				}
 			});
-			if (!isCancel()) {
+			if (isCancel()) {
 				return;
 			}
 			final T wrapper = creatPresenterLoader().loadInBackground();
-			if (!isCancel()) {
+			if (isCancel()) {
 				return;
 			}
 			callbackExecutor.execute(new Runnable() {
@@ -70,7 +70,7 @@ public abstract class EARunnable<T> implements Runnable {
 				}
 			});
 		} catch (Exception e) {
-			if (!isCancel()) {
+			if (isCancel()) {
 				return;
 			}
 			final Exception handled = e;
