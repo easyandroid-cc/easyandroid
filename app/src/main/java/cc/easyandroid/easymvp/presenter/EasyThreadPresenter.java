@@ -15,69 +15,73 @@ import cc.easyandroid.easymvp.utils.EARunnable;
 import cc.easyandroid.easymvp.view.ISimpleThreadView;
 
 public class EasyThreadPresenter<T> extends KPresenter<ISimpleThreadView<T>, T> {
-	protected EARunnable<T> eaRunnable;
+    protected EARunnable<T> eaRunnable;
 
-	@Override
-	protected void onCancel() {
-		super.onCancel();
-		cancelRequest();
-	}
+    @Override
+    protected void onCancel() {
+        super.onCancel();
+        cancelRequest();
+    }
 
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		cancelRequest();
-	}
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        cancelRequest();
+    }
 
-	private void cancelRequest() {
-		if (eaRunnable != null && !eaRunnable.isCancel()) {
-			eaRunnable.cancel();
-		}
-	}
+    private void cancelRequest() {
+        if (eaRunnable != null && !eaRunnable.isCancel()) {
+            eaRunnable.cancel();
+        }
+    }
 
-	public void execute(final Bundle bundle) {
-		cancel();// 先取消之前的事件
+    public void execute(final Bundle bundle) {
+        cancel();// 先取消之前的事件
 
-		eaRunnable = new EARunnable<T>(mController, mainExecutor) {
-			@Override
-			public PresenterLoader<T> creatPresenterLoader() {
-				return getView().onCreatePresenterLoader(getPresenterId(), bundle);
-			}
-		};
-		ioExecutor.execute(eaRunnable);
-	}
+        eaRunnable = new EARunnable<T>(mController, defaultCallbackExecutor()) {
+            @Override
+            public PresenterLoader<T> creatPresenterLoader() {
+                return getView().onCreatePresenterLoader(getPresenterId(), bundle);
+            }
+        };
+        ioExecutor.execute(eaRunnable);
+    }
 
-	public void execute() {
-		execute(null);
-	}
+    public void execute() {
+        execute(null);
+    }
 
-	static final String THREAD_PREFIX = "EasyAndroid-";
-	static final String IDLE_THREAD_NAME = THREAD_PREFIX + "Idle";
+    static final String THREAD_PREFIX = "EasyAndroid-";
+    static final String IDLE_THREAD_NAME = THREAD_PREFIX + "Idle";
 
-	static Executor ioExecutor() {
-		return Executors.newCachedThreadPool(new ThreadFactory() {
-			@Override
-			public Thread newThread(final Runnable r) {
-				return new Thread(new Runnable() {
-					@Override
-					public void run() {
-						Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
-						r.run();
-					}
-				}, IDLE_THREAD_NAME);
-			}
-		});
-	}
+    static Executor ioExecutor() {
+        return Executors.newCachedThreadPool(new ThreadFactory() {
+            @Override
+            public Thread newThread(final Runnable r) {
+                return new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
+                        r.run();
+                    }
+                }, IDLE_THREAD_NAME);
+            }
+        });
+    }
 
-	public static final Executor ioExecutor = ioExecutor();
-	public static final Executor mainExecutor = new MainThreadExecutor();
+    public static final Executor ioExecutor = ioExecutor();
+//    public static final Executor mainExecutor = new MainThreadExecutor();
 
-	static class MainThreadExecutor implements Executor {
-		private final Handler handler = new Handler(Looper.getMainLooper());
+    Executor defaultCallbackExecutor() {
+        return new MainThreadExecutor();
+    }
 
-		@Override
-		public void execute(Runnable r) {
-			handler.post(r);
-		}
-	}
+    static class MainThreadExecutor implements Executor {
+        private final Handler handler = new Handler(Looper.getMainLooper());
+
+        @Override
+        public void execute(Runnable r) {
+            handler.post(r);
+        }
+    }
 }
