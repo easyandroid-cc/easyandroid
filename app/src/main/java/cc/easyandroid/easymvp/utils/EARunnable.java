@@ -15,9 +15,6 @@
  */
 package cc.easyandroid.easymvp.utils;
 
-import android.os.Handler;
-import android.os.Looper;
-
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -25,82 +22,68 @@ import cc.easyandroid.easymvp.PresenterLoader;
 import cc.easyandroid.easymvp.kabstract.IController;
 
 public abstract class EARunnable<T> implements Runnable {
-    private final IController<T> callback;
-    private   Executor callbackExecutor;
-    private final AtomicBoolean mCancelled = new AtomicBoolean();
+	private final IController<T> callback;
+	private final Executor callbackExecutor;
+	private final AtomicBoolean mCancelled = new AtomicBoolean();
 
-    public EARunnable(IController<T> callback) {
-        this.callback = callback;
+	public EARunnable(IController<T> callback, Executor callbackExecutor) {
+		this.callback = callback;
+		this.callbackExecutor = callbackExecutor;
+	}
 
-    }
+	public void cancel() {
+		mCancelled.set(true);
+	}
 
-    public void cancel() {
-        mCancelled.set(true);
-    }
+	public boolean isCancel() {
+		return mCancelled.get();
+	}
 
-    public boolean isCancel() {
-        return mCancelled.get();
-    }
+	@Override
+	public final void run() {
+		try {
+			if (isCancel()) {
+				return;
+			}
+			callbackExecutor.execute(new Runnable() {
+				@Override
+				public void run() {
+					if (!isCancel()) {
+						callback.start();
+					}
+				}
+			});
+			if (isCancel()) {
+				return;
+			}
+			final T wrapper = creatPresenterLoader().loadInBackground();
+			if (isCancel()) {
+				return;
+			}
+			callbackExecutor.execute(new Runnable() {
+				@Override
+				public void run() {
+					if (!isCancel()) {
+						callback.deliverResult(wrapper);
+						callback.completed();
+					}
+				}
+			});
+		} catch (Exception e) {
+			if (isCancel()) {
+				return;
+			}
+			final Exception handled = e;
+			callbackExecutor.execute(new Runnable() {
+				@Override
+				public void run() {
+					if (!isCancel()) {
+						callback.error(handled);
+					}
+				}
+			});
+		}
+	}
 
-    @Override
-    public final void run() {
-        try {
-            if (isCancel()) {
-                return;
-            }
-            callbackExecutor = defaultCallbackExecutor();
-            callbackExecutor.execute(new Runnable() {
-                @Override
-                public void run() {
-                    if (!isCancel()) {
-                        callback.start();
-                    }
-                }
-            });
-            if (isCancel()) {
-                return;
-            }
-            final T wrapper = creatPresenterLoader().loadInBackground();
-            if (isCancel()) {
-                return;
-            }
-            callbackExecutor.execute(new Runnable() {
-                @Override
-                public void run() {
-                    if (!isCancel()) {
-                        callback.deliverResult(wrapper);
-                        callback.completed();
-                    }
-                }
-            });
-        } catch (Exception e) {
-            if (isCancel()) {
-                return;
-            }
-            final Exception handled = e;
-            callbackExecutor.execute(new Runnable() {
-                @Override
-                public void run() {
-                    if (!isCancel()) {
-                        callback.error(handled);
-                    }
-                }
-            });
-        }
-    }
-
-    Executor defaultCallbackExecutor() {
-        return new MainThreadExecutor();
-    }
-
-    static class MainThreadExecutor implements Executor {
-        private final Handler handler = new Handler(Looper.getMainLooper());
-
-        @Override
-        public void execute(Runnable r) {
-            handler.post(r);
-        }
-    }
-
-    public abstract PresenterLoader<T> creatPresenterLoader();
+	public abstract PresenterLoader<T> creatPresenterLoader();
 }
