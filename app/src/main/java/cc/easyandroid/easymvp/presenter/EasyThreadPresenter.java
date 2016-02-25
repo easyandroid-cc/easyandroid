@@ -1,8 +1,6 @@
 package cc.easyandroid.easymvp.presenter;
 
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.os.Process;
 
 import java.util.concurrent.Executor;
@@ -38,7 +36,7 @@ public class EasyThreadPresenter<T> extends KPresenter<ISimpleThreadView<T>, T> 
     public void execute(final Bundle bundle) {
         cancel();// 先取消之前的事件
 
-        eaRunnable = new EARunnable<T>(mController, defaultCallbackExecutor()) {
+        eaRunnable = new EARunnable<T>(mController) {
             @Override
             public PresenterLoader<T> creatPresenterLoader() {
                 return getView().onCreatePresenterLoader(getPresenterId(), bundle);
@@ -72,16 +70,16 @@ public class EasyThreadPresenter<T> extends KPresenter<ISimpleThreadView<T>, T> 
     public static final Executor ioExecutor = ioExecutor();
 //    public static final Executor mainExecutor = new MainThreadExecutor();
 
-    Executor defaultCallbackExecutor() {
-        return new MainThreadExecutor();
-    }
-
-    static class MainThreadExecutor implements Executor {
-        private final Handler handler = new Handler(Looper.getMainLooper());
-
-        @Override
-        public void execute(Runnable r) {
-            handler.post(r);
-        }
-    }
+//    Executor defaultCallbackExecutor() {
+//        return new MainThreadExecutor();
+//    }
+//
+//    static class MainThreadExecutor implements Executor {
+//        private final Handler handler = new Handler(Looper.getMainLooper());
+//
+//        @Override
+//        public void execute(Runnable r) {
+//            handler.post(r);
+//        }
+//    }
 }
