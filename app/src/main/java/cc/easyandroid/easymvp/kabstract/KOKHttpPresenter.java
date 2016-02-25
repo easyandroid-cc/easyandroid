@@ -58,7 +58,7 @@ public abstract class KOKHttpPresenter<V extends ISimpleView<T>, T> extends KPre
 
         @Override
         public void onResponse(Response<T> response) {
-            T t = response.body();
+            T t = response != null ? response.body() : null;
             String defaultMessage = "";//"服务器或网络异常";
             if (t == null) {
                 error(defaultMessage);

@@ -211,6 +211,7 @@ public abstract class KOkHttpCall<T> implements Call<T> {
 
             @Override
             public void onResponse(com.squareup.okhttp.Response rawResponse) {
+
                 if (canceled) {
                     return;
                 }
