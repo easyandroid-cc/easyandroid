@@ -108,7 +108,7 @@ public abstract class KOkHttpCall<T> implements Call<T> {
                 try {
                     com.squareup.okhttp.Response rawResponse = new com.squareup.okhttp.Response.Builder()//
                             .code(200).request(request).protocol(Protocol.HTTP_1_1).body(ResponseBody.create(contentType, bytes)).build();
-                    return parseResponse(rawResponse, request);
+                    return parseResponse(rawResponse, request, false);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -217,7 +217,7 @@ public abstract class KOkHttpCall<T> implements Call<T> {
                 }
                 Response<T> response;
                 try {
-                    response = parseResponse(rawResponse, request);
+                    response = parseResponse(rawResponse, request, loadnetElseCache);
                 } catch (Throwable e) {
                     if (loadnetElseCache) {
                         onFailure(request, new IOException("解析结果错误"));
@@ -252,7 +252,7 @@ public abstract class KOkHttpCall<T> implements Call<T> {
                 case CacheMode.LOAD_NETWORK_ELSE_CACHE:// 先网络然后再缓存
                     Response<T> response;
                     try {
-                        response = parseResponse(rawCall.execute(), request);
+                        response = parseResponse(rawCall.execute(), request, true);//如果失败去加载缓存，true 会拋异常
                     } catch (Exception e) {
                         response = execCacheRequest(request);
                     }
@@ -272,7 +272,7 @@ public abstract class KOkHttpCall<T> implements Call<T> {
             }
         }
         // ----------------------------------------------------------------------cgp
-        return parseResponse(rawCall.execute(), request);
+        return parseResponse(rawCall.execute(), request, false);
     }
 
     // private com.squareup.okhttp.Call createRawCall() {
@@ -284,7 +284,14 @@ public abstract class KOkHttpCall<T> implements Call<T> {
         return request.header("Cache-Mode");
     }
 
-    private Response<T> parseResponse(com.squareup.okhttp.Response rawResponse, Request request) throws IOException {
+    /**
+     * @param rawResponse
+     * @param request
+     * @param ifFailedToLoadTheCache 如果失败去加载缓存,这里注意返回码的位置
+     * @return
+     * @throws IOException
+     */
+    private Response<T> parseResponse(com.squareup.okhttp.Response rawResponse, Request request, boolean ifFailedToLoadTheCache) throws IOException {
         ResponseBody rawBody = rawResponse.body();
         // rawResponse.r
         // Remove the body's source (the only stateful object) so we can pass
@@ -293,19 +300,25 @@ public abstract class KOkHttpCall<T> implements Call<T> {
 
         int code = rawResponse.code();
         if (code < 200 || code >= 300) {
-            try {
-                // Buffer the entire body to avoid future I/O.
-                ResponseBody bufferedBody = Utils.readBodyToBytesIfNecessary(rawBody);
-                return Response.error(bufferedBody, rawResponse);
-            } finally {
-                Utils.closeQuietly(rawBody);
+            if (!ifFailedToLoadTheCache) {
+                try {
+                    // Buffer the entire body to avoid future I/O.
+                    ResponseBody bufferedBody = Utils.readBodyToBytesIfNecessary(rawBody);
+                    return Response.error(bufferedBody, rawResponse);
+                } finally {
+                    Utils.closeQuietly(rawBody);
+                }
+            } else {
+                throw new IOException("code < 200 || code >= 300");
             }
         }
-
-        if (code == 204 || code == 205) {
-            return Response.success(null, rawResponse);
+        if (!ifFailedToLoadTheCache) {
+            if (code == 204 || code == 205) {
+                return Response.success(null, rawResponse);
+            }
+        }else{
+            throw new IOException("code == 204 || code == 205");
         }
-
         ExceptionCatchingRequestBody catchingBody = new ExceptionCatchingRequestBody(rawBody);
         try {
 
