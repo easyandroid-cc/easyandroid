@@ -312,13 +312,14 @@ public abstract class KOkHttpCall<T> implements Call<T> {
                 throw new IOException("code < 200 || code >= 300");
             }
         }
-        if (!ifFailedToLoadTheCache) {
-            if (code == 204 || code == 205) {
+        if (code == 204 || code == 205) {
+            if (!ifFailedToLoadTheCache) {
                 return Response.success(null, rawResponse);
+            }else{
+                throw new IOException("code == 204 || code == 205");
             }
-        }else{
-            throw new IOException("code == 204 || code == 205");
         }
+
         ExceptionCatchingRequestBody catchingBody = new ExceptionCatchingRequestBody(rawBody);
         try {
 
