@@ -87,6 +87,27 @@ public class OkHttpDownloadUtils extends OkHttpUtils {
      * @param dir      file save dir
      * @param fileName file name
      */
+    public void DownloadFileAndprogressAsyn(String url, String dir, String fileName, final ProgressListener progressListener, Callback responseCallback) {
+        Request request = new Request.Builder().url(url).build();
+        client.clone().networkInterceptors().add(new Interceptor() {
+            @Override
+            public Response intercept(Chain chain) throws IOException {
+                Response originalResponse = chain.proceed(chain.request());
+                return originalResponse.newBuilder()
+                        .body(new ProgressResponseBody(originalResponse.body(), progressListener))
+                        .build();
+            }
+        });
+        client.newCall(request).enqueue(responseCallback);
+    }
+
+    /**
+     * 下载文件包含进度
+     *
+     * @param url      file url
+     * @param dir      file save dir
+     * @param fileName file name
+     */
     public void DownloadFileAndprogress(String url, String dir, String fileName, final ProgressListener progressListener) {
         Request request = new Request.Builder().url(url).build();
         client.clone().networkInterceptors().add(new Interceptor() {
