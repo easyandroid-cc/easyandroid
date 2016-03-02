@@ -86,7 +86,6 @@ public class OkHttpDownloadUtils extends OkHttpUtils {
             public void onFailure(final Request request, final IOException e) {
                 // sendFailedStringCallback(request, e, callback);
             }
-
             @Override
             public void onResponse(Response response) {
                 InputStream is = null;

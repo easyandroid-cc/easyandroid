@@ -61,8 +61,8 @@ public class OkHttpPostUtils extends OkHttpUtils {
         Request.Builder builder = new Request.Builder().url(url).post(requestBody);
         //add headers
         if (headers != null && headers.size() > 0) {
-            for (String key : paras.keySet()) {
-                EALog.d("header key = %1$s ---- value = %2$s", key, paras.get(key));
+            for (String key : headers.keySet()) {
+                EALog.d("header key = %1$s ---- value = %2$s", key, headers.get(key));
                 builder.addHeader(key, headers.get(key));
             }
         }
