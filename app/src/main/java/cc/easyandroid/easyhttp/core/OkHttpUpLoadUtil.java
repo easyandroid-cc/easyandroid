@@ -1,11 +1,5 @@
 package cc.easyandroid.easyhttp.core;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.FileNameMap;
-import java.net.URLConnection;
-import java.util.Map;
-
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Headers;
 import com.squareup.okhttp.MediaType;
@@ -14,6 +8,14 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.FileNameMap;
+import java.net.URLConnection;
+import java.util.Map;
+
+import cc.easyandroid.easylog.EALog;
 
 /**
  * 文件上传工具类
@@ -63,6 +65,36 @@ public class OkHttpUpLoadUtil extends OkHttpUtils {
 
 		RequestBody requestBody = builder.build();
 		return new Request.Builder().url(url).post(requestBody).build();
+	}
+	public Request buildMultipartFormRequest(String url, Map<String, String> headers,Map<String, File> files, Map<String, String> params) {
+
+		MultipartBuilder builder = new MultipartBuilder().type(MultipartBuilder.FORM);
+		if (params != null && params.size() > 0) {
+			for (String key : params.keySet()) {
+				builder.addFormDataPart(key, params.get(key));
+			}
+		}
+
+		if (files != null && files.size() > 0) {// 文件
+			RequestBody fileBody = null;
+			for (String key : files.keySet()) {
+				File file = files.get(key);
+				String fileName = file.getName();
+				fileBody = RequestBody.create(MediaType.parse(guessMimeType(fileName)), file);
+				builder.addFormDataPart(key, fileName, fileBody);
+			}
+		}
+
+		RequestBody requestBody = builder.build();
+		Request.Builder requestBuilder=new Request.Builder().url(url).post(requestBody);
+		//add headers
+		if (headers != null && headers.size() > 0) {
+			for (String key : headers.keySet()) {
+				EALog.d("header key = %1$s ---- value = %2$s", key, headers.get(key));
+				requestBuilder.addHeader(key, headers.get(key));
+			}
+		}
+		return requestBuilder.build();
 	}
 
 	/**
