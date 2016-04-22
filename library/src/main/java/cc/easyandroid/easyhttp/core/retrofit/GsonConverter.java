@@ -1,0 +1,134 @@
+/*
+ * Copyright (C) 2012 Square, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package cc.easyandroid.easyhttp.core.retrofit;
+
+import com.google.gson.TypeAdapter;
+import com.squareup.okhttp.MediaType;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.ResponseBody;
+import com.squareup.okhttp.internal.Util;
+
+import java.io.ByteArrayInputStream;
+import java.io.Closeable;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.UnsupportedEncodingException;
+
+import cc.easyandroid.easycache.volleycache.Cache;
+import cc.easyandroid.easyhttp.core.StateCodeHandler;
+import cc.easyandroid.easyhttp.pojo.EAResult;
+import cc.easyandroid.easylog.EALog;
+
+public final class GsonConverter<T> implements Converter<T> {
+    public static final MediaType MEDIA_TYPE = MediaType.parse("application/json; charset=UTF-8");
+    public static final String UTF8 = "UTF-8";
+    private final TypeAdapter<T> typeAdapter;
+    private final Cache cache;
+    private final StateCodeHandler stateCodeProcessing;
+
+    public GsonConverter(TypeAdapter<T> adapter, Cache cache, StateCodeHandler stateCodeProcessing) {
+        this.typeAdapter = adapter;
+        this.cache = cache;
+        this.stateCodeProcessing = stateCodeProcessing;
+    }
+
+    public Cache getCache() {
+        return cache;
+    }
+
+    @Override
+    public T fromBody(ResponseBody body) throws IOException {
+        Reader reader = body.charStream();
+        try {
+            return typeAdapter.fromJson(reader);
+        } finally {
+            closeQuietly(reader);
+        }
+    }
+
+    public T fromBody(ResponseBody value, Request request) throws IOException {
+        String string = value.string();
+        EALog.d("Network request string : %1$s", string);
+        System.out.println("easyandroid= " + string);
+        T t1=null;
+        System.out.println("easyandroid t= " +  (t1 instanceof String));
+        Reader reader = new InputStreamReader((new ByteArrayInputStream(string.getBytes(UTF8))), Util.UTF_8);
+        try {
+
+//            typeAdapter.
+            T t = typeAdapter.fromJson(reader);
+            if (t instanceof String) {
+                return (T) string;
+            }
+            EALog.d(" Finally converted to : %1$s", t.toString());
+            String mimeType = value.contentType().toString();
+            parseCache(request, t, string, mimeType);
+            parseStateCode(t);
+            return t;
+        } finally {
+            closeQuietly(reader);
+        }
+    }
+
+    private void parseStateCode(T object) {
+        if (object instanceof EAResult) {
+            if (stateCodeProcessing != null) {
+                EAResult eaResult = (EAResult) object;
+                if (eaResult != null) {
+                    stateCodeProcessing.handleCode(eaResult.getEACode());
+                }
+            }
+        }
+    }
+
+    private void parseCache(Request request, T object, String string, String mimeType) throws UnsupportedEncodingException {
+        com.squareup.okhttp.CacheControl cacheControl = request.cacheControl();
+//        object instanceof
+        if (cacheControl != null) {
+            if (!cacheControl.noCache() && !cacheControl.noStore()) {
+                if (object instanceof EAResult) {
+                    EAResult kResult = (EAResult) object;
+                    if (kResult != null && kResult.isSuccess()) {
+                        long now = System.currentTimeMillis();
+                        long maxAge = cacheControl.maxAgeSeconds();
+                        long softExpire = now + maxAge * 1000;
+                        EALog.d("缓存时长: %1$s秒", (softExpire - now) / 1000 + "");
+                        Cache.Entry entry = new Cache.Entry();
+                        entry.softTtl = softExpire;
+                        entry.ttl = entry.softTtl;
+                        // entry.serverDate = serverDate;
+                        // entry.responseHeaders = headers;
+                        entry.mimeType = mimeType;
+                        entry.data = string.getBytes(UTF8);
+                        cache.put(request.urlString(), entry);
+                    }
+                }
+            }
+        }
+    }
+
+    static void closeQuietly(Closeable closeable) {
+        if (closeable == null)
+            return;
+        try {
+            closeable.close();
+        } catch (IOException ignored) {
+        }
+    }
+
+
+}
