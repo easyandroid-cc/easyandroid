@@ -4,9 +4,6 @@ import android.app.Application;
 
 import com.squareup.leakcanary.LeakCanary;
 
-import java.net.CookieManager;
-import java.net.CookiePolicy;
-
 import cc.easyandroid.easyhttp.EasyHttpUtils;
 import cc.easyandroid.easyhttp.config.EAConfiguration;
 
@@ -14,7 +11,6 @@ import cc.easyandroid.easyhttp.config.EAConfiguration;
  * app
  */
 public class HKQfangApplication extends Application {
-
 
     @Override
     public void onCreate() {
@@ -26,8 +22,21 @@ public class HKQfangApplication extends Application {
     private void initEasyAndroid() {
         EAConfiguration eaConfiguration = new EAConfiguration.Builder(this).build();
         EasyHttpUtils.getInstance().init(eaConfiguration);
-        EasyHttpUtils.getInstance().getOkHttpClient().setCookieHandler((new CookieManager(eaConfiguration.getCookieStore(), CookiePolicy.ACCEPT_ALL)));
+//        EasyHttpUtils.getInstance().getOkHttpClient().setCookieHandler((new CookieManager(eaConfiguration.getCookieStore(), CookiePolicy.ACCEPT_ALL)));
+//        EasyHttpUtils.getInstance().getOkHttpClient().interceptors().add(new Interceptor() {
+//            @Override
+//            public EasyResponse intercept(Chain chain) throws IOException {
+//                Request request = chain.request();
+//                EasyResponse response = chain.proceed(request);
+//                int tryCount = 0;
+//                while (!response.isSuccessful() && tryCount < 3) {
+//                    Log.d("intercept", "Request is not successful - " + tryCount);
+//                    tryCount++;
+//                    // retry the request
+//                    response = chain.proceed(request);
+//                }
+//                return response;
+//            }
+//        });
     }
-
-
 }

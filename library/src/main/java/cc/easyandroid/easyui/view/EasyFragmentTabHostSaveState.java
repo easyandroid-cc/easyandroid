@@ -92,7 +92,7 @@ public class EasyFragmentTabHostSaveState extends TabHost implements TabHost.OnT
 	}
 
 	public EasyFragmentTabHostSaveState(Context context) {
-		// Note that we call through to the version that takes an AttributeSet,
+		// Note that we easyCall through to the version that takes an AttributeSet,
 		// because the simple Context construct can result in a broken object!
 		super(context, null);
 		initFragmentTabHost(context, null);
@@ -135,12 +135,12 @@ public class EasyFragmentTabHostSaveState extends TabHost implements TabHost.OnT
 	}
 
 	/**
-	 * @deprecated Don't call the original TabHost setup, you must instead call {@link #setup(Context, FragmentManager)} or {@link #setup(Context, FragmentManager, int)}.
+	 * @deprecated Don't easyCall the original TabHost setup, you must instead easyCall {@link #setup(Context, FragmentManager)} or {@link #setup(Context, FragmentManager, int)}.
 	 */
 	@Override
 	@Deprecated
 	public void setup() {
-		throw new IllegalStateException("Must call setup() that takes a Context and FragmentManager");
+		throw new IllegalStateException("Must easyCall setup() that takes a Context and FragmentManager");
 	}
 
 	public void setup(Context context, FragmentManager manager) {

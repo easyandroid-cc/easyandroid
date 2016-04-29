@@ -3,18 +3,17 @@ package cc.easyandroid.easyhttp.config;
 import android.content.Context;
 
 import com.google.gson.Gson;
-import com.squareup.okhttp.Cache;
-import com.squareup.okhttp.OkHttpClient;
 
-import java.net.CookieManager;
-import java.net.CookiePolicy;
-import java.net.CookieStore;
 import java.util.concurrent.TimeUnit;
 
 import cc.easyandroid.easycache.CacheUtils;
 import cc.easyandroid.easycache.volleycache.DiskBasedCache;
+import cc.easyandroid.easyhttp.cookiestore.CookieJarImpl;
+import cc.easyandroid.easyhttp.cookiestore.CookieStore;
 import cc.easyandroid.easyhttp.cookiestore.PersistentCookieStore;
 import cc.easyandroid.easyhttp.core.StateCodeHandler;
+import okhttp3.Cache;
+import okhttp3.OkHttpClient;
 
 public class EAConfiguration {
     private Gson mGson;
@@ -71,9 +70,6 @@ public class EAConfiguration {
 
         public Builder setOkHttpClient(OkHttpClient okHttpClient) {
             this.okHttpClient = okHttpClient;
-            if (okHttpClient.getCache() == null) {
-                okHttpClient.setCache(okHttpCache);// OkHttpClient缓存
-            }
             return this;
         }
 
@@ -90,14 +86,15 @@ public class EAConfiguration {
                 gson = new Gson();
             }
             if (okHttpClient == null) {
-                okHttpClient = new OkHttpClient();
-                okHttpClient.setConnectTimeout(15 * 1000, TimeUnit.MILLISECONDS);
-                okHttpClient.setFollowRedirects(true);
-                okHttpClient.setReadTimeout(20 * 1000, TimeUnit.MILLISECONDS);
-                okHttpClient.setCookieHandler(new CookieManager(cookieStore, CookiePolicy.ACCEPT_ORIGINAL_SERVER));
-                okHttpClient.setCache(okHttpCache);// OkHttpClient缓存
+                //okHttpClient = new OkHttpClient();
+                okHttpClient = new OkHttpClient.Builder()//
+                        .connectTimeout(15 * 1000, TimeUnit.MILLISECONDS)//
+                        .readTimeout(20 * 1000, TimeUnit.MILLISECONDS)//
+                        .followRedirects(true)//
+                        .cookieJar(new CookieJarImpl(cookieStore))//
+                        .cache(okHttpCache)//  OkHttpClient缓存
+                        .build();
             }
-
             return new EAConfiguration(this);
         }
     }

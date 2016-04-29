@@ -17,14 +17,16 @@ package cc.easyandroid.easyhttp.core.retrofit;
 
 import java.util.concurrent.Executor;
 
+import cc.easyandroid.easycore.EasyHttpStateCallback;
+
 /**
- * A {@link Runnable} executed on a background thread to invoke {@link #obtainResponse()} which performs an HTTP request. The response of the request, whether it be an object or exception, is then marshaled to the supplied {@link Executor} in the form of a method call on a {@link Callback}.
+ * A {@link Runnable} executed on a background thread to invoke {@link #obtainResponse()} which performs an HTTP request. The response of the request, whether it be an object or exception, is then marshaled to the supplied {@link Executor} in the form of a method easyCall on a {@link EasyHttpStateCallback}.
  */
 abstract class CallbackRunnable<T> implements Runnable {
-	private final Callback<T> callback;
+	private final EasyHttpStateCallback<T> callback;
 	private final Executor callbackExecutor;
 
-	CallbackRunnable(Callback<T> callback, Executor callbackExecutor) {
+	CallbackRunnable(EasyHttpStateCallback<T> callback, Executor callbackExecutor) {
 		this.callback = callback;
 		this.callbackExecutor = callbackExecutor;
 	}
@@ -32,7 +34,7 @@ abstract class CallbackRunnable<T> implements Runnable {
 	@Override
 	public final void run() {
 		try {
-			final Response<T> wrapper = obtainResponse();
+			final EasyResponse<T> wrapper = obtainResponse();
 			callbackExecutor.execute(new Runnable() {
 				@Override
 				public void run() {
@@ -50,5 +52,5 @@ abstract class CallbackRunnable<T> implements Runnable {
 		}
 	}
 
-	public abstract Response<T> obtainResponse();
+	public abstract EasyResponse<T> obtainResponse();
 }

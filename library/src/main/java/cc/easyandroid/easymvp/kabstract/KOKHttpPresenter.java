@@ -3,15 +3,15 @@ package cc.easyandroid.easymvp.kabstract;
 import android.os.Bundle;
 import android.util.Log;
 
-import cc.easyandroid.easyhttp.core.retrofit.Call;
-import cc.easyandroid.easyhttp.core.retrofit.Callback;
-import cc.easyandroid.easyhttp.core.retrofit.Response;
-import cc.easyandroid.easyhttp.pojo.EAResult;
+import cc.easyandroid.easycore.EasyCall;
+import cc.easyandroid.easycore.EasyHttpStateCallback;
+import cc.easyandroid.easyhttp.core.retrofit.EasyResponse;
+import cc.easyandroid.easycore.EAResult;
 import cc.easyandroid.easymvp.exception.MvpException;
 import cc.easyandroid.easymvp.view.ISimpleView;
 
 public abstract class KOKHttpPresenter<V extends ISimpleView<T>, T> extends KPresenter<V, T> {
-    protected Call<T> call;
+    protected EasyCall<T> easyCall;
 
     @Override
     protected void onCancel() {
@@ -26,22 +26,22 @@ public abstract class KOKHttpPresenter<V extends ISimpleView<T>, T> extends KPre
     }
 
     private void cancelRequest() {
-        if (call != null) {
-            call.cancel();
+        if (easyCall != null) {
+            easyCall.cancel();
         }
     }
 
-    protected abstract Call<T> createCall(Bundle bundle);
+    protected abstract EasyCall<T> createCall(Bundle bundle);
 
     public void execute(Bundle bundle) {
         cancel();// 先取消之前的事件
-        Call<T> originalCall = createCall(bundle);
-        if (originalCall == null) {
+        EasyCall<T> originalEasyCall = createCall(bundle);
+        if (originalEasyCall == null) {
             throw new IllegalArgumentException("please Override onCreateCall method, And can not be null，");
         }
-        call = originalCall.clone();
+        easyCall = originalEasyCall.clone();
 
-        call.enqueue(new kCallback(mController));
+        easyCall.enqueue(new kEasyHttpStateCallback(mController));
 
     }
 
@@ -49,16 +49,16 @@ public abstract class KOKHttpPresenter<V extends ISimpleView<T>, T> extends KPre
         execute(null);
     }
 
-    public class kCallback implements Callback<T> {
+    public class kEasyHttpStateCallback implements EasyHttpStateCallback<T> {
         IController<T> mController;
 
-        public kCallback(IController<T> controller) {
+        public kEasyHttpStateCallback(IController<T> controller) {
             this.mController = controller;
         }
 
         @Override
-        public void onResponse(Response<T> response) {
-            T t = response != null ? response.body() : null;
+        public void onResponse(EasyResponse<T> easyResponse) {
+            T t = easyResponse != null ? easyResponse.body() : null;
             String defaultMessage = "";//"服务器或网络异常";
             if (t == null) {
                 Log.e("EasyAndroid", "t==null");

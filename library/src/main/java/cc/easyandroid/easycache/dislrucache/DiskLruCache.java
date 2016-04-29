@@ -60,7 +60,7 @@ import java.util.regex.Pattern;
  * deleted. The limit does not include filesystem overhead or the cache
  * journal so space-sensitive applications should set a conservative limit.
  *
- * <p>Clients call {@link #edit} to create or update the values of an entry. An
+ * <p>Clients easyCall {@link #edit} to create or update the values of an entry. An
  * entry may have only one editor at one time; if a value is not available to be
  * edited then {@link #edit} will return null.
  * <ul>
@@ -71,13 +71,13 @@ import java.util.regex.Pattern;
  * to supply data for every value; values default to their previous
  * value.
  * </ul>
- * Every {@link #edit} call must be matched by a call to {@link Editor#commit}
+ * Every {@link #edit} easyCall must be matched by a easyCall to {@link Editor#commit}
  * or {@link Editor#abort}. Committing is atomic: a read observes the full set
  * of values as they were before or after the commit, but never a mix of values.
  *
- * <p>Clients call {@link #get} to read a snapshot of an entry. The read will
+ * <p>Clients easyCall {@link #get} to read a snapshot of an entry. The read will
  * observe the value at the time that {@link #get} was called. Updates and
- * removals after the call do not impact ongoing reads.
+ * removals after the easyCall do not impact ongoing reads.
  *
  * <p>This class is tolerant of some I/O errors. If files are missing from the
  * filesystem, the corresponding entries will be dropped from the cache. If

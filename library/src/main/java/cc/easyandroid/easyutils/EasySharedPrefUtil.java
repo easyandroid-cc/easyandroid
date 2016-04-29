@@ -49,7 +49,7 @@ public class EasySharedPrefUtil {
 	}
 
 	/**
-	 * Wrapper around {@link Editor} {@code put()} methods. Null keys are not permitted. Attempts to insert a null key will throw NullPointerException. Will call {@link Editor#apply()} in Gingerbread and above instead of commit. If you want to check the return value call {@link #commit(Context, String, Object)}. When you call this method from different threads the order of the operations is unspecified - you have to synchronize externally if the order concerns you (especially for the same key). If you want to put a long you must explicitly declare it otherwise Java will interpret it as an Integer resulting in a {@link ClassCastException} when you try to retrieve it (on get() invocation). So :
+	 * Wrapper around {@link Editor} {@code put()} methods. Null keys are not permitted. Attempts to insert a null key will throw NullPointerException. Will easyCall {@link Editor#apply()} in Gingerbread and above instead of commit. If you want to check the return value easyCall {@link #commit(Context, String, Object)}. When you easyCall this method from different threads the order of the operations is unspecified - you have to synchronize externally if the order concerns you (especially for the same key). If you want to put a long you must explicitly declare it otherwise Java will interpret it as an Integer resulting in a {@link ClassCastException} when you try to retrieve it (on get() invocation). So :
 	 *
 	 * <pre>
 	 * put(ctx, LONG_KEY, 0); // you just persisted an Integer
@@ -96,7 +96,7 @@ public class EasySharedPrefUtil {
 	}
 
 	/**
-	 * As {@link #put(Context, String, Object)} but will call {@link Editor#commit()} in all API versions. See {@link #put(Context, String, Object)} for detailed usage notes.
+	 * As {@link #put(Context, String, Object)} but will easyCall {@link Editor#commit()} in all API versions. See {@link #put(Context, String, Object)} for detailed usage notes.
 	 *
 	 * @param ctx
 	 *            the context the Shared preferences belong to

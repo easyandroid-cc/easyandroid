@@ -1,6 +1,6 @@
 package cc.easyandroid.easyhttp.core.retrofit;
 
-/** Exception for an unexpected, non-2xx HTTP response. */
+/** Exception for an unexpected, non-2xx HTTP easyResponse. */
 public final class KHttpException extends Exception {
 	/**
 	 * 
@@ -8,13 +8,13 @@ public final class KHttpException extends Exception {
 	private static final long serialVersionUID = -5299080305687496721L;
 	private final int code;
 	private final String message;
-	private final transient Response<?> response;
+	private final transient EasyResponse<?> easyResponse;
 
-	public KHttpException(Response<?> response) {
-		super("HTTP " + response.code() + " " + response.message());
-		this.code = response.code();
-		this.message = response.message();
-		this.response = response;
+	public KHttpException(EasyResponse<?> easyResponse) {
+		super("HTTP " + easyResponse.code() + " " + easyResponse.message());
+		this.code = easyResponse.code();
+		this.message = easyResponse.message();
+		this.easyResponse = easyResponse;
 	}
 
 	/** HTTP status code. */
@@ -28,9 +28,9 @@ public final class KHttpException extends Exception {
 	}
 
 	/**
-	 * The full HTTP response. This may be null if the exception was serialized.
+	 * The full HTTP easyResponse. This may be null if the exception was serialized.
 	 */
-	public Response<?> response() {
-		return response;
+	public EasyResponse<?> response() {
+		return easyResponse;
 	}
 }

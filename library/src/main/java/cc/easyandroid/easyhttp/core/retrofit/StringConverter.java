@@ -15,14 +15,13 @@
  */
 package cc.easyandroid.easyhttp.core.retrofit;
 
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.ResponseBody;
-
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
 import cc.easyandroid.easycache.volleycache.Cache;
 import cc.easyandroid.easylog.EALog;
+import okhttp3.Request;
+import okhttp3.ResponseBody;
 
 public final class StringConverter implements Converter<java.lang.String> {
     public static final String UTF8 = "UTF-8";
@@ -37,13 +36,6 @@ public final class StringConverter implements Converter<java.lang.String> {
     }
 
     @Override
-    public String fromBody(ResponseBody body) throws IOException {
-        try {
-            return body.string();
-        } finally {
-        }
-    }
-
     public String fromBody(ResponseBody value, Request request) throws IOException {
         String string = value.string();
         try {
@@ -55,7 +47,7 @@ public final class StringConverter implements Converter<java.lang.String> {
     }
 
     private void parseCache(Request request, String string, String mimeType) throws UnsupportedEncodingException {
-        com.squareup.okhttp.CacheControl cacheControl = request.cacheControl();
+        okhttp3.CacheControl cacheControl = request.cacheControl();
         if (cacheControl != null) {
             if (!cacheControl.noCache() && !cacheControl.noStore()) {
                 long now = System.currentTimeMillis();
@@ -67,7 +59,7 @@ public final class StringConverter implements Converter<java.lang.String> {
                 entry.ttl = entry.softTtl;
                 entry.mimeType = mimeType;
                 entry.data = string.getBytes(UTF8);
-                cache.put(request.urlString(), entry);
+                cache.put(request.url().toString(), entry);
             }
         }
     }

@@ -1,6 +1,6 @@
 package cc.easyandroid.simple.pojo;
 
-import cc.easyandroid.easyhttp.pojo.EAResult;
+import cc.easyandroid.easycore.EAResult;
 
 public class QfangBaseResult implements EAResult {
 

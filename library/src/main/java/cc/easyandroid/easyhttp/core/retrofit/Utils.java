@@ -19,12 +19,10 @@ package cc.easyandroid.easyhttp.core.retrofit;
 import java.io.Closeable;
 import java.io.IOException;
 
+import okhttp3.ResponseBody;
 import okio.Buffer;
 import okio.BufferedSource;
 import okio.Source;
-
-import com.squareup.okhttp.Response;
-import com.squareup.okhttp.ResponseBody;
 
 public class Utils {
 	public static <T> T checkNotNull(T object, String message) {
@@ -44,7 +42,7 @@ public class Utils {
 	}
 
 	/**
-	 * Replace a {@link Response} with an identical copy whose body is backed by
+	 * Replace a {@link EasyResponse} with an identical copy whose body is backed by
 	 * a {@link Buffer} rather than a {@link Source}.
 	 */
 	public static ResponseBody readBodyToBytesIfNecessary(final ResponseBody body) throws IOException {

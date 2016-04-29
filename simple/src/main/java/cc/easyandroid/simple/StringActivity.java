@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.widget.TextView;
 
-import cc.easyandroid.easyhttp.core.retrofit.Call;
+import cc.easyandroid.easycore.EasyCall;
 import cc.easyandroid.easymvp.presenter.EasyWorkPresenter;
 import cc.easyandroid.easymvp.view.ISimpleCallView;
 import cc.easyandroid.easyutils.EasyToast;
@@ -23,7 +23,7 @@ public class StringActivity extends Activity implements ISimpleCallView<String> 
     }
 
     @Override
-    public Call<String> onCreateCall(int presenterId, Bundle bundle) {
+    public EasyCall<String> onCreateCall(int presenterId, Bundle bundle) {
         return HttpUtils.creatGetCall("http://www.baidu.com", presenter);
     }
 

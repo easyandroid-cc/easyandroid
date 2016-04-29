@@ -6,7 +6,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import cc.easyandroid.easyhttp.core.retrofit.Call;
+import cc.easyandroid.easycore.EasyCall;
 import cc.easyandroid.easymvp.presenter.EasyWorkPresenter;
 import cc.easyandroid.easymvp.view.ISimpleCallView;
 import cc.easyandroid.easyutils.EasyToast;
@@ -30,7 +30,7 @@ public class GsonActivity extends Activity implements ISimpleCallView<QfangResul
     String url = "http://hk.qfang.com/qfang-api/mobile/common/query/querySalePriceCondition";
 
     @Override
-    public Call<QfangResult<PagingResult<PriceInfo>>> onCreateCall(int presenterId, Bundle bundle) {
+    public EasyCall<QfangResult<PagingResult<PriceInfo>>> onCreateCall(int presenterId, Bundle bundle) {
         return HttpUtils.creatGetCall(url, presenter);
     }
 

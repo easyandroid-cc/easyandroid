@@ -15,11 +15,11 @@
  */
 package cc.easyandroid.easyhttp.core.retrofit;
 
-import com.squareup.okhttp.ResponseBody;
-
 import java.io.IOException;
 
 import cc.easyandroid.easycache.volleycache.Cache;
+import okhttp3.Request;
+import okhttp3.ResponseBody;
 
 /**
  * Convert objects to and from their representation as HTTP bodies. Register a
@@ -29,7 +29,7 @@ public interface Converter<T> {
     /**
      * Convert an HTTP response body to a concrete object of the specified type.
      */
-    T fromBody(ResponseBody body) throws IOException;
+    T fromBody(ResponseBody value, Request request) throws IOException;
 
     Cache getCache();
 }

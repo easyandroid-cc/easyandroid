@@ -15,32 +15,31 @@
  */
 package cc.easyandroid.easyhttp.core.retrofit;
 
-import com.squareup.okhttp.MediaType;
-import com.squareup.okhttp.ResponseBody;
-import java.io.IOException;
+import okhttp3.MediaType;
+import okhttp3.ResponseBody;
 import okio.BufferedSource;
 
 final class NoContentResponseBody extends ResponseBody {
-	private final MediaType contentType;
-	private final long contentLength;
+    private final MediaType contentType;
+    private final long contentLength;
 
-	NoContentResponseBody(MediaType contentType, long contentLength) {
-		this.contentType = contentType;
-		this.contentLength = contentLength;
-	}
+    NoContentResponseBody(MediaType contentType, long contentLength) {
+        this.contentType = contentType;
+        this.contentLength = contentLength;
+    }
 
-	@Override
-	public MediaType contentType() {
-		return contentType;
-	}
+    @Override
+    public MediaType contentType() {
+        return contentType;
+    }
 
-	@Override
-	public long contentLength() throws IOException {
-		return contentLength;
-	}
+    @Override
+    public long contentLength() {
+        return contentLength;
+    }
 
-	@Override
-	public BufferedSource source() throws IOException {
-		throw new IllegalStateException("Cannot read raw response body of a converted body.");
-	}
+    @Override
+    public BufferedSource source() {
+        throw new IllegalStateException("Cannot read raw response body of a converted body.");
+    }
 }

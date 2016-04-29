@@ -16,10 +16,6 @@
 package cc.easyandroid.easyhttp.core.retrofit;
 
 import com.google.gson.TypeAdapter;
-import com.squareup.okhttp.MediaType;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.ResponseBody;
-import com.squareup.okhttp.internal.Util;
 
 import java.io.ByteArrayInputStream;
 import java.io.Closeable;
@@ -30,8 +26,12 @@ import java.io.UnsupportedEncodingException;
 
 import cc.easyandroid.easycache.volleycache.Cache;
 import cc.easyandroid.easyhttp.core.StateCodeHandler;
-import cc.easyandroid.easyhttp.pojo.EAResult;
+import cc.easyandroid.easycore.EAResult;
 import cc.easyandroid.easylog.EALog;
+import okhttp3.MediaType;
+import okhttp3.Request;
+import okhttp3.ResponseBody;
+import okhttp3.internal.Util;
 
 public final class GsonConverter<T> implements Converter<T> {
     public static final MediaType MEDIA_TYPE = MediaType.parse("application/json; charset=UTF-8");
@@ -50,26 +50,15 @@ public final class GsonConverter<T> implements Converter<T> {
         return cache;
     }
 
-    @Override
-    public T fromBody(ResponseBody body) throws IOException {
-        Reader reader = body.charStream();
-        try {
-            return typeAdapter.fromJson(reader);
-        } finally {
-            closeQuietly(reader);
-        }
-    }
 
     public T fromBody(ResponseBody value, Request request) throws IOException {
         String string = value.string();
         EALog.d("Network request string : %1$s", string);
         System.out.println("easyandroid= " + string);
-        T t1=null;
-        System.out.println("easyandroid t= " +  (t1 instanceof String));
+        T t1 = null;
+        System.out.println("easyandroid t= " + (t1 instanceof String));
         Reader reader = new InputStreamReader((new ByteArrayInputStream(string.getBytes(UTF8))), Util.UTF_8);
         try {
-
-//            typeAdapter.
             T t = typeAdapter.fromJson(reader);
             if (t instanceof String) {
                 return (T) string;
@@ -96,7 +85,7 @@ public final class GsonConverter<T> implements Converter<T> {
     }
 
     private void parseCache(Request request, T object, String string, String mimeType) throws UnsupportedEncodingException {
-        com.squareup.okhttp.CacheControl cacheControl = request.cacheControl();
+        okhttp3.CacheControl cacheControl = request.cacheControl();
 //        object instanceof
         if (cacheControl != null) {
             if (!cacheControl.noCache() && !cacheControl.noStore()) {
@@ -114,7 +103,7 @@ public final class GsonConverter<T> implements Converter<T> {
                         // entry.responseHeaders = headers;
                         entry.mimeType = mimeType;
                         entry.data = string.getBytes(UTF8);
-                        cache.put(request.urlString(), entry);
+                        cache.put(request.url().toString(), entry);
                     }
                 }
             }

@@ -53,6 +53,19 @@ public class EasyThreadPresenter<T> extends KPresenter<ISimpleThreadView<T>, T> 
     static final String THREAD_PREFIX = "EasyAndroid-";
     static final String IDLE_THREAD_NAME = THREAD_PREFIX + "Idle";
 
+
+    public static final Executor ioExecutor = ioExecutor();
+    public static final Executor mainExecutor = new MainThreadExecutor();
+
+    static class MainThreadExecutor implements Executor {
+        private final Handler handler = new Handler(Looper.getMainLooper());
+
+        @Override
+        public void execute(Runnable r) {
+            handler.post(r);
+        }
+    }
+
     static Executor ioExecutor() {
         return Executors.newCachedThreadPool(new ThreadFactory() {
             @Override
@@ -66,21 +79,5 @@ public class EasyThreadPresenter<T> extends KPresenter<ISimpleThreadView<T>, T> 
                 }, IDLE_THREAD_NAME);
             }
         });
-    }
-
-    public static final Executor ioExecutor = ioExecutor();
-    public static final Executor mainExecutor = new MainThreadExecutor();
-
-    Executor defaultCallbackExecutor() {
-        return new MainThreadExecutor();
-    }
-
-    static class MainThreadExecutor implements Executor {
-        private final Handler handler = new Handler(Looper.getMainLooper());
-
-        @Override
-        public void execute(Runnable r) {
-            handler.post(r);
-        }
     }
 }

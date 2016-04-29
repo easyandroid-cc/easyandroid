@@ -1,28 +1,19 @@
 package cc.easyandroid.easyhttp;
 
 import com.google.gson.Gson;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
 
 import java.lang.reflect.Type;
 
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLSession;
-
 import cc.easyandroid.easycache.volleycache.Cache;
 import cc.easyandroid.easycache.volleycache.DiskBasedCache;
+import cc.easyandroid.easycore.EasyCall;
 import cc.easyandroid.easyhttp.config.EAConfiguration;
-import cc.easyandroid.easyhttp.core.EAOkHttpCall;
-import cc.easyandroid.easyhttp.core.OkHttpDownloadUtils;
-import cc.easyandroid.easyhttp.core.OkHttpGetUtils;
-import cc.easyandroid.easyhttp.core.OkHttpPostUtils;
-import cc.easyandroid.easyhttp.core.OkHttpUpLoadUtil;
 import cc.easyandroid.easyhttp.core.StateCodeHandler;
-import cc.easyandroid.easyhttp.core.retrofit.Call;
 import cc.easyandroid.easyhttp.core.retrofit.Converter;
 import cc.easyandroid.easyhttp.core.retrofit.ConverterFactory;
-import cc.easyandroid.easyhttp.core.retrofit.EACallAdapterFactory.SimpleCallAdapter;
-import rx.Observable;
+import cc.easyandroid.easyhttp.core.retrofit.OkHttpEasyCall;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 
 public class EasyHttpUtils {
     private static final EasyHttpUtils mInstance = new EasyHttpUtils();
@@ -38,10 +29,6 @@ public class EasyHttpUtils {
         return mInstance;
     }
 
-    public Cache getEasyHttpCache() {
-        return easyHttpCache;
-    }
-
     public void init(EAConfiguration config) {
         if (config == null) {
             new IllegalArgumentException("EAConfiguration config can not is null");
@@ -51,82 +38,32 @@ public class EasyHttpUtils {
         mOkHttpClient = config.getOkHttpClient();
         stateCodeProcessing = config.getStateCodeProcessing();
         // cookie enabled
-        mOkHttpClient.setHostnameVerifier(new HostnameVerifier() {
-            @Override
-            public boolean verify(String hostname, SSLSession session) {
-                return true;
-            }
-        });
+//        mOkHttpClient.setHostnameVerifier(new HostnameVerifier() {
+//            @Override
+//            public boolean verify(String hostname, SSLSession session) {
+//                return true;
+//            }
+//        });
     }
 
-    private OkHttpGetUtils okHttpGetUtils;
-    private OkHttpPostUtils okHttpPostUtils;
-    private OkHttpUpLoadUtil okHttpUpLoadUtil;
-    private OkHttpDownloadUtils okHttpDownloadUtils;
-
-    public OkHttpPostUtils getOkHttpPostUtils() {
-        if (okHttpPostUtils == null) {
-            synchronized (EasyHttpUtils.class) {
-                if (okHttpPostUtils == null) {
-                    okHttpPostUtils = new OkHttpPostUtils(mOkHttpClient);
-                }
-            }
-        }
-        return okHttpPostUtils;
-    }
-
-    public OkHttpUpLoadUtil getOkHttpUpLoadUtil() {
-        if (okHttpUpLoadUtil == null) {
-            synchronized (EasyHttpUtils.class) {
-                if (okHttpUpLoadUtil == null) {
-                    okHttpUpLoadUtil = new OkHttpUpLoadUtil(mOkHttpClient);
-                }
-            }
-        }
-        return okHttpUpLoadUtil;
-    }
-
-    public OkHttpDownloadUtils getOkHttpDownloadUtils() {
-        if (okHttpDownloadUtils == null) {
-            synchronized (EasyHttpUtils.class) {
-                if (okHttpDownloadUtils == null) {
-                    okHttpDownloadUtils = new OkHttpDownloadUtils(mOkHttpClient);
-                }
-            }
-        }
-        return okHttpDownloadUtils;
-    }
-
-    public OkHttpGetUtils getOkHttpGetUtils() {
-        if (okHttpGetUtils == null) {
-            synchronized (EasyHttpUtils.class) {
-                if (okHttpGetUtils == null) {
-                    okHttpGetUtils = new OkHttpGetUtils(mOkHttpClient);
-                }
-            }
-        }
-        return okHttpGetUtils;
-    }
 
     public OkHttpClient getOkHttpClient() {
         return mOkHttpClient;
     }
 
-    @SuppressWarnings({"unchecked", "rawtypes"})
-    public <T> Observable<T> executeHttpRequestToObservable(Request request, Type type) {
-        checkNull(mOkHttpClient);
-        Converter responseConverter = getConverterFactory().getGsonConverter(type);
-        Call<T> call = new EAOkHttpCall<T>(mOkHttpClient, responseConverter, request);
-
-        SimpleCallAdapter<T> simpleCallAdapter = new SimpleCallAdapter<T>(type);
-
-        Observable<T> observable = simpleCallAdapter.adapt(call);
-
-        return observable;
+    //    final ProgressListener progressListener = new ProgressListener() {
+//        @Override public void update(long bytesRead, long contentLength, boolean done) {
+//            System.out.println(bytesRead);
+//            System.out.println(contentLength);
+//            System.out.println(done);
+//            System.out.format("%d%% done\n", (100 * bytesRead) / contentLength);
+//        }
+//    };
+    public Cache getCache() {
+        return easyHttpCache;
     }
 
-    @SuppressWarnings({"unchecked", "rawtypes"})
-    public <T> Call<T> executeHttpRequestToCall(Request request, Type type) {
+    public <T> EasyCall<T> executeHttpRequestToCall(Request request, Type type) {
         checkNull(mOkHttpClient);
         Converter responseConverter;
         if (type == String.class) {
@@ -134,9 +71,31 @@ public class EasyHttpUtils {
         } else {
             responseConverter = getConverterFactory().getGsonConverter(type);
         }
-        Call<T> call = new EAOkHttpCall<T>(mOkHttpClient, responseConverter, request);
+        EasyCall<T> easyCall = new OkHttpEasyCall<T>(mOkHttpClient, responseConverter, request);
 
-        return call;
+        return easyCall;
+    }
+
+    /**
+     * 使用就的 OkHttpClient
+     *
+     * @param client
+     * @param request
+     * @param type
+     * @param <T>
+     * @return
+     */
+    public <T> EasyCall<T> executeHttpRequestToCall(OkHttpClient client, Request request, Type type) {
+        checkNull(client);
+        Converter responseConverter;
+        if (type == String.class) {
+            responseConverter = getConverterFactory().getStringConverter();
+        } else {
+            responseConverter = getConverterFactory().getGsonConverter(type);
+        }
+        EasyCall<T> easyCall = new OkHttpEasyCall<T>(client, responseConverter, request);
+
+        return easyCall;
     }
 
     ConverterFactory converterFactory;// =KGsonConverterFactory.create(mGson,

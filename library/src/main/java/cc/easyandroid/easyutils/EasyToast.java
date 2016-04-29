@@ -12,7 +12,7 @@ public class EasyToast  {
 	private static void deliverToast(Context context, int text, int duration) {
 		if (context != null) {
 			if (toast == null) {
-				toast = Toast.makeText(context, text, duration);
+				toast = Toast.makeText(context.getApplicationContext(), text, duration);
 			} else {
 				toast.setText(text);
 			}
@@ -34,7 +34,7 @@ public class EasyToast  {
 	private static void deliverToast(Context context, CharSequence text, int duration) {
 		if (context != null) {
 			if (toast == null) {
-				toast = Toast.makeText(context, text, duration);
+				toast = Toast.makeText(context.getApplicationContext(), text, duration);
 			} else {
 				toast.setText(text);
 			}

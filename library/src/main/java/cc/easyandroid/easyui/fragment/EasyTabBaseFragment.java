@@ -17,7 +17,7 @@ public abstract class EasyTabBaseFragment extends Fragment {
 	}
 
 	/**
-	 * Call addTab() Method To increase tab;
+	 * EasyCall addTab() Method To increase tab;
 	 */
 	public abstract List<EasyTab> onCreatTab();
 
