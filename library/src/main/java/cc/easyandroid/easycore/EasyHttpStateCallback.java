@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cc.easyandroid.easyhttp.core.retrofit;
+package cc.easyandroid.easycore;
+
+import cc.easyandroid.easyhttp.core.retrofit.EasyResponse;
 
 /**
  * Communicates responses from a server or offline requests. One and only one method will be
  * invoked in response to a given request.
  * <p>
- * Callback methods are executed using the {@link Callback} callback executor. When none is
+ * EasyHttpStateCallback methods are executed using the {@link EasyHttpStateCallback} callback executor. When none is
  * specified, the following defaults are used:
  * <ul>
  * <li>Android: Callbacks are executed on the application's main (UI) thread.</li>
@@ -28,9 +30,9 @@ package cc.easyandroid.easyhttp.core.retrofit;
  *
  * @param <T> expected response type
  */
-public interface Callback<T> {
-  /** Successful HTTP response. */
-  void onResponse(Response<T> response);
+public interface EasyHttpStateCallback<T> {
+  /** Successful HTTP easyResponse. */
+  void onResponse(EasyResponse<T> easyResponse);
 
   /** Invoked when a network or unexpected exception occurred during the HTTP request. */
   void onFailure(Throwable t);
