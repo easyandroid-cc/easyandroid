@@ -23,7 +23,6 @@ import okhttp3.Response;
  * http工具類，根據需要自己添加
  */
 public class HttpUtils {
-    private static String TAG = "qfangwanghk";
 
     public static <T> EasyCall<T> creatPostCall(String url, Bundle bundle, EasyWorkPresenter<T> presenter) {
         okhttp3.Request request = OKHttp3RequestFactory.createPostRequest(url, EasyUtils.BundleToMap(bundle));
@@ -127,13 +126,24 @@ public class HttpUtils {
         return EasyHttpUtils.getInstance().executeHttpRequestToCall(request, presenter.getDeliverResultType());
     }
 
+    /**
+     * 上传文件，有进度显示
+     * @param url
+     * @param header
+     * @param params
+     * @param files
+     * @param presenter
+     * @param listener
+     * @param <T>
+     * @return
+     */
     public static <T> EasyCall<T> creatGetCallUpLoadCall(String url, Map<String, String> header, Map<String, String> params, Map<String, File> files, EasyWorkPresenter<T> presenter, final ProgressListener listener) {
         okhttp3.Request request = OKHttp3RequestFactory.createMultipartRequest(url, header, params, files, listener);
         return EasyHttpUtils.getInstance().executeHttpRequestToCall(request, presenter.getDeliverResultType());
     }
 
     /**
-     * 下载文件
+     * 下载文件，带进度
      *
      * @param url
      * @param header

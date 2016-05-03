@@ -173,33 +173,25 @@ public class OkHttpEasyCall<T> implements EasyCall<T> {
             return;
         }
         this.rawCall = rawCall;
-        callback.onstart();
+        callback.start();
         rawCall.enqueue(new okhttp3.Callback() {
             private void callFailure(final Throwable e) {
-                try {
-                    mainCallbackExecutor.execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            e.printStackTrace();
-                            callback.onFailure(e);
-                        }
-                    });
-                } catch (Throwable t) {
-                    t.printStackTrace();
-                }
+                mainCallbackExecutor.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        e.printStackTrace();
+                        callback.onFailure(e);
+                    }
+                });
             }
 
             private void callSuccess(final EasyResponse<T> easyResponse) {
-                try {
-                    mainCallbackExecutor.execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            callback.onResponse(easyResponse);
-                        }
-                    });
-                } catch (Throwable t) {
-                    t.printStackTrace();
-                }
+                mainCallbackExecutor.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        callback.onResponse(easyResponse);
+                    }
+                });
             }
 
             @Override
@@ -328,7 +320,7 @@ public class OkHttpEasyCall<T> implements EasyCall<T> {
 
         ExceptionCatchingRequestBody catchingBody = new ExceptionCatchingRequestBody(rawBody);
         try {
-            T body = responseConverter.fromBody(catchingBody,request);
+            T body = responseConverter.fromBody(catchingBody, request);
             return EasyResponse.success(body);
         } catch (RuntimeException e) {
             // If the underlying source threw an exception, propagate that

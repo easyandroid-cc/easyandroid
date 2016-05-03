@@ -87,7 +87,7 @@ public abstract class KOKHttpPresenter<V extends ISimpleView<T>, T> extends KPre
         }
 
         @Override
-        public void onstart() {
+        public void start() {
             mController.start();
         }
     }

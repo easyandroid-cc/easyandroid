@@ -1,6 +1,5 @@
 package cc.easyandroid.easyhttp.core.down;
 
-
 import java.io.IOException;
 
 import okhttp3.MediaType;
