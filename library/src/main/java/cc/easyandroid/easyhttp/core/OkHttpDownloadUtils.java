@@ -1,10 +1,13 @@
 package cc.easyandroid.easyhttp.core;
 
 
+import android.util.Log;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 import cc.easyandroid.easyhttp.core.down.ProgressListener;
 import cc.easyandroid.easyhttp.core.down.ProgressResponseBody;
@@ -13,13 +16,14 @@ import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 
-public class OkHttpDownloadUtils  {
+public class OkHttpDownloadUtils {
 //    public OkHttpDownloadUtils(OkHttpClient client) {
 //        super(client);
 //    }
 
-//    /**
+    //    /**
 //     * 异步下载文件
 //     *
 //     * @param url
@@ -76,10 +80,10 @@ public class OkHttpDownloadUtils  {
 //        });
 //
 //    }
-    public void downloadAsyn(OkHttpClient client,final String url, final String destFileDir,final ProgressListener progressListener) throws IOException {
+    public void downloadAsyn(OkHttpClient client, final String url, final String destFileDir, final ProgressListener progressListener) throws IOException {
         final Request request = new Request.Builder().url(url).build();
         final Call call = client.newCall(request);
-        Response response= call.execute();
+        Response response = call.execute();
         InputStream is = null;
         byte[] buf = new byte[2048];
         int len = 0;
@@ -96,9 +100,9 @@ public class OkHttpDownloadUtils  {
             fos = new FileOutputStream(file);
             while ((len = is.read(buf)) != -1) {
                 fos.write(buf, 0, len);
-                progressListener.update(len,length,false);
+                progressListener.update(len, length, false);
             }
-            progressListener.update(len,length,true);
+            progressListener.update(len, length, true);
             fos.flush();
             // 如果下载文件成功，第一个参数为文件的绝对路径
             // sendSuccessResultCallback(file.getAbsolutePath(),
@@ -120,7 +124,8 @@ public class OkHttpDownloadUtils  {
         }
 
     }
-//
+
+    //
 //    /**
 //     * 下载文件包含进度
 //     *
@@ -149,7 +154,7 @@ public class OkHttpDownloadUtils  {
 //     * @param dir      file save dir
 //     * @param fileName file name
 //     */
-    public void DownloadFileAndprogress(OkHttpClient client,String url, String dir, String fileName, final ProgressListener progressListener) {
+    public void DownloadFileAndprogress(OkHttpClient client, String url, String dir, String fileName, final ProgressListener progressListener) {
         Request request = new Request.Builder().url(url).build();
         client.newBuilder().addNetworkInterceptor(new Interceptor() {
             @Override
@@ -173,5 +178,44 @@ public class OkHttpDownloadUtils  {
     private String getFileName(String path) {
         int separatorIndex = path.lastIndexOf("/");
         return (separatorIndex < 0) ? path : path.substring(separatorIndex + 1, path.length());
+    }
+
+    private boolean writeResponseBodyToDisk(ResponseBody body,File futureStudioIconFile) {
+        try {
+            InputStream inputStream = null;
+            OutputStream outputStream = null;
+            try {
+                byte[] fileReader = new byte[4096];
+                long fileSize = body.contentLength();
+                long fileSizeDownloaded = 0;
+                inputStream = body.byteStream();
+                outputStream = new FileOutputStream(futureStudioIconFile);
+                while (true) {
+                    int read = inputStream.read(fileReader);
+                    if (read == -1) {
+                        break;
+                    }
+                    outputStream.write(fileReader, 0, read);
+                    fileSizeDownloaded += read;
+                    Log.d("downfile", "file download: " + fileSizeDownloaded + " of " + fileSize);
+                }
+
+                outputStream.flush();
+
+                return true;
+            } catch (IOException e) {
+                return false;
+            } finally {
+                if (inputStream != null) {
+                    inputStream.close();
+                }
+
+                if (outputStream != null) {
+                    outputStream.close();
+                }
+            }
+        } catch (IOException e) {
+            return false;
+        }
     }
 }
