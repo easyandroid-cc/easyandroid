@@ -51,21 +51,16 @@ public final class GsonConverter<T> implements Converter<T> {
     }
 
 
-    public T fromBody(ResponseBody value, Request request) throws IOException {
+    public T fromBody(ResponseBody value, Request request, boolean fromNetWork) throws IOException {
         String string = value.string();
         EALog.d("Network request string : %1$s", string);
         System.out.println("easyandroid= " + string);
-        T t1 = null;
-        System.out.println("easyandroid t= " + (t1 instanceof String));
         Reader reader = new InputStreamReader((new ByteArrayInputStream(string.getBytes(UTF8))), Util.UTF_8);
         try {
             T t = typeAdapter.fromJson(reader);
-            if (t instanceof String) {
-                return (T) string;
-            }
             EALog.d(" Finally converted to : %1$s", t.toString());
             String mimeType = value.contentType().toString();
-            parseCache(request, t, string, mimeType);
+            parseCache(request, t, string, mimeType,fromNetWork);
             parseStateCode(t);
             return t;
         } finally {
@@ -84,10 +79,9 @@ public final class GsonConverter<T> implements Converter<T> {
         }
     }
 
-    private void parseCache(Request request, T object, String string, String mimeType) throws UnsupportedEncodingException {
+    private void parseCache(Request request, T object, String string, String mimeType, boolean fromNetWork) throws UnsupportedEncodingException {
         okhttp3.CacheControl cacheControl = request.cacheControl();
-//        object instanceof
-        if (cacheControl != null) {
+        if (cacheControl != null && fromNetWork) {
             if (!cacheControl.noCache() && !cacheControl.noStore()) {
                 if (object instanceof EAResult) {
                     EAResult kResult = (EAResult) object;

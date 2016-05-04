@@ -27,9 +27,14 @@ import okhttp3.ResponseBody;
  */
 public interface Converter<T> {
     /**
-     * Convert an HTTP response body to a concrete object of the specified type.
+     *
+     * @param value
+     * @param request
+     * @param fromNetWork 是否来自网络一般来自网络的才进行缓存
+     * @return
+     * @throws IOException
      */
-    T fromBody(ResponseBody value, Request request) throws IOException;
+    T fromBody(ResponseBody value, Request request,boolean fromNetWork) throws IOException;
 
     Cache getCache();
 }

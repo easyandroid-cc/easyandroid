@@ -36,19 +36,19 @@ public final class StringConverter implements Converter<java.lang.String> {
     }
 
     @Override
-    public String fromBody(ResponseBody value, Request request) throws IOException {
+    public String fromBody(ResponseBody value, Request request, boolean fromNetWork) throws IOException {
         String string = value.string();
         try {
             String mimeType = value.contentType().toString();
-            parseCache(request, string, mimeType);
+            parseCache(request, string, mimeType, fromNetWork);
             return string;
         } finally {
         }
     }
 
-    private void parseCache(Request request, String string, String mimeType) throws UnsupportedEncodingException {
+    private void parseCache(Request request, String string, String mimeType, boolean fromNetWork) throws UnsupportedEncodingException {
         okhttp3.CacheControl cacheControl = request.cacheControl();
-        if (cacheControl != null) {
+        if (cacheControl != null && fromNetWork) {
             if (!cacheControl.noCache() && !cacheControl.noStore()) {
                 long now = System.currentTimeMillis();
                 long maxAge = cacheControl.maxAgeSeconds();

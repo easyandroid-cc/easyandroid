@@ -87,8 +87,9 @@ public class HttpUtils {
      */
     public static <T> EasyCall<T> creatGetCall(String url, EasyWorkPresenter<T> presenter) {
         HashMap<String, String> header = new HashMap<>();
-        header.put("Cache-Mode", CacheMode.LOAD_NETWORK_ELSE_CACHE);
-        header.put("Cache-Control", "max-age=340000");
+        header.put("Cache-Mode", CacheMode.LOAD_CACHE_ELSE_NETWORK);
+//        header.put("Cache-Mode", CacheMode.LOAD_NETWORK_ELSE_CACHE);
+        header.put("Cache-Control", "max-age=10");
         okhttp3.Request request = OKHttp3RequestFactory.createGetRequest(url, header);
         return EasyHttpUtils.getInstance().executeHttpRequestToCall(request, presenter.getDeliverResultType());
     }

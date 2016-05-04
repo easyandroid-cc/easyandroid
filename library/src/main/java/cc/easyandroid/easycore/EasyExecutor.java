@@ -12,7 +12,7 @@ import static android.os.Process.THREAD_PRIORITY_BACKGROUND;
 /**
  * Created by Administrator on 2016/5/3.
  */
-public class EasyExecutorFactory {
+public class EasyExecutor {
 
     static final String THREAD_PREFIX = "EasyAndroid-";
     static final String IDLE_THREAD_NAME = THREAD_PREFIX + "Idle";

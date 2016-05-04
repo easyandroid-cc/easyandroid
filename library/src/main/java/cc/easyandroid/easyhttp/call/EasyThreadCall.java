@@ -1,19 +1,17 @@
 package cc.easyandroid.easyhttp.call;
 
-import android.os.*;
+import android.os.Handler;
+import android.os.Looper;
 
 import java.io.IOException;
 import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
 
 import cc.easyandroid.easycore.EasyCall;
+import cc.easyandroid.easycore.EasyExecutor;
 import cc.easyandroid.easycore.EasyHttpStateCallback;
 import cc.easyandroid.easyhttp.core.EasyRunnable;
 import cc.easyandroid.easyhttp.core.retrofit.EasyResponse;
 import cc.easyandroid.easymvp.PresenterLoader;
-
-import static android.os.Process.THREAD_PRIORITY_BACKGROUND;
 
 /**
  *
@@ -26,8 +24,6 @@ public class EasyThreadCall<T> implements EasyCall<T> {
         this.loader = loader;
     }
 
-    public static final Executor threadExecutor = defaultHttpExecutor();
-    public static final Executor mainCallbackExecutor = new MainThreadExecutor();
 
     static class MainThreadExecutor implements Executor {
         private final Handler handler = new Handler(Looper.getMainLooper());
@@ -46,8 +42,8 @@ public class EasyThreadCall<T> implements EasyCall<T> {
 
     @Override
     public void enqueue(EasyHttpStateCallback<T> callback) {
-        this.easyRunnable = new EasyRunnable(loader, callback, mainCallbackExecutor);
-        threadExecutor.execute(this.easyRunnable);
+        this.easyRunnable = new EasyRunnable(loader, callback, EasyExecutor.getMainExecutor());
+        EasyExecutor.getThreadExecutor().execute(this.easyRunnable);
     }
 
     @Override
@@ -62,24 +58,10 @@ public class EasyThreadCall<T> implements EasyCall<T> {
 
     @Override
     public boolean isCancel() {
-        return easyRunnable.isCancel();
+        if (easyRunnable != null) {
+            return easyRunnable.isCancel();
+        }
+        return true;
     }
 
-    static Executor defaultHttpExecutor() {
-        return Executors.newCachedThreadPool(new ThreadFactory() {
-            @Override
-            public Thread newThread(final Runnable r) {
-                return new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        android.os.Process.setThreadPriority(THREAD_PRIORITY_BACKGROUND);
-                        r.run();
-                    }
-                }, IDLE_THREAD_NAME);
-            }
-        });
-    }
-
-    static final String THREAD_PREFIX = "EasyAndroid-";
-    static final String IDLE_THREAD_NAME = THREAD_PREFIX + "Idle";
 }
