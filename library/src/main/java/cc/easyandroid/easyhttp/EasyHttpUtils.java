@@ -2,6 +2,7 @@ package cc.easyandroid.easyhttp;
 
 import com.google.gson.Gson;
 
+import java.io.File;
 import java.lang.reflect.Type;
 
 import cc.easyandroid.easycache.volleycache.Cache;
@@ -9,9 +10,10 @@ import cc.easyandroid.easycache.volleycache.DiskBasedCache;
 import cc.easyandroid.easycore.EasyCall;
 import cc.easyandroid.easyhttp.config.EAConfiguration;
 import cc.easyandroid.easyhttp.core.StateCodeHandler;
-import cc.easyandroid.easyhttp.core.retrofit.Converter;
-import cc.easyandroid.easyhttp.core.retrofit.ConverterFactory;
-import cc.easyandroid.easyhttp.core.retrofit.OkHttpEasyCall;
+import cc.easyandroid.easyhttp.core.converter.Converter;
+import cc.easyandroid.easyhttp.core.converter.ConverterFactory;
+import cc.easyandroid.easymvp.call.OkHttpDownLoadEasyCall;
+import cc.easyandroid.easymvp.call.OkHttpEasyCall;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 
@@ -97,6 +99,13 @@ public class EasyHttpUtils {
 
         return easyCall;
     }
+
+    public EasyCall<OkHttpDownLoadEasyCall.DownLoadResult> executeHttpRequestToDownLoadCall(OkHttpClient client, Request request, File file) {
+        checkNull(client);
+        EasyCall<OkHttpDownLoadEasyCall.DownLoadResult> easyCall = new OkHttpDownLoadEasyCall(client, request, file);
+        return easyCall;
+    }
+
 
     ConverterFactory converterFactory;// =KGsonConverterFactory.create(mGson,
     // easyHttpCache);

@@ -9,8 +9,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import cc.easyandroid.easyhttp.core.down.ProgressListener;
-import cc.easyandroid.easyhttp.core.down.ProgressResponseBody;
+import cc.easyandroid.easyhttp.core.progress.ProgressListener;
+import cc.easyandroid.easyhttp.core.progress.ProgressResponseBody;
 import okhttp3.Call;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;

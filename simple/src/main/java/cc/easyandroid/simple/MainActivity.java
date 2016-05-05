@@ -10,7 +10,7 @@ import android.widget.ListView;
 
 public class MainActivity extends Activity implements AdapterView.OnItemClickListener {
     ListView listview;
-    private String[] str_name = new String[]{"得到String 结果", "得到java对象"};
+    private String[] str_name = new String[]{"得到String 结果", "得到java对象", "下载"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +31,14 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
             case 1:
                 startGsonActivity();
                 break;
+            case 2:
+                downLoadActivity();
+                break;
         }
+    }
+
+    private void downLoadActivity() {
+        startActivity(new Intent(this, DownLoadActivity.class));
     }
 
     private void startGsonActivity() {

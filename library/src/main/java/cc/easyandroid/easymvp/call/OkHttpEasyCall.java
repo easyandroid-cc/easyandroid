@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cc.easyandroid.easyhttp.core.retrofit;
+package cc.easyandroid.easymvp.call;
 
 import android.text.TextUtils;
 
@@ -25,6 +25,10 @@ import cc.easyandroid.easycache.volleycache.Cache.Entry;
 import cc.easyandroid.easycore.EasyCall;
 import cc.easyandroid.easycore.EasyExecutor;
 import cc.easyandroid.easycore.EasyHttpStateCallback;
+import cc.easyandroid.easycore.EasyResponse;
+import cc.easyandroid.easyhttp.core.CacheMode;
+import cc.easyandroid.easyhttp.core.converter.Converter;
+import cc.easyandroid.easyhttp.core.Utils;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Protocol;
@@ -364,6 +368,30 @@ public class OkHttpEasyCall<T> implements EasyCall<T> {
             if (thrownException != null) {
                 throw thrownException;
             }
+        }
+    }
+   static final class NoContentResponseBody extends ResponseBody {
+        private final MediaType contentType;
+        private final long contentLength;
+
+        NoContentResponseBody(MediaType contentType, long contentLength) {
+            this.contentType = contentType;
+            this.contentLength = contentLength;
+        }
+
+        @Override
+        public MediaType contentType() {
+            return contentType;
+        }
+
+        @Override
+        public long contentLength() {
+            return contentLength;
+        }
+
+        @Override
+        public BufferedSource source() {
+            throw new IllegalStateException("Cannot read raw response body of a converted body.");
         }
     }
 }

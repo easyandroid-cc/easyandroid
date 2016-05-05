@@ -1,4 +1,4 @@
-package cc.easyandroid.easyhttp.core.retrofit;
+package cc.easyandroid.easyhttp.core;
 
 public interface CacheMode {
 	// 网络

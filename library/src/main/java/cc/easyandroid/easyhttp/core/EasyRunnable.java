@@ -19,7 +19,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import cc.easyandroid.easycore.EasyHttpStateCallback;
-import cc.easyandroid.easyhttp.core.retrofit.EasyResponse;
+import cc.easyandroid.easycore.EasyResponse;
 import cc.easyandroid.easymvp.PresenterLoader;
 
 public class EasyRunnable<T> implements Runnable {

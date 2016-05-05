@@ -1,16 +1,16 @@
 package cc.easyandroid.easymvp.exception;
 
-public class MvpException extends Exception {
+public class EasyException extends Exception {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 8840911902854021247L;
 
-	public MvpException() {
+	public EasyException() {
 	}
 
-	public MvpException(String detailMessage) {
+	public EasyException(String detailMessage) {
 		super(detailMessage);
 	}
 

@@ -7,8 +7,8 @@ import java.net.FileNameMap;
 import java.net.URLConnection;
 import java.util.Map;
 
-import cc.easyandroid.easyhttp.core.down.ProgressListener;
-import cc.easyandroid.easyhttp.core.down.ProgressRequestBody;
+import cc.easyandroid.easyhttp.core.progress.ProgressListener;
+import cc.easyandroid.easyhttp.core.progress.ProgressRequestBody;
 import cc.easyandroid.easylog.EALog;
 import cc.easyandroid.easyutils.ArrayUtils;
 import okhttp3.FormBody;

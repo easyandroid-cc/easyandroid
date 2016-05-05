@@ -1,16 +1,9 @@
-package cc.easyandroid.easyhttp.call;
-
-import android.os.Handler;
-import android.os.Looper;
-
-import java.io.IOException;
-import java.util.concurrent.Executor;
+package cc.easyandroid.easymvp.call;
 
 import cc.easyandroid.easycore.EasyCall;
 import cc.easyandroid.easycore.EasyExecutor;
 import cc.easyandroid.easycore.EasyHttpStateCallback;
 import cc.easyandroid.easyhttp.core.EasyRunnable;
-import cc.easyandroid.easyhttp.core.retrofit.EasyResponse;
 import cc.easyandroid.easymvp.PresenterLoader;
 
 /**
@@ -22,22 +15,6 @@ public class EasyThreadCall<T> implements EasyCall<T> {
 
     public EasyThreadCall(PresenterLoader<T> loader) {
         this.loader = loader;
-    }
-
-
-    static class MainThreadExecutor implements Executor {
-        private final Handler handler = new Handler(Looper.getMainLooper());
-
-        @Override
-        public void execute(Runnable r) {
-            handler.post(r);
-        }
-    }
-
-    @Override
-    public EasyResponse<T> execute() throws IOException {
-        // 暂时不实现这个方法
-        return null;
     }
 
     @Override

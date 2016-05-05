@@ -11,7 +11,6 @@ import cc.easyandroid.easymvp.view.ISimpleLoaderView;
  * @author Administrator
  *
  * @param <T>
- * @param <D>
  */
 public class EasyLoaderPresenter<T> extends KLoaderPresenterAbstract<ISimpleLoaderView<T>, T> {
 

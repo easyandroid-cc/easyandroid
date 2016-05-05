@@ -5,9 +5,9 @@ import android.util.Log;
 
 import cc.easyandroid.easycore.EasyCall;
 import cc.easyandroid.easycore.EasyHttpStateCallback;
-import cc.easyandroid.easyhttp.core.retrofit.EasyResponse;
+import cc.easyandroid.easycore.EasyResponse;
 import cc.easyandroid.easycore.EAResult;
-import cc.easyandroid.easymvp.exception.MvpException;
+import cc.easyandroid.easymvp.exception.EasyException;
 import cc.easyandroid.easymvp.view.ISimpleView;
 
 public abstract class KOKHttpPresenter<V extends ISimpleView<T>, T> extends KPresenter<V, T> {
@@ -26,7 +26,7 @@ public abstract class KOKHttpPresenter<V extends ISimpleView<T>, T> extends KPre
     }
 
     private void cancelRequest() {
-        if (easyCall != null) {
+        if (easyCall != null && !easyCall.isCancel()) {
             easyCall.cancel();
         }
     }
@@ -41,7 +41,7 @@ public abstract class KOKHttpPresenter<V extends ISimpleView<T>, T> extends KPre
         }
         easyCall = originalEasyCall.clone();
 
-        easyCall.enqueue(new kEasyHttpStateCallback(mController));
+        easyCall.enqueue(new OKEasyHttpStateCallback(mController));
 
     }
 
@@ -49,17 +49,17 @@ public abstract class KOKHttpPresenter<V extends ISimpleView<T>, T> extends KPre
         execute(null);
     }
 
-    public class kEasyHttpStateCallback implements EasyHttpStateCallback<T> {
+    public class OKEasyHttpStateCallback implements EasyHttpStateCallback<T> {
         IController<T> mController;
 
-        public kEasyHttpStateCallback(IController<T> controller) {
+        public OKEasyHttpStateCallback(IController<T> controller) {
             this.mController = controller;
         }
 
         @Override
         public void onResponse(EasyResponse<T> easyResponse) {
             T t = easyResponse != null ? easyResponse.body() : null;
-            String defaultMessage = "";//"服务器或网络异常";
+            String defaultMessage = easyResponse != null ? easyResponse.message() : "";//"服务器或网络异常";
             if (t == null) {
                 Log.e("EasyAndroid", "t==null");
                 error(defaultMessage);
@@ -77,8 +77,8 @@ public abstract class KOKHttpPresenter<V extends ISimpleView<T>, T> extends KPre
         }
 
         private void error(String errorMessage) {
-            MvpException mvpException = new MvpException(errorMessage);
-            onFailure(mvpException);
+            EasyException easyException = new EasyException(errorMessage);
+            onFailure(easyException);
         }
 
         @Override

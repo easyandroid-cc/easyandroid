@@ -9,10 +9,11 @@ import java.util.Map;
 
 import cc.easyandroid.easycore.EasyCall;
 import cc.easyandroid.easyhttp.EasyHttpUtils;
+import cc.easyandroid.easyhttp.core.CacheMode;
 import cc.easyandroid.easyhttp.core.OKHttp3RequestFactory;
-import cc.easyandroid.easyhttp.core.down.ProgressListener;
-import cc.easyandroid.easyhttp.core.down.ProgressResponseBody;
-import cc.easyandroid.easyhttp.core.retrofit.CacheMode;
+import cc.easyandroid.easyhttp.core.progress.ProgressListener;
+import cc.easyandroid.easyhttp.core.progress.ProgressResponseBody;
+import cc.easyandroid.easymvp.call.OkHttpDownLoadEasyCall;
 import cc.easyandroid.easymvp.presenter.EasyWorkPresenter;
 import cc.easyandroid.easyutils.EasyUtils;
 import okhttp3.Interceptor;
@@ -129,6 +130,7 @@ public class HttpUtils {
 
     /**
      * 上传文件，有进度显示
+     *
      * @param url
      * @param header
      * @param params
@@ -148,14 +150,11 @@ public class HttpUtils {
      *
      * @param url
      * @param header
-     * @param presenter
-     * @param listener  进度监听接口
-     * @param <T>
+     * @param listener 进度监听接口
      * @return
      */
-    public static <T> EasyCall<T> creatGetDownLoadCall(String url, Map<String, String> header, EasyWorkPresenter<T> presenter, final ProgressListener listener) {
+    public static EasyCall<OkHttpDownLoadEasyCall.DownLoadResult> creatGetDownLoadCall(String url, Map<String, String> header, File file, final ProgressListener listener) {
         okhttp3.Request request = OKHttp3RequestFactory.createGetRequest(url, header);
-        OKHttp3RequestFactory.createGetRequest(url, header);
         OkHttpClient client = EasyHttpUtils.getInstance().getOkHttpClient().newBuilder().addNetworkInterceptor(new Interceptor() {
             @Override
             public Response intercept(Chain chain) throws IOException {
@@ -165,22 +164,8 @@ public class HttpUtils {
                         .build();
             }
         }).build();
-        return EasyHttpUtils.getInstance().executeHttpRequestToCall(client, request, presenter.getDeliverResultType());
-    }
 
-    /**
-     * 下载
-     *
-     * @param url         文件地址
-     * @param destFileDir 保存的文件夹
-     */
-    public static void downFile(String url, String destFileDir) {
-//        EasyHttpUtils.getInstance().getOkHttpDownloadUtils().downloadAsyn(url, destFileDir);
-    }
-
-    private static String getFileName(String path) {
-        int separatorIndex = path.lastIndexOf("/");
-        return (separatorIndex < 0) ? path : path.substring(separatorIndex + 1, path.length());
+        return EasyHttpUtils.getInstance().executeHttpRequestToDownLoadCall(client, request, file);
     }
 
 }

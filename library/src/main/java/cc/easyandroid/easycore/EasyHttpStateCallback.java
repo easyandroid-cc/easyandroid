@@ -15,8 +15,6 @@
  */
 package cc.easyandroid.easycore;
 
-import cc.easyandroid.easyhttp.core.retrofit.EasyResponse;
-
 /**
  * Communicates responses from a server or offline requests. One and only one method will be
  * invoked in response to a given request.

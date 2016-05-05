@@ -1,4 +1,4 @@
-package cc.easyandroid.easyhttp.core.down;
+package cc.easyandroid.easyhttp.core.progress;
 
 import java.io.IOException;
 
