@@ -46,7 +46,8 @@
         </activity>
         <activity android:name=".StringActivity" />
         <activity android:name=".GsonActivity" />
-        <activity android:name=".DownLoadActivity"></activity>
+        <activity android:name=".DownLoadActivity" />
+        <activity android:name=".UpLoadActivity"></activity>
     </application>
 
 </manifest>

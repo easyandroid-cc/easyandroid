@@ -1,12 +1,12 @@
 package cc.easyandroid.easymvp.kabstract;
 
 import android.os.Bundle;
-import android.util.Log;
 
+import cc.easyandroid.easycore.EAResult;
 import cc.easyandroid.easycore.EasyCall;
 import cc.easyandroid.easycore.EasyHttpStateCallback;
 import cc.easyandroid.easycore.EasyResponse;
-import cc.easyandroid.easycore.EAResult;
+import cc.easyandroid.easylog.EALog;
 import cc.easyandroid.easymvp.exception.EasyException;
 import cc.easyandroid.easymvp.view.ISimpleView;
 
@@ -39,10 +39,9 @@ public abstract class KOKHttpPresenter<V extends ISimpleView<T>, T> extends KPre
         if (originalEasyCall == null) {
             throw new IllegalArgumentException("please Override onCreateCall method, And can not be null，");
         }
-        easyCall = originalEasyCall.clone();
-
-        easyCall.enqueue(new OKEasyHttpStateCallback(mController));
-
+        //easyCall = originalEasyCall.clone();
+        easyCall = originalEasyCall;
+        originalEasyCall.enqueue(new OKEasyHttpStateCallback(mController));
     }
 
     public void execute() {
@@ -61,7 +60,7 @@ public abstract class KOKHttpPresenter<V extends ISimpleView<T>, T> extends KPre
             T t = easyResponse != null ? easyResponse.body() : null;
             String defaultMessage = easyResponse != null ? easyResponse.message() : "";//"服务器或网络异常";
             if (t == null) {
-                Log.e("EasyAndroid", "t==null");
+                EALog.e("EasyAndroid", "t==null");
                 error(defaultMessage);
                 return;
             } else if (t instanceof EAResult) {

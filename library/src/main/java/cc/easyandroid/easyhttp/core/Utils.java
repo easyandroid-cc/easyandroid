@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import cc.easyandroid.easycore.EasyCall;
 import cc.easyandroid.easycore.EasyResponse;
 import cc.easyandroid.easylog.EALog;
 import okhttp3.ResponseBody;
@@ -64,7 +65,7 @@ public class Utils {
         return ResponseBody.create(body.contentType(), body.contentLength(), buffer);
     }
 
-    public static boolean writeResponseBodyToDisk(ResponseBody body, File file) {
+    public static boolean writeResponseBodyToDisk(ResponseBody body, File file,EasyCall call) {
         try {
             InputStream inputStream = null;
             OutputStream outputStream = null;
@@ -77,6 +78,11 @@ public class Utils {
                 while (true) {
                     int read = inputStream.read(fileReader);
                     if (read == -1) {
+                        System.out.println("bytesRead 下载完成");
+                        break;
+                    }
+                    if(call.isCancel()){
+                        System.out.println("bytesRead 取消了");
                         break;
                     }
                     outputStream.write(fileReader, 0, read);

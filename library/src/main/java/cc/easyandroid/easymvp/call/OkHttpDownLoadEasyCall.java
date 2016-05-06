@@ -82,11 +82,14 @@ public class OkHttpDownLoadEasyCall implements EasyCall<OkHttpDownLoadEasyCall.D
                 }
                 EasyResponse<DownLoadResult> easyResponse;
                 if (rawResponse.isSuccessful()) {
-                    boolean writtenToDisk = Utils.writeResponseBodyToDisk(rawResponse.body(), file);
+                    boolean writtenToDisk = Utils.writeResponseBodyToDisk(rawResponse.body(), file, OkHttpDownLoadEasyCall.this);
                     easyResponse = EasyResponse.success(DownLoadResult.createDownLoadResult(writtenToDisk));
                 } else {
                     EALog.e(TAG, "server contact failed not isSuccessful");
                     easyResponse = EasyResponse.error(-1, " not isSuccessful");
+                }
+                if (canceled) {
+                    return;
                 }
                 final EasyResponse<DownLoadResult> easyResponse_final = easyResponse;
                 EasyExecutor.getMainExecutor().execute(new Runnable() {
