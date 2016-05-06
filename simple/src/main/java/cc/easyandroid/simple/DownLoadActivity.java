@@ -38,7 +38,7 @@ public class DownLoadActivity extends Activity implements ISimpleCallView<OkHttp
 //        String url = "http://www.apk.anzhi.com/data2/apk/201604/23/09c8ab2bc3bd4d7a1bdb2ede136be2d5_00726300.apk";
 //        String url = "http://www.apk.anzhi.com/data3/apk/201507/17/com.yybackup_62449500.apk?1213115";
 //        String url = "http://www.anzhi.com";
-        String url = "http://10.251.92.25/qfang-api/mobile/common/query/getVerifyCodeImg?" + System.currentTimeMillis();
+        String url = "http://hk.qfang.com/qfang-api/mobile/common/query/getVerifyCodeImg?" + System.currentTimeMillis();
         File file = new File(Environment.getExternalStorageDirectory(), "xxx4.apk");
         return HttpUtils.creatGetDownLoadCall(url, null, file, this);
     }
