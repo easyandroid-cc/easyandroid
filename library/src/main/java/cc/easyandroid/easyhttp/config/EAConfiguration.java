@@ -77,6 +77,8 @@ public class EAConfiguration {
             // 根据volley 缓存cache修改 ，不需要http协议就可保存
             valleyCache = new DiskBasedCache(CacheUtils.getDiskCacheDir(context.getApplicationContext(), "volleycache"));// retrofit缓存
             valleyCache.initialize();
+//            new CookieJarImpl(new CookieManager(new PersistentCookieStore(context.getApplicationContext()),
+//                                                CookiePolicy.ACCEPT_ALL)));
             cookieStore = new PersistentCookieStore(context.getApplicationContext());
             okHttpCache = new Cache(CacheUtils.getDiskCacheDir(context.getApplicationContext(), "okhttpcache"), 10 * 1024 * 1024);
         }

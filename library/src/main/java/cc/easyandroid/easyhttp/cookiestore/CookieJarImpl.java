@@ -19,11 +19,14 @@ public class CookieJarImpl implements CookieJar, HasCookieStore {
 
     @Override
     public void saveFromResponse(HttpUrl url, List<Cookie> cookies) {
+        System.out.println("cookies =" + cookies);
         cookieStore.add(url, cookies);
     }
 
     @Override
     public List<Cookie> loadForRequest(HttpUrl url) {
+        System.out.println("cookies url=" + url);
+        System.out.println("cookies url=" + cookieStore.get(url));
         return cookieStore.get(url);
     }
 

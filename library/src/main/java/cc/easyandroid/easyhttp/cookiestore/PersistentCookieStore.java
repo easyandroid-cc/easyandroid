@@ -43,7 +43,7 @@ import okhttp3.HttpUrl;
 public class PersistentCookieStore implements CookieStore {
 
     private static final String LOG_TAG = "PersistentCookieStore";
-    private static final String COOKIE_PREFS = "CookiePrefsFile";
+    private static final String COOKIE_PREFS = "CookiePrefsFile1";
     private static final String COOKIE_NAME_PREFIX = "cookie_";
 
     private final HashMap<String, ConcurrentHashMap<String, Cookie>> cookies;
@@ -82,20 +82,21 @@ public class PersistentCookieStore implements CookieStore {
     protected void add(HttpUrl uri, Cookie cookie) {
         String name = getCookieToken(cookie);
 
-        if (cookie.persistent()) {
-            if (!cookies.containsKey(uri.host())){
+        if (!cookie.persistent()) {
+            if (!cookies.containsKey(uri.host())) {
                 cookies.put(uri.host(), new ConcurrentHashMap<String, Cookie>());
             }
             cookies.get(uri.host()).put(name, cookie);
         }
         // Save cookie into persistent store
-        if (!cookies.containsKey(uri.host())){
+        if (!cookies.containsKey(uri.host())) {
             cookies.put(uri.host(), new ConcurrentHashMap<String, Cookie>());
         }
         SharedPreferences.Editor prefsWriter = cookiePrefs.edit();
         prefsWriter.putString(uri.host(), TextUtils.join(",", cookies.get(uri.host()).keySet()));
         prefsWriter.putString(COOKIE_NAME_PREFIX + name, encodeCookie(new SerializableHttpCookie(cookie)));
-        prefsWriter.commit();
+        boolean b = prefsWriter.commit();
+        System.out.println("cookies commit=" + b);
     }
 
     protected String getCookieToken(Cookie cookie) {
@@ -112,9 +113,14 @@ public class PersistentCookieStore implements CookieStore {
     @Override
     public List<Cookie> get(HttpUrl uri) {
         ArrayList<Cookie> ret = new ArrayList<Cookie>();
+        System.out.println("cookies cookies.containsKey(uri.host())=" +cookies.containsKey(uri.host()));
+        System.out.println("cookies cookies.containsKey(uri.host())=" +(uri.host()));
+        System.out.println("cookies cookies=" +cookies);
         if (cookies.containsKey(uri.host())) {
             Collection<Cookie> cookies = this.cookies.get(uri.host()).values();
+            System.out.println("cookies isCookieExpired(cookie)" +cookies);
             for (Cookie cookie : cookies) {
+                System.out.println("cookies isCookieExpired(cookie)" +isCookieExpired(cookie));
                 if (isCookieExpired(cookie)) {
                     remove(uri, cookie);
                 } else {
