@@ -137,7 +137,7 @@ public class OKHttp3RequestFactory {
             for (String key : files.keySet()) {
                 File file = files.get(key);
                 String fileName = file.getName();
-                EALog.d("OKHttp3RequestFactory createMultipartRequest header key = %1$s ---- value = %2$s", key, headers.get(key));
+                EALog.d("OKHttp3RequestFactory createMultipartRequest header key = %1$s ---- value = %2$s", key, files.get(key).getAbsoluteFile());
                 fileBody = RequestBody.create(MediaType.parse(guessMimeType(fileName)), file);
                 mbBuilder.addFormDataPart(key, fileName, fileBody);
             }
