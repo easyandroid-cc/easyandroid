@@ -59,6 +59,6 @@ public class GsonActivity extends Activity implements ISimpleCallView<QfangResul
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        presenter.destroy();
+        presenter.detachView();
     }
 }

@@ -13,24 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cc.easyandroid.easyhttp.core;
+package cc.easyandroid.easycore;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import cc.easyandroid.easycore.EasyHttpStateCallback;
-import cc.easyandroid.easycore.EasyResponse;
 import cc.easyandroid.easymvp.PresenterLoader;
 
 public class EasyRunnable<T> implements Runnable {
     private final EasyHttpStateCallback<T> callback;
     private final PresenterLoader<T> loader;
-    private final Executor callbackExecutor;
+    private final Executor callbackExecutor = EasyExecutor.getMainExecutor();
     private final AtomicBoolean mCancelled = new AtomicBoolean();
 
-    public EasyRunnable(PresenterLoader<T> loader, EasyHttpStateCallback<T> callback, Executor callbackExecutor) {
+    public EasyRunnable(PresenterLoader<T> loader, EasyHttpStateCallback<T> callback) {
         this.callback = callback;
-        this.callbackExecutor = callbackExecutor;
         this.loader = loader;
     }
 

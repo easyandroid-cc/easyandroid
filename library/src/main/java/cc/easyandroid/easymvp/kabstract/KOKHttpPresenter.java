@@ -20,8 +20,8 @@ public abstract class KOKHttpPresenter<V extends ISimpleView<T>, T> extends KPre
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    protected void onDetachView() {
+        super.onDetachView();
         cancelRequest();
     }
 

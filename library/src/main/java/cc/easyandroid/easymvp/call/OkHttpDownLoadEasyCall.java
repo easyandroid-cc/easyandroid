@@ -28,13 +28,6 @@ public class OkHttpDownLoadEasyCall implements EasyCall<OkHttpDownLoadEasyCall.D
         this.file = file;
     }
 
-
-    // We are a final type & this saves clearing state.
-    public OkHttpDownLoadEasyCall clone() {
-        return new OkHttpDownLoadEasyCall(client, request, file);
-    }
-
-
     @Override
     public void enqueue(final EasyHttpStateCallback<DownLoadResult> callback) {
         synchronized (this) {

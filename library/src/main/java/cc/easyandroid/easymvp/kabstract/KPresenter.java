@@ -31,10 +31,13 @@ public abstract class KPresenter<V extends ISimpleView<T>, T> implements Present
         }
     };
 
+    @Override
     public void attachView(V view) {
         this.iView = view;
         initDeliverResultType(view);
+        onAttachView();
     }
+
 
     protected boolean isViewAttached() {
         return iView != null;
@@ -45,54 +48,37 @@ public abstract class KPresenter<V extends ISimpleView<T>, T> implements Present
     }
 
     @Override
-    public final void initialize() {
-        onInitialize();
-    }
-
-    @Override
-    public final void resume() {
-        onResume();
-    }
-
-    @Override
-    public final void pause() {
-        onPause();
-    }
-
-    @Override
-    public final void destroy() {
-        onDestroy();
-    }
-
-    @Override
     public final void cancel() {
         onCancel();
     }
 
-    protected void onCancel() {
-
+    /**
+     * //检测type 是否已经赋值
+     * type 的类型是否确定
+     */
+    boolean typeNotNull() {
+        return this.mType != null;
     }
 
-    protected void onPause() {
 
-    }
-
-    protected void onInitialize() {
-
-    }
-
-    protected void onResume() {
-
-    }
-
-    protected void onDestroy() {
-        detachView();
-    }
-
+    @Override
     public void detachView() {
         if (iView != null) {
             iView = null;
         }
+        onDetachView();
+    }
+
+    protected void onDetachView() {
+
+    }
+
+    protected void onAttachView() {
+
+    }
+
+    protected void onCancel() {
+
     }
 
     private void onShowLoading() {
@@ -134,7 +120,7 @@ public abstract class KPresenter<V extends ISimpleView<T>, T> implements Present
     }
 
     private void initDeliverResultType(V iView) {
-        if (this.mType != null) {
+        if (typeNotNull()) {//检测type 是否已经赋值
             return;
         }
         // 从本类的接口中查找
@@ -181,7 +167,8 @@ public abstract class KPresenter<V extends ISimpleView<T>, T> implements Present
                     if (types != null && types.length > 0) {
                         Type guessType = types[0];// 取第一个
                         // 这里还可以进行其他判断，这个guessType有可能是一个泛型
-                        this.mType = guessType;// 取到结果直接返回，
+//                        this.mType = guessType;// 取到结果直接返回，
+                        setDeliverResultType(guessType);
                         return true;// -----------------找到就返回了
                     }
                 }

@@ -15,9 +15,10 @@
  */
 package cc.easyandroid.easycore;
 
-public interface EasyCall<T> extends Cloneable {
-  void enqueue(EasyHttpStateCallback<T> callback);//子线程执行
-  void cancel();
-  EasyCall<T> clone();
-  boolean isCancel();
+public interface EasyCall<T> {
+    void enqueue(EasyHttpStateCallback<T> callback);//子线程执行
+
+    void cancel();
+
+    boolean isCancel();
 }

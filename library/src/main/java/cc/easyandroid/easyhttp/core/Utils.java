@@ -78,11 +78,9 @@ public class Utils {
                 while (true) {
                     int read = inputStream.read(fileReader);
                     if (read == -1) {
-                        System.out.println("bytesRead 下载完成");
                         break;
                     }
                     if(call.isCancel()){
-                        System.out.println("bytesRead 取消了");
                         break;
                     }
                     outputStream.write(fileReader, 0, read);

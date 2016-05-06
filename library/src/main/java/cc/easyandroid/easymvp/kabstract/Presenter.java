@@ -4,18 +4,11 @@ import cc.easyandroid.easymvp.view.IView;
 
 public interface Presenter<V extends IView> {
 
-	public void initialize();
+    void cancel();
 
-	public void resume();
+    int getPresenterId();
 
-	public void pause();
+    void attachView(V view);
 
-	public void destroy();
-
-	public void cancel();
-
-	public int getPresenterId() ;
-	
- 
-
+    void detachView();
 }

@@ -58,11 +58,6 @@ public class OkHttpEasyCall<T> implements EasyCall<T> {
         return request;
     }
 
-    // We are a final type & this saves clearing state.
-    public OkHttpEasyCall<T> clone() {
-        return new OkHttpEasyCall<T>(client, responseConverter, request);
-    }
-
     private EasyResponse<T> execCacheRequest(Request request) {
         Cache cache = responseConverter.getCache();
         if (cache == null) {
@@ -94,7 +89,7 @@ public class OkHttpEasyCall<T> implements EasyCall<T> {
     public void enqueue(final EasyHttpStateCallback<T> callback) {
         synchronized (this) {
             if (executed)
-                throw new IllegalStateException("Already executed");
+                throw new IllegalStateException("Already enqueue");
             executed = true;
         }
         final Request request = createRequest();
