@@ -97,6 +97,8 @@ public class PersistentCookieStore implements CookieStore {
         ArrayList<HttpCookie> ret = new ArrayList<HttpCookie>();
         if (cookies.containsKey(uri.getHost()))
             ret.addAll(cookies.get(uri.getHost()).values());
+
+        System.out.println("cgp3 =" + ret);
         return ret;
     }
 

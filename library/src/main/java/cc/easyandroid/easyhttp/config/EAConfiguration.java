@@ -2,6 +2,10 @@ package cc.easyandroid.easyhttp.config;
 
 import android.content.Context;
 
+import com.franmontiel.persistentcookiejar.ClearableCookieJar;
+import com.franmontiel.persistentcookiejar.PersistentCookieJar;
+import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
+import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
 import com.google.gson.Gson;
 
 import java.net.CookieHandler;
@@ -86,9 +90,13 @@ public class EAConfiguration {
             okHttpCache = new Cache(CacheUtils.getDiskCacheDir(context.getApplicationContext(), "okhttpcache"), 10 * 1024 * 1024);
               cookieHandler = new CookieManager(
                     new cc.easyandroid.easyhttp.config.PersistentCookieStore(context), CookiePolicy.ACCEPT_ALL);
+            cookieJar =
+                    new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(context));
 
         }
         CookieHandler cookieHandler;
+        ClearableCookieJar cookieJar ;//
+//                new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(context));
         public EAConfiguration build() {
             if (gson == null) {
                 gson = new Gson();
@@ -101,7 +109,7 @@ public class EAConfiguration {
                         .readTimeout(20 * 1000, TimeUnit.MILLISECONDS)//
                         .followRedirects(true)//
 //                        .cookieJar(new CookieJarImpl(cookieStore))//
-                        .cookieJar(new JavaNetCookieJar(cookieHandler))//
+                        .cookieJar(cookieJar)//
                         .cache(okHttpCache)//  OkHttpClient缓存
                         .build();
             }
