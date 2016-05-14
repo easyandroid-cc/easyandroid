@@ -76,7 +76,7 @@ public class OkHttpEasyCall<T> implements EasyCall<T> {
             try {
                 okhttp3.Response rawResponse = new okhttp3.Response.Builder()//
                         .code(200).request(request).protocol(Protocol.HTTP_1_1).body(ResponseBody.create(contentType, bytes)).build();
-                return parseResponse(rawResponse, request, false,false);
+                return parseResponse(rawResponse, request, false, false);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -92,6 +92,12 @@ public class OkHttpEasyCall<T> implements EasyCall<T> {
                 throw new IllegalStateException("Already enqueue");
             executed = true;
         }
+        EasyExecutor.getMainExecutor().execute(new Runnable() {
+            @Override
+            public void run() {
+                callback.start();
+            }
+        });
         final Request request = createRequest();
         String cacheMode = getCacheMode(request);
         // ----------------------------------------------------------------------cgp
@@ -145,12 +151,7 @@ public class OkHttpEasyCall<T> implements EasyCall<T> {
             return;
         }
         this.rawCall = rawCall;
-        EasyExecutor.getMainExecutor().execute(new Runnable() {
-            @Override
-            public void run() {
-                callback.start();
-            }
-        });
+
 
         rawCall.enqueue(new okhttp3.Callback() {
             private void callFailure(final Throwable e) {
@@ -162,6 +163,7 @@ public class OkHttpEasyCall<T> implements EasyCall<T> {
                     }
                 });
             }
+
             private void callSuccess(final EasyResponse<T> easyResponse) {
                 EasyExecutor.getMainExecutor().execute(new Runnable() {
                     @Override
@@ -198,7 +200,7 @@ public class OkHttpEasyCall<T> implements EasyCall<T> {
                 }
                 EasyResponse<T> easyResponse;
                 try {
-                    easyResponse = parseResponse(rawResponse, request, loadnetElseCache,true);
+                    easyResponse = parseResponse(rawResponse, request, loadnetElseCache, true);
                 } catch (Throwable e) {
                     if (loadnetElseCache) {
                         e.printStackTrace();
@@ -213,6 +215,7 @@ public class OkHttpEasyCall<T> implements EasyCall<T> {
         });
     }
 
+    @Deprecated
     public EasyResponse<T> execute() throws IOException {
         synchronized (this) {
             if (executed)
@@ -234,7 +237,7 @@ public class OkHttpEasyCall<T> implements EasyCall<T> {
                 case CacheMode.LOAD_NETWORK_ELSE_CACHE:// 先网络然后再缓存
                     EasyResponse<T> easyResponse;
                     try {
-                        easyResponse = parseResponse(rawCall.execute(), request, true,true);//如果失败去加载缓存，true 会拋异常
+                        easyResponse = parseResponse(rawCall.execute(), request, true, true);//如果失败去加载缓存，true 会拋异常
                     } catch (Exception e) {
                         easyResponse = execCacheRequest(request);
                     }
@@ -253,7 +256,7 @@ public class OkHttpEasyCall<T> implements EasyCall<T> {
                     break;// 直接跳出
             }
         }
-        return parseResponse(rawCall.execute(), request, false,true);
+        return parseResponse(rawCall.execute(), request, false, true);
     }
 
     private String getCacheMode(Request request) {
@@ -296,7 +299,7 @@ public class OkHttpEasyCall<T> implements EasyCall<T> {
 
         ExceptionCatchingRequestBody catchingBody = new ExceptionCatchingRequestBody(rawBody);
         try {
-            T body = responseConverter.fromBody(catchingBody, request,fromNetWork);
+            T body = responseConverter.fromBody(catchingBody, request, fromNetWork);
             return EasyResponse.success(body);
         } catch (RuntimeException e) {
             // If the underlying source threw an exception, propagate that
@@ -365,7 +368,8 @@ public class OkHttpEasyCall<T> implements EasyCall<T> {
             }
         }
     }
-   static final class NoContentResponseBody extends ResponseBody {
+
+    static final class NoContentResponseBody extends ResponseBody {
         private final MediaType contentType;
         private final long contentLength;
 
