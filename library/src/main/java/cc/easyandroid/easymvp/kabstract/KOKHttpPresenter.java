@@ -34,6 +34,9 @@ public abstract class KOKHttpPresenter<V extends ISimpleView<T>, T> extends KPre
     protected abstract EasyCall<T> createCall(Bundle bundle);
 
     public void execute(Bundle bundle) {
+        execute(bundle,null);
+    }
+    public void execute(Bundle bundle,Object tag) {
         cancel();// 先取消之前的事件
         EasyCall<T> originalEasyCall = createCall(bundle);
         if (originalEasyCall == null) {
@@ -43,7 +46,6 @@ public abstract class KOKHttpPresenter<V extends ISimpleView<T>, T> extends KPre
         easyCall = originalEasyCall;
         originalEasyCall.enqueue(new OKEasyHttpStateCallback(mController));
     }
-
     public void execute() {
         execute(null);
     }
