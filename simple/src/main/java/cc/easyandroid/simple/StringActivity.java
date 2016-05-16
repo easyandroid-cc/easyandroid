@@ -23,28 +23,28 @@ public class StringActivity extends Activity implements ISimpleCallView<String> 
     }
 
     @Override
-    public EasyCall<String> onCreateCall(int presenterId, Bundle bundle) {
+    public EasyCall<String> onCreateCall(Object presenterId, Bundle bundle) {
         return HttpUtils.creatGetCall("http://www.baidu.com", presenter);
     }
 
     @Override
-    public void onStart(int presenterId) {
+    public void onStart(Object presenterId) {
         EasyToast.showShort(getApplicationContext(), "onStart");
     }
 
     @Override
-    public void onCompleted(int presenterId) {
+    public void onCompleted(Object presenterId) {
         EasyToast.showShort(getApplicationContext(), "onCompleted");
     }
 
     @Override
-    public void onError(int presenterId, Throwable e) {
+    public void onError(Object presenterId, Throwable e) {
         textView.setText("出错"+e.getMessage());
         EasyToast.showShort(getApplicationContext(), "onError" + e.getMessage());
     }
 
     @Override
-    public void deliverResult(int presenterId, String results) {
+    public void deliverResult(Object presenterId, String results) {
         textView.setText(results);
     }
 

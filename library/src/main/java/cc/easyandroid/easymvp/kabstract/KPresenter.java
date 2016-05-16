@@ -11,23 +11,23 @@ public abstract class KPresenter<V extends ISimpleView<T>, T> implements Present
     protected final IController<T> mController = new IController<T>() {
 
         @Override
-        public void start() {
-            onShowLoading();
+        public void start(Object tag) {
+            onShowLoading(tag);
         }
 
         @Override
-        public void completed() {
-            onHideLoading();
+        public void completed(Object tag) {
+            onHideLoading(tag);
         }
 
         @Override
-        public void error(Throwable e) {
-            onHandleError(e);
+        public void error(Object tag, Throwable e) {
+            onHandleError(tag, e);
         }
 
         @Override
-        public void deliverResult(T results) {
-            onDeliverResult(results);
+        public void deliverResult(Object tag, T results) {
+            onDeliverResult(tag, results);
         }
     };
 
@@ -81,25 +81,25 @@ public abstract class KPresenter<V extends ISimpleView<T>, T> implements Present
 
     }
 
-    private void onShowLoading() {
+    private void onShowLoading(Object tag) {
         if (isViewAttached())
-            getView().onStart(presenterId);
+            getView().onStart(tag);
 
     }
 
-    private void onHideLoading() {
+    private void onHideLoading(Object tag) {
         if (isViewAttached())
-            getView().onCompleted(presenterId);
+            getView().onCompleted(tag);
     }
 
-    private void onHandleError(Throwable e) {
+    private void onHandleError(Object tag, Throwable e) {
         if (isViewAttached())
-            getView().onError(presenterId, e);
+            getView().onError(tag, e);
     }
 
-    private void onDeliverResult(final T results) {
+    private void onDeliverResult(Object tag, final T results) {
         if (isViewAttached())
-            getView().deliverResult(presenterId, results);
+            getView().deliverResult(tag, results);
     }
 
     private Type mType;

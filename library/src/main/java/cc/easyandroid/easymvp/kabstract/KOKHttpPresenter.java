@@ -31,30 +31,33 @@ public abstract class KOKHttpPresenter<V extends ISimpleView<T>, T> extends KPre
         }
     }
 
-    protected abstract EasyCall<T> createCall(Bundle bundle);
+    protected abstract EasyCall<T> createCall(Object tag, Bundle bundle);
 
     public void execute(Bundle bundle) {
-        execute(bundle,null);
+        execute(bundle, null);
     }
-    public void execute(Bundle bundle,Object tag) {
+
+    public void execute(Bundle bundle, Object tag) {
         cancel();// 先取消之前的事件
-        EasyCall<T> originalEasyCall = createCall(bundle);
+        EasyCall<T> originalEasyCall = createCall(tag, bundle);
         if (originalEasyCall == null) {
             throw new IllegalArgumentException("please Override onCreateCall method, And can not be null，");
         }
-        //easyCall = originalEasyCall.clone();
         easyCall = originalEasyCall;
-        originalEasyCall.enqueue(new OKEasyHttpStateCallback(mController));
+        originalEasyCall.enqueue(new OKEasyHttpStateCallback(mController, tag));
     }
+
     public void execute() {
         execute(null);
     }
 
     public class OKEasyHttpStateCallback implements EasyHttpStateCallback<T> {
-        IController<T> mController;
+        final IController<T> mController;
+        final Object tag;
 
-        public OKEasyHttpStateCallback(IController<T> controller) {
+        public OKEasyHttpStateCallback(IController<T> controller, Object tag) {
             this.mController = controller;
+            this.tag = tag;
         }
 
         @Override
@@ -73,8 +76,8 @@ public abstract class KOKHttpPresenter<V extends ISimpleView<T>, T> extends KPre
                     return;
                 }
             }
-            mController.deliverResult(t);
-            mController.completed();
+            mController.deliverResult(tag, t);
+            mController.completed(tag);
         }
 
         private void error(String errorMessage) {
@@ -84,12 +87,12 @@ public abstract class KOKHttpPresenter<V extends ISimpleView<T>, T> extends KPre
 
         @Override
         public void onFailure(Throwable t) {
-            mController.error(t);
+            mController.error(tag, t);
         }
 
         @Override
         public void start() {
-            mController.start();
+            mController.start(tag);
         }
     }
 }

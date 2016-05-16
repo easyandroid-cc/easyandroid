@@ -11,5 +11,5 @@ import cc.easyandroid.easycore.EasyCall;
  *            T不能再使用泛型
  */
 public interface ISimpleCallView<T> extends ISimpleView<T> {
-	EasyCall<T> onCreateCall(int presenterId, Bundle bundle);
+	EasyCall<T> onCreateCall(Object tag, Bundle bundle);
 }

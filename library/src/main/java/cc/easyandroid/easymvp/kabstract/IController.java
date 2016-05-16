@@ -1,20 +1,23 @@
 package cc.easyandroid.easymvp.kabstract;
 
 public interface IController<T> {
-	/**
+    /**
      * @hide
      */
-	void start();
-	/**
+    void start(Object tag);
+
+    /**
      * @hide
      */
-	void completed();
-	/**
+    void completed(Object tag);
+
+    /**
      * @hide
      */
-	void error(Throwable e);
-	/**
+    void error(Object tag, Throwable e);
+
+    /**
      * @hide
      */
-	void deliverResult(final T results);
+    void deliverResult(Object tag, final T results);
 }

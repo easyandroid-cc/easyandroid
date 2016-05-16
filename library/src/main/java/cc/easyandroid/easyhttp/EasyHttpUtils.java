@@ -18,7 +18,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 
 public class EasyHttpUtils {
-    private static final EasyHttpUtils mInstance = new EasyHttpUtils();
+    static final EasyHttpUtils mInstance = new EasyHttpUtils();
     private OkHttpClient mOkHttpClient;
     public Gson mGson;
     private StateCodeHandler stateCodeProcessing;
@@ -39,6 +39,7 @@ public class EasyHttpUtils {
         mGson = config.getGson();
         mOkHttpClient = config.getOkHttpClient();
         stateCodeProcessing = config.getStateCodeProcessing();
+
         // cookie enabled
 //        mOkHttpClient.setHostnameVerifier(new HostnameVerifier() {
 //            @Override
@@ -53,14 +54,6 @@ public class EasyHttpUtils {
         return mOkHttpClient;
     }
 
-    //    final ProgressListener progressListener = new ProgressListener() {
-//        @Override public void update(long bytesRead, long contentLength, boolean done) {
-//            System.out.println(bytesRead);
-//            System.out.println(contentLength);
-//            System.out.println(done);
-//            System.out.format("%d%% done\n", (100 * bytesRead) / contentLength);
-//        }
-//    };
     public Cache getCache() {
         return easyHttpCache;
     }

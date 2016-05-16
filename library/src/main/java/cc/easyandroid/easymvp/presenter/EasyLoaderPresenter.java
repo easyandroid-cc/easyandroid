@@ -16,7 +16,7 @@ public class EasyLoaderPresenter<T> extends KLoaderPresenterAbstract<ISimpleLoad
 
 	@Override
 	public Loader<T> onCreateLoader(int arg0, Bundle bundle) {
-		mController.start();
+		mController.start(arg0);
 		return getView().onCreateLoader(arg0, bundle);
 	}
 

@@ -34,7 +34,7 @@ public class DownLoadActivity extends Activity implements ISimpleCallView<OkHttp
     }
 
     @Override
-    public EasyCall<OkHttpDownLoadEasyCall.DownLoadResult> onCreateCall(int presenterId, Bundle bundle) {
+    public EasyCall<OkHttpDownLoadEasyCall.DownLoadResult> onCreateCall(Object presenterId, Bundle bundle) {
 //        String url = "http://www.apk.anzhi.com/data2/apk/201604/23/09c8ab2bc3bd4d7a1bdb2ede136be2d5_00726300.apk";
         String url = "http://www.apk.anzhi.com/data3/apk/201507/17/com.yybackup_62449500.apk?1213115";
 //        String url = "http://www.anzhi.com";
@@ -44,23 +44,23 @@ public class DownLoadActivity extends Activity implements ISimpleCallView<OkHttp
     }
 
     @Override
-    public void onStart(int presenterId) {
+    public void onStart(Object presenterId) {
         System.out.println("bytesRead  onStart");
     }
 
     @Override
-    public void onCompleted(int presenterId) {
+    public void onCompleted(Object presenterId) {
         System.out.println("bytesRead  onCompleted");
     }
 
     @Override
-    public void onError(int presenterId, Throwable e) {
+    public void onError(Object presenterId, Throwable e) {
         System.out.println("bytesRead  onError" + e.getMessage());
 
     }
 
     @Override
-    public void deliverResult(int presenterId, OkHttpDownLoadEasyCall.DownLoadResult results) {
+    public void deliverResult(Object presenterId, OkHttpDownLoadEasyCall.DownLoadResult results) {
 
     }
 

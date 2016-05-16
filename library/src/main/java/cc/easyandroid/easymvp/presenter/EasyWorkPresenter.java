@@ -9,8 +9,8 @@ import cc.easyandroid.easymvp.view.ISimpleCallView;
 public class EasyWorkPresenter<T> extends KOKHttpPresenter<ISimpleCallView<T>, T> {
 
     @Override
-    protected EasyCall<T> createCall(Bundle bundle) {
-        return getView().onCreateCall(getPresenterId(), bundle);
+    protected EasyCall<T> createCall(Object tag,Bundle bundle) {
+        return getView().onCreateCall(tag, bundle);
     }
 
 }

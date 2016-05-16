@@ -19,7 +19,7 @@ public class ThreadActivity extends Activity implements ISimpleCallView<String> 
     }
 
     @Override
-    public EasyCall<String> onCreateCall(int presenterId, Bundle bundle) {
+    public EasyCall<String> onCreateCall(Object presenterId, Bundle bundle) {
         return new EasyThreadCall<String>() {
             @Override
             public String loadInBackground() throws Exception {
@@ -29,22 +29,22 @@ public class ThreadActivity extends Activity implements ISimpleCallView<String> 
     }
 
     @Override
-    public void onStart(int presenterId) {
+    public void onStart(Object presenterId) {
 
     }
 
     @Override
-    public void onCompleted(int presenterId) {
+    public void onCompleted(Object presenterId) {
 
     }
 
     @Override
-    public void onError(int presenterId, Throwable e) {
+    public void onError(Object presenterId, Throwable e) {
 
     }
 
     @Override
-    public void deliverResult(int presenterId, String results) {
+    public void deliverResult(Object presenterId, String results) {
         System.out.println();
     }
 

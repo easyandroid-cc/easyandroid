@@ -18,8 +18,8 @@ public abstract class KLoaderPresenterAbstract<V extends ISimpleView<T>, T> exte
 
 	@Override
 	public void onLoadFinished(Loader<T> arg0, T arg1) {
-		mController.deliverResult(arg1);
-		mController.completed();
+		mController.deliverResult(arg0.getId(),arg1);
+		mController.completed(arg0.getId());
 	}
 
 	@Override

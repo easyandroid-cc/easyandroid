@@ -2,17 +2,17 @@ package cc.easyandroid.easymvp.view;
 
 public interface ISimpleView<T> extends IView {
 	
-	void onStart(int presenterId);
+	void onStart(Object tag);
 
-	void onCompleted(int presenterId);
+	void onCompleted(Object tag);
 
 	/**
 	 *使用 e.getMessage() 获取信息
-	 * @param presenterId
+	 * @param tag
 	 * @param e
 	 */
-	void onError(int presenterId, Throwable e);
+	void onError(Object tag, Throwable e);
 
-	void deliverResult(int presenterId, final T results);
+	void deliverResult(Object tag, final T results);
 
 }
