@@ -49,7 +49,7 @@ public class UseCaseHandler {
                 useCase.run();
             }
         });
- okhttp3.Call rawCall=null;
+        okhttp3.Call rawCall = null;
         try {
             rawCall.execute();
             rawCall.cancel();
@@ -62,7 +62,7 @@ public class UseCaseHandler {
         mUseCaseScheduler.notifyResponse(response, useCaseCallback);
     }
 
-    private <V extends UseCase.ResponseValue> void notifyError(final EasyException e, final UseCase.UseCaseCallback<V> useCaseCallback) {
+    private <V extends UseCase.ResponseValue> void notifyError(final Throwable e, final UseCase.UseCaseCallback<V> useCaseCallback) {
         mUseCaseScheduler.onError(e, useCaseCallback);
     }
 
@@ -81,7 +81,7 @@ public class UseCaseHandler {
         }
 
         @Override
-        public void onError(EasyException e) {
+        public void onError(Throwable e) {
             mUseCaseHandler.notifyError(e, mCallback);
         }
     }

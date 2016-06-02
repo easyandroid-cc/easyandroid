@@ -16,16 +16,8 @@
 
 package cc.easyandroid.easyclean.interactors;
 
-import cc.easyandroid.easymvp.exception.EasyException;
+public interface EasyBasePresenter {
 
-/**
- * Interface for schedulers, see {@link UseCaseThreadPoolScheduler}.
- */
-public interface UseCaseScheduler {
+    void execute();
 
-    void execute(Runnable runnable);
-
-    <V extends UseCase.ResponseValue> void notifyResponse(final V response, final UseCase.UseCaseCallback<V> useCaseCallback);
-
-    <V extends UseCase.ResponseValue> void onError(final Throwable e,final UseCase.UseCaseCallback<V> useCaseCallback);
 }
