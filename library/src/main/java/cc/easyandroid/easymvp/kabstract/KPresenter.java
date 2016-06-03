@@ -5,7 +5,7 @@ import java.lang.reflect.Type;
 
 import cc.easyandroid.easymvp.view.ISimpleView;
 
-public abstract class KPresenter<V extends ISimpleView<T>, T> implements Presenter<V> {
+public class KPresenter<V extends ISimpleView<T>, T> implements Presenter<V> {
     private V iView;
     // private WeakReference<V> viewRef;
     protected final IController<T> mController = new IController<T>() {

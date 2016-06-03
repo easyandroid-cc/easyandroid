@@ -14,18 +14,24 @@
  * limitations under the License.
  */
 
-package cc.easyandroid.easyclean.interactors;
+package cc.easyandroid.easyclean.domain.simple;
 
-import cc.easyandroid.easymvp.exception.EasyException;
+import cc.easyandroid.easyclean.presentation.presenter.base.EasyIPresenter;
+import cc.easyandroid.easyclean.presentation.view.IEasyView;
 
 /**
- * Interface for schedulers, see {@link UseCaseThreadPoolScheduler}.
+ * This specifies the tract between the view and the presenter.
  */
-public interface UseCaseScheduler {
+public interface SimpleContract {
 
-    void execute(Runnable runnable);
+    interface View<T> extends IEasyView {
 
-    <V extends UseCase.ResponseValue> void notifyResponse(final V response, final UseCase.UseCaseCallback<V> useCaseCallback);
+        String getString(Object tag);
 
-    <V extends UseCase.ResponseValue> void onError(final Throwable e,final UseCase.UseCaseCallback<V> useCaseCallback);
+    }
+
+    interface Presenter<T> extends EasyIPresenter<SimpleContract.View<T>> {
+
+        void start();
+    }
 }

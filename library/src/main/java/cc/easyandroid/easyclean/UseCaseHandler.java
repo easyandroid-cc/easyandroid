@@ -14,12 +14,8 @@
  * limitations under the License.
  */
 
-package cc.easyandroid.easyclean.interactors;
+package cc.easyandroid.easyclean;
 
-
-import java.io.IOException;
-
-import cc.easyandroid.easymvp.exception.EasyException;
 
 /**
  * Runs {@link UseCase}s using a {@link UseCaseScheduler}.
@@ -37,11 +33,7 @@ public class UseCaseHandler {
     public <T extends UseCase.RequestValues, R extends UseCase.ResponseValue> void execute(
             final UseCase<T, R> useCase, T values, UseCase.UseCaseCallback<R> callback) {
         useCase.setRequestValues(values);
-        useCase.setUseCaseCallback(new UiCallbackWrapper(callback, this));
-
-        // The network request might be handled in a different thread so make sure
-        // Espresso knows
-        // that the app is busy until the response is handled.
+        useCase.setUseCaseCallback(new UiCallbackWrapper<>(callback, this));
 
         mUseCaseScheduler.execute(new Runnable() {
             @Override
@@ -49,13 +41,7 @@ public class UseCaseHandler {
                 useCase.run();
             }
         });
-        okhttp3.Call rawCall = null;
-        try {
-            rawCall.execute();
-            rawCall.cancel();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
     }
 
     public <V extends UseCase.ResponseValue> void notifyResponse(final V response, final UseCase.UseCaseCallback<V> useCaseCallback) {

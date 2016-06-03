@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package cc.easyandroid.easyclean.interactors;
+package cc.easyandroid.easyclean;
 
 import android.os.Handler;
 
@@ -22,8 +22,6 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-
-import cc.easyandroid.easymvp.exception.EasyException;
 
 /**
  * Executes asynchronous tasks using a {@link ThreadPoolExecutor}.
@@ -64,7 +62,7 @@ public class UseCaseThreadPoolScheduler implements UseCaseScheduler {
     }
 
     @Override
-    public <V extends UseCase.ResponseValue> void onError(final EasyException e,final UseCase.UseCaseCallback<V> useCaseCallback) {
+    public <V extends UseCase.ResponseValue> void onError(final Throwable e, final UseCase.UseCaseCallback<V> useCaseCallback) {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -72,5 +70,4 @@ public class UseCaseThreadPoolScheduler implements UseCaseScheduler {
             }
         });
     }
-
 }

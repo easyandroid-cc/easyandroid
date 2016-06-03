@@ -14,46 +14,36 @@
  * limitations under the License.
  */
 
-package cc.easyandroid.easyclean.interactors;
+package cc.easyandroid.easyclean.domain.easyhttp;
 
-import com.example.android.architecture.blueprints.todoapp.BasePresenter;
-import com.example.android.architecture.blueprints.todoapp.BaseView;
+import cc.easyandroid.easyclean.presentation.presenter.base.EasyIPresenter;
+import cc.easyandroid.easyclean.presentation.view.IEasyView;
 
 /**
  * This specifies the contract between the view and the presenter.
  */
-public interface TaskDetailContract {
+public interface EasyHttpContract {
 
-    interface View  {
+    interface View<T> extends IEasyView {
 
-        void setLoadingIndicator(boolean active);
+        void onStart(Object tag);
 
-        void showMissingTask();
+        /**
+         * 使用 e.getMessage() 获取信息
+         *
+         * @param tag  标识
+         * @param e 异常
+         */
+        void onError(Object tag, Throwable e);
 
-        void hideTitle();
-
-        void showTitle(String title);
-
-        void hideDescription();
-
-        void showDescription(String description);
-
-        void showCompletionStatus(boolean complete);
-
-        void showEditTask(String taskId);
-
-        void showTaskDeleted();
-
-        void showTaskMarkedComplete();
-
-        void showTaskMarkedActive();
-
-        boolean isActive();
+        void onSuccess(Object tag, final T results);
     }
 
-    interface Presenter extends EasyBasePresenter {
+    interface Presenter<T> extends EasyIPresenter<EasyHttpContract.View<T>> {
 
         void execute(EasyHttpUseCase.RequestValues requestValues);
+
+        void reExecute();
 
     }
 }

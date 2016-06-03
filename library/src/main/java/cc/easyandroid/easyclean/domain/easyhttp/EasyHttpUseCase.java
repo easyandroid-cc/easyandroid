@@ -14,81 +14,94 @@
  * limitations under the License.
  */
 
-package cc.easyandroid.easyclean.interactors;
+package cc.easyandroid.easyclean.domain.easyhttp;
 
+import java.lang.reflect.Type;
+
+import cc.easyandroid.easyclean.UseCase;
+import cc.easyandroid.easyclean.repository.EasyHttpRepository;
 import cc.easyandroid.easycore.EAResult;
 import cc.easyandroid.easycore.EasyCall;
-import cc.easyandroid.easycore.EasyHttpStateCallback;
 import cc.easyandroid.easycore.EasyResponse;
 import cc.easyandroid.easylog.EALog;
 import cc.easyandroid.easymvp.exception.EasyException;
+import okhttp3.Request;
 
 /**
  * Fetches the list of tasks.
  */
-public class EasyHttpUseCase<T> extends UseCase<EasyHttpUseCase.RequestValues, EasyHttpUseCase.ResponseValue> {
+public class EasyHttpUseCase<T> extends UseCase<EasyHttpUseCase.RequestValues, EasyHttpUseCase.ResponseValue<T>> {
 
-    protected EasyCall<T> easyCall;
+    EasyCall<T> lastEasyCall;//记录最后一个easycall
+    public final EasyHttpRepository mEasyHttpRepository;
 
     private void cancelRequest() {
-        if (easyCall != null && !easyCall.isCancel()) {
-            easyCall.cancel();
+        if (lastEasyCall != null && !lastEasyCall.isCancel()) {
+            lastEasyCall.cancel();
         }
     }
+
+    public EasyHttpUseCase(EasyHttpRepository easyHttpRepository) {
+        mEasyHttpRepository = easyHttpRepository;
+    }
+
     @Override
     protected void executeUseCase(final RequestValues values) {
         cancelRequest();
-        EasyCall<T> originalEasyCall=values.getEasyCall();
-        easyCall = originalEasyCall;
-        easyCall.enqueue(new EasyHttpStateCallback<T>() {
+        Request request = values.getRequest();
+        Type type = values.getType();
+        /**
+         * 请求后每次记住easycall，防止重复调用，第二次进来会检测之前的是否完成，如果没有就调用cancelRequest取消之前的请求
+         */
+        lastEasyCall = mEasyHttpRepository.executeRequest(request, type, new EasyHttpRepository.HttpRequestCallback<T>() {
             @Override
             public void onResponse(EasyResponse<T> easyResponse) {
                 T t = easyResponse != null ? easyResponse.body() : null;
                 String defaultMessage = easyResponse != null ? easyResponse.message() : "";//"服务器或网络异常";
+                EALog.e("EasyAndroid", "tag=" + values.getTag() + "   t=" + t);
                 if (t == null) {
-                    EALog.e("EasyAndroid", "t==null");
                     onFailure(new EasyException(defaultMessage));
                     return;
                 } else if (t instanceof EAResult) {
                     EAResult kResult = (EAResult) t;
-                    if (kResult == null || !kResult.isSuccess()) {
-                        String errorMessage = kResult != null ? kResult.getEADesc() : defaultMessage;
+                    if (!kResult.isSuccess()) {
+                        String errorMessage = kResult.getEADesc();
                         onFailure(new EasyException(errorMessage));
                         return;
                     }
                 }
-                getUseCaseCallback().onSuccess(new ResponseValue(values.getTag(), t));
+                getUseCaseCallback().onSuccess(new EasyHttpUseCase.ResponseValue<>(values.getTag(), t));
             }
 
             @Override
             public void onFailure(Throwable t) {
                 getUseCaseCallback().onError(t);
             }
-
-            @Override
-            public void start() {
-
-            }
         });
     }
 
-    public static final class RequestValues<T> implements UseCase.RequestValues {
-        private final EasyCall<T> easyCall;
+    public static final class RequestValues implements UseCase.RequestValues {
+        private final okhttp3.Request request;
         private final Object tag;
+        private final Type type;
 
-        public RequestValues(Object tag, EasyCall<T> easyCall) {
+        public RequestValues(Object tag, okhttp3.Request request, Type type) {
             this.tag = tag;
-            this.easyCall = easyCall;
+            this.request = request;
+            this.type = type;
         }
 
         public Object getTag() {
             return tag;
         }
 
-        public EasyCall<T> getEasyCall() {
-            return easyCall;
+        public Request getRequest() {
+            return request;
         }
 
+        public Type getType() {
+            return type;
+        }
     }
 
     public static final class ResponseValue<T> implements UseCase.ResponseValue {

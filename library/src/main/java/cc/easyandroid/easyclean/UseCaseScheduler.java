@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 Square, Inc.
+ * Copyright 2016, The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,20 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cc.easyandroid.easyclean.interactors.data;
 
-import cc.easyandroid.easycore.EasyCall;
-import cc.easyandroid.easycore.EasyHttpStateCallback;
+package cc.easyandroid.easyclean;
 
-public class EasyHttpRepository<T> implements EasyHttpDataSource<T> {
-    protected EasyCall<T> easyCall;
+/**
+ * Interface for schedulers, see {@link UseCaseThreadPoolScheduler}.
+ */
+public interface UseCaseScheduler {
 
-    public EasyHttpRepository(EasyCall<T> easyCall) {
-        this.easyCall = easyCall;
-    }
+    void execute(Runnable runnable);
 
-    @Override
-    public void executeEasyHttpRequest(EasyHttpStateCallback<T> easyHttpCallback) {
-        easyCall.enqueue(easyHttpCallback);
-    }
+    <V extends UseCase.ResponseValue> void notifyResponse(final V response, final UseCase.UseCaseCallback<V> useCaseCallback);
+
+    <V extends UseCase.ResponseValue> void onError(final Throwable e,final UseCase.UseCaseCallback<V> useCaseCallback);
 }

@@ -13,25 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cc.easyandroid.easyclean.interactors.data;
+package cc.easyandroid.easyclean.repository;
 
-import cc.easyandroid.easycore.EasyHttpStateCallback;
+import java.lang.reflect.Type;
 
-public interface EasyHttpDataSource<T> {
+import cc.easyandroid.easycore.EasyCall;
+import cc.easyandroid.easycore.EasyResponse;
+
+public interface EasyHttpDataSource {
 
 
-//    interface EasyHttpCallback<T> {
-//        /**
-//         * 请求成功
-//         */
-//        void onResponse(EasyResponse<T> easyResponse);
-//
-//        /**
-//         * 请求失败
-//         */
-//        void onFailure(Throwable t);
-//
-//    }
+    <T> EasyCall<T> executeRequest(okhttp3.Request request, Type type, HttpRequestCallback<T> callback);
 
-    void executeEasyHttpRequest(EasyHttpStateCallback<T> easyHttpCallback);
+    interface HttpRequestCallback<T> {
+        void onResponse(EasyResponse<T> easyResponse);
+
+        /**
+         * Invoked when a network or unexpected exception occurred during the HTTP request.
+         */
+        void onFailure(Throwable t);
+    }
 }

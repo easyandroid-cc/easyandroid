@@ -14,9 +14,24 @@
  * limitations under the License.
  */
 
-package cc.easyandroid.easyclean.interactors;
+package cc.easyandroid.easyclean.presentation.presenter.base;
 
-public interface EasyBasePresenter {
+import cc.easyandroid.easyclean.presentation.view.IEasyView;
+
+/**
+ * 超级接口
+ *
+ * @param <V>
+ */
+public interface EasyIPresenter<V extends IEasyView> {
+
+    void cancel();
+
+    int getPresenterId();
+
+    void attachView(V view);
+
+    void detachView();
 
     void execute();
 

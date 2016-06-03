@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package cc.easyandroid.easyclean.interactors;
+package cc.easyandroid.easyclean;
 
 /**
  * Use cases are the entry points to the domain layer.
