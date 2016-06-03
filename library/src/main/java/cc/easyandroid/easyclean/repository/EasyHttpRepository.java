@@ -1,12 +1,16 @@
 package cc.easyandroid.easyclean.repository;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
 
 import cc.easyandroid.easycore.EasyCall;
 import cc.easyandroid.easycore.EasyHttpStateCallback;
 import cc.easyandroid.easycore.EasyResponse;
 import cc.easyandroid.easyhttp.EasyHttpUtils;
+import okhttp3.Call;
+import okhttp3.Callback;
 import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * Created by Administrator on 2016/6/3.
@@ -37,5 +41,19 @@ public class EasyHttpRepository implements EasyHttpDataSource {
             }
         });
         return easyCall;
+    }
+    public void executeCall(okhttp3.Call call){
+//        call.request().
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+
+            }
+        });
     }
 }
