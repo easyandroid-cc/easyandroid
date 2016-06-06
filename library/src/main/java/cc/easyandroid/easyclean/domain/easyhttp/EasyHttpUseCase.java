@@ -16,8 +16,6 @@
 
 package cc.easyandroid.easyclean.domain.easyhttp;
 
-import java.lang.reflect.Type;
-
 import cc.easyandroid.easyclean.UseCase;
 import cc.easyandroid.easyclean.repository.EasyHttpRepository;
 import cc.easyandroid.easycore.EAResult;
@@ -25,20 +23,23 @@ import cc.easyandroid.easycore.EasyCall;
 import cc.easyandroid.easycore.EasyResponse;
 import cc.easyandroid.easylog.EALog;
 import cc.easyandroid.easymvp.exception.EasyException;
-import okhttp3.Request;
 
 /**
  * Fetches the list of tasks.
  */
 public class EasyHttpUseCase<T> extends UseCase<EasyHttpUseCase.RequestValues, EasyHttpUseCase.ResponseValue<T>> {
 
-    EasyCall<T> lastEasyCall;//记录最后一个easycall
+    private volatile EasyCall<T> lastEasyCall;//记录最后一个easycall
     public final EasyHttpRepository mEasyHttpRepository;
 
     private void cancelRequest() {
         if (lastEasyCall != null && !lastEasyCall.isCancel()) {
             lastEasyCall.cancel();
         }
+    }
+    @Override
+    public void cancle(){
+        cancelRequest();
     }
 
     public EasyHttpUseCase(EasyHttpRepository easyHttpRepository) {
@@ -47,13 +48,13 @@ public class EasyHttpUseCase<T> extends UseCase<EasyHttpUseCase.RequestValues, E
 
     @Override
     protected void executeUseCase(final RequestValues values) {
-        cancelRequest();
-        Request request = values.getRequest();
-        Type type = values.getType();
+        cancle();
+        EasyCall<T> easyCall = values.getEasyCall();
         /**
          * 请求后每次记住easycall，防止重复调用，第二次进来会检测之前的是否完成，如果没有就调用cancelRequest取消之前的请求
          */
-        lastEasyCall = mEasyHttpRepository.executeRequest(request, type, new EasyHttpRepository.HttpRequestCallback<T>() {
+        lastEasyCall = easyCall;
+        mEasyHttpRepository.executeRequest(easyCall, new EasyHttpRepository.HttpRequestCallback<T>() {
             @Override
             public void onResponse(EasyResponse<T> easyResponse) {
                 T t = easyResponse != null ? easyResponse.body() : null;
@@ -80,27 +81,21 @@ public class EasyHttpUseCase<T> extends UseCase<EasyHttpUseCase.RequestValues, E
         });
     }
 
-    public static final class RequestValues implements UseCase.RequestValues {
-        private final okhttp3.Request request;
+    public static final class RequestValues<T> implements UseCase.RequestValues {
+        private final EasyCall<T> easyCall;
         private final Object tag;
-        private final Type type;
 
-        public RequestValues(Object tag, okhttp3.Request request, Type type) {
+        public RequestValues(Object tag, EasyCall<T> easyCall) {
             this.tag = tag;
-            this.request = request;
-            this.type = type;
+            this.easyCall = easyCall;
         }
 
         public Object getTag() {
             return tag;
         }
 
-        public Request getRequest() {
-            return request;
-        }
-
-        public Type getType() {
-            return type;
+        public EasyCall<T> getEasyCall() {
+            return easyCall;
         }
     }
 

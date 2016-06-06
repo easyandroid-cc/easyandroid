@@ -22,6 +22,7 @@ import cc.easyandroid.easycore.EasyResponse;
 
 public interface EasyHttpDataSource {
 
+    <T> void executeRequest(EasyCall<T> easyCall, final HttpRequestCallback<T> callback);
 
     <T> EasyCall<T> executeRequest(okhttp3.Request request, Type type, HttpRequestCallback<T> callback);
 

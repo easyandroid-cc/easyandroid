@@ -50,6 +50,8 @@ public abstract class UseCase<Q extends UseCase.RequestValues, P extends UseCase
 
     protected abstract void executeUseCase(Q requestValues);
 
+    protected void cancle(){}
+
     /**
      * Data passed to a request.
      */

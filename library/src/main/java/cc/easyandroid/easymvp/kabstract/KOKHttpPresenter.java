@@ -58,6 +58,7 @@ public abstract class KOKHttpPresenter<V extends ISimpleView<T>, T> extends KPre
         public OKEasyHttpStateCallback(IController<T> controller, Object tag) {
             this.mController = controller;
             this.tag = tag;
+            mController.start(tag);
         }
 
         @Override
@@ -90,9 +91,9 @@ public abstract class KOKHttpPresenter<V extends ISimpleView<T>, T> extends KPre
             mController.error(tag, t);
         }
 
-        @Override
-        public void start() {
-            mController.start(tag);
-        }
+//        @Override
+//        public void start() {
+//            mController.start(tag);
+//        }
     }
 }

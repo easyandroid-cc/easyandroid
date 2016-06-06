@@ -51,17 +51,20 @@ public class EasyHttpPresenter<T> extends EasyBasePresenter<EasyHttpContract.Vie
     private EasyHttpUseCase.RequestValues mRequestValues;
 
     private void handleRequest(final EasyHttpUseCase.RequestValues requestValues) {
-        getView().onStart(requestValues.getTag());
+        if (isViewAttached())
+            getView().onStart(requestValues.getTag());
         //mEasyHttpUseCase 自己会判断是否有call在运行，如果有，他会自己取消之前的
         mUseCaseHandler.execute(mEasyHttpUseCase, requestValues, new UseCase.UseCaseCallback<EasyHttpUseCase.ResponseValue<T>>() {
             @Override
             public void onSuccess(EasyHttpUseCase.ResponseValue<T> response) {
-                getView().onSuccess(requestValues.getTag(), response.getData());
+                if (isViewAttached())
+                    getView().onSuccess(requestValues.getTag(), response.getData());
             }
 
             @Override
             public void onError(Throwable t) {
-                getView().onError(requestValues.getTag(), t);
+                if (isViewAttached())
+                    getView().onError(requestValues.getTag(), t);
             }
         });
     }
@@ -80,4 +83,14 @@ public class EasyHttpPresenter<T> extends EasyBasePresenter<EasyHttpContract.Vie
         EALog.e("EasyHttpPresenter", "execute");
     }
 
+    @Override
+    protected void onDetachView() {
+        cancel();
+    }
+
+    @Override
+    protected void onCancel() {
+        super.onCancel();
+        mEasyHttpUseCase.cancle();
+    }
 }

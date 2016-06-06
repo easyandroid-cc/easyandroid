@@ -92,12 +92,12 @@ public class OkHttpEasyCall<T> implements EasyCall<T> {
                 throw new IllegalStateException("Already enqueue");
             executed = true;
         }
-        EasyExecutor.getMainExecutor().execute(new Runnable() {
-            @Override
-            public void run() {
-                callback.start();
-            }
-        });
+//        EasyExecutor.getMainExecutor().execute(new Runnable() {
+//            @Override
+//            public void run() {
+//                callback.start();
+//            }
+//        });
         final Request request = createRequest();
         String cacheMode = getCacheMode(request);
         // ----------------------------------------------------------------------cgp

@@ -13,12 +13,22 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 /**
- * Created by Administrator on 2016/6/3.
+ *
  */
 public class EasyHttpRepository implements EasyHttpDataSource {
 
-    public <T> void executeRequest(EasyCall<T> easyCall, EasyHttpStateCallback<T> callback) {
-        easyCall.enqueue(callback);
+    public <T> void executeRequest(EasyCall<T> easyCall, final HttpRequestCallback<T> callback) {
+        easyCall.enqueue(new EasyHttpStateCallback<T>() {
+            @Override
+            public void onResponse(EasyResponse<T> easyResponse) {
+                callback.onResponse(easyResponse);
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                callback.onFailure(t);
+            }
+        });
     }
 
     @Override
@@ -34,16 +44,11 @@ public class EasyHttpRepository implements EasyHttpDataSource {
             public void onFailure(Throwable t) {
                 callback.onFailure(t);
             }
-
-            @Override
-            public void start() {
-
-            }
         });
         return easyCall;
     }
-    public void executeCall(okhttp3.Call call){
-//        call.request().
+
+    public void executeCall(okhttp3.Call call) {
         call.enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {

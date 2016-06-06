@@ -35,5 +35,5 @@ public interface EasyHttpStateCallback<T> {
   /** Invoked when a network or unexpected exception occurred during the HTTP request. */
   void onFailure(Throwable t);
 
-  void start();
+//  void start();
 }

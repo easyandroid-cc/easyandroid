@@ -46,11 +46,13 @@ public class DownLoadActivity extends Activity implements ISimpleCallView<OkHttp
     @Override
     public void onStart(Object presenterId) {
         System.out.println("bytesRead  onStart");
+
     }
 
     @Override
     public void onCompleted(Object presenterId) {
         System.out.println("bytesRead  onCompleted");
+        text.setText(text.getText() + "===onCompleted");
     }
 
     @Override

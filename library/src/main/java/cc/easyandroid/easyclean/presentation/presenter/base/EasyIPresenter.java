@@ -27,8 +27,6 @@ public interface EasyIPresenter<V extends IEasyView> {
 
     void cancel();
 
-    int getPresenterId();
-
     void attachView(V view);
 
     void detachView();

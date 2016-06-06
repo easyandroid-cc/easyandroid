@@ -23,23 +23,22 @@ public class EasyBasePresenter<V extends IEasyView> implements EasyIPresenter<V>
 
     @Override
     public void cancel() {
-
+        onCancel();
     }
 
-    @Override
-    public int getPresenterId() {
-        return 0;
+    protected boolean isViewAttached() {
+        return mEasyView != null;
     }
-
     @Override
     public void attachView(V view) {
         this.mEasyView = view;
         onAttachView();
     }
 
-    protected V getView(){
+    protected V getView() {
         return mEasyView;
     }
+
     @Override
     public void detachView() {
         if (mEasyView != null) {
@@ -48,14 +47,16 @@ public class EasyBasePresenter<V extends IEasyView> implements EasyIPresenter<V>
         onDetachView();
     }
 
-    private void onAttachView() {
+    protected void onAttachView() {
 
     }
 
-    private void onDetachView() {
+    protected void onDetachView() {
 
     }
+    protected void onCancel() {
 
+    }
     @Override
     public void execute() {
 

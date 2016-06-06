@@ -87,6 +87,7 @@ public class EAConfiguration {
             if (gson == null) {
                 gson = new Gson();
             }
+            cookieJar.clear();
             if (okHttpClient == null) {
                 okHttpClient = new OkHttpClient.Builder()//
                         .connectTimeout(15 * 1000, TimeUnit.MILLISECONDS)//

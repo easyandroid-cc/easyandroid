@@ -46,12 +46,12 @@ public class OkHttpDownLoadEasyCall implements EasyCall<OkHttpDownLoadEasyCall.D
             return;
         }
         this.rawCall = rawCall;
-        EasyExecutor.getMainExecutor().execute(new Runnable() {
-            @Override
-            public void run() {
-                callback.start();
-            }
-        });
+//        EasyExecutor.getMainExecutor().execute(new Runnable() {
+//            @Override
+//            public void run() {
+//                callback.start();
+//            }
+//        });
 
         rawCall.enqueue(new okhttp3.Callback() {
             @Override
