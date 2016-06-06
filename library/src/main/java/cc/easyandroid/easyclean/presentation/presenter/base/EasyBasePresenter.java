@@ -32,7 +32,7 @@ public class EasyBasePresenter<V extends IEasyView> implements EasyIPresenter<V>
     @Override
     public void attachView(V view) {
         this.mEasyView = view;
-        onAttachView();
+        onAttachView(view);
     }
 
     protected V getView() {
@@ -47,7 +47,7 @@ public class EasyBasePresenter<V extends IEasyView> implements EasyIPresenter<V>
         onDetachView();
     }
 
-    protected void onAttachView() {
+    protected void onAttachView(V view) {
 
     }
 

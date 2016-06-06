@@ -19,6 +19,7 @@ public class SimplePresenter1<T> extends EasyBasePresenter<SimpleContract.View<T
         easyHttpPresenter1 = new EasyHttpPresenter(new EasyHttpUseCase(new EasyHttpRepository()));
         setupPresenter1View();
         setupPresenter2View();
+        easyHttpPresenter2.execute();
 
     }
 
