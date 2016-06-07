@@ -39,15 +39,15 @@ public class SQLiteDelegate implements DataAccesObject {
     }
 
     @Override
-    public <T> void insert(EasyDbObject<T> dto) throws Exception {
+    public <T extends EasyDbObject> void insert(T dto) throws Exception {
         String table = null;
         ContentValues contentValues = new ContentValues();
-        contentValues.put("id", dto.getId());
-        contentValues.put("timestamp", dto.getTimestamp());
-        contentValues.put("gson", GSON.toJson(dto.getData()));
+        contentValues.put("id", dto.buildKeyColumn());
+        contentValues.put("timestamp", System.currentTimeMillis());
+        contentValues.put("gson", GSON.toJson(dto));
         long rowid = db.replace(table, null, contentValues);
         if (rowid == -1)
-            throw new SQLiteException("Error inserting " + dto.getData().getClass().toString());
+            throw new SQLiteException("Error inserting " + dto.getClass().toString());
     }
 
     @Override
@@ -72,10 +72,9 @@ public class SQLiteDelegate implements DataAccesObject {
     }
 
     @Override
-    public <T> ArrayList<T> findAllFromTabName(String tabName, String orderBy) throws Exception {
+    public <T> ArrayList<T> findAllFromTabName(String table, String orderBy) throws Exception {
         Class<T> clazz = null;
 
-        String table = null;
         String[] columns = null;
         String selection = null;
         String[] selectionArgs = null;

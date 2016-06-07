@@ -19,7 +19,7 @@ import java.util.ArrayList;
 
 
 public interface DataAccesObject {
-    <T> void insert(EasyDbObject<T> dto) throws Exception;
+    <T extends EasyDbObject> void insert(T dto) throws Exception;
 
     <T> T findById(String id) throws Exception;
 
