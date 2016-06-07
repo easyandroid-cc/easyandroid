@@ -4,13 +4,13 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
 import cc.easyandroid.easyclean.domain.easyhttp.EasyHttpContract;
-import cc.easyandroid.easymvp.view.ISimpleView;
+import cc.easyandroid.easyclean.presentation.view.IEasyView;
 
 /**
- *
+ * 通过view找出view的泛型类型
  */
 public class TypeUtils {
-    Type viewType;
+    private Type viewType;
 
     public Type getViewType() {
         return viewType;
@@ -28,17 +28,14 @@ public class TypeUtils {
         return new TypeUtils(iView);
     }
 
-
     private <T> void initDeliverResultType(T iView) {
         // 从本类的接口中查找
         Type[] interfacesTypes = iView.getClass().getGenericInterfaces();// 获取接口类型
-
         if (!idFind(interfacesTypes)) {
             // 从父类的接口中查找
             findSuperClass(iView.getClass());
         }
     }
-
 
     private boolean idFind(Type[] interfacesTypes) {
         for (Type t : interfacesTypes) {
@@ -55,7 +52,7 @@ public class TypeUtils {
             Type rawType = parameterizedType.getRawType();// 获取泛型真实类型
             if (rawType instanceof Class) {
                 Class<?> clazz = (Class<?>) rawType;
-                if (EasyHttpContract.View.class.isAssignableFrom(clazz)) {// class是否是ISimpleView.class的子类
+                if (IEasyView.class.isAssignableFrom(clazz)) {// class是否是ISimpleView.class的子类
                     Type[] types = parameterizedType.getActualTypeArguments();// 获取当前接口所有的泛型类型
                     if (types != null && types.length > 0) {
                         Type guessType = types[0];// 取第一个
@@ -80,5 +77,27 @@ public class TypeUtils {
         } else if (superType instanceof ParameterizedType) {//如果父类是带泛型的类型，直接去这个泛型
             isFind(superType);
         }
+    }
+
+    public static void main(String[] args) {
+        System.out.println("dddddddddddddddddddd");
+        EasyHttpContract.View<EasyToast> view = new EasyHttpContract.View<EasyToast>() {
+            @Override
+            public void onStart(Object tag) {
+
+            }
+
+            @Override
+            public void onError(Object tag, Throwable e) {
+
+            }
+
+            @Override
+            public void onSuccess(Object tag, EasyToast results) {
+
+            }
+        };
+
+        System.out.println("dddddddddddddddddddd---" + TypeUtils.newInstance(view).getViewType());
     }
 }

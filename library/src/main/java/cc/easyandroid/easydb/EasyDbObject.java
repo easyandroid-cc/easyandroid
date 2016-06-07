@@ -1,22 +1,21 @@
 package cc.easyandroid.easydb;
 
 /**
- * Created by Administrator on 2016/6/1.
+ *
  */
 public class EasyDbObject<T> {
-    private long id;
+    private String id;
     private T data;
     private long timestamp;
 
-    public EasyDbObject(T data) {
-        this.data = data;
+    public EasyDbObject() {
     }
 
-    public long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

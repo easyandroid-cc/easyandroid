@@ -9,4 +9,5 @@ public interface CacheMode {
 	String LOAD_NETWORK_ELSE_CACHE = "network-else-cache";
 	// 网络
 	String LOAD_NETWORK_ONLY = "network-only";
+
 }
