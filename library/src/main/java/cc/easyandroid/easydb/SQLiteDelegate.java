@@ -57,7 +57,7 @@ public class SQLiteDelegate implements DataAccesObject {
 //                String orderBy)
         String table = null;
 //        db.query(table, null)
-//        Cursor cursor = db.query(transformer.getTableName(), transformer.getFields(), transformer.getWhereClause(dto), null, null, null, null);
+        Cursor cursor = db.query(transformer.getTableName(), transformer.getFields(), transformer.getWhereClause(dto), null, null, null, null);
         return null;
     }
 
