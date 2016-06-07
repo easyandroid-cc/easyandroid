@@ -86,9 +86,9 @@ public class SQLiteDelegate implements DataAccesObject {
         ArrayList<T> list = new ArrayList<>();
         if (cursor.moveToFirst()) {
             do {
-//                String id = cursor.getString(cursor.getColumnIndex("id"));
+                String id = cursor.getString(cursor.getColumnIndex("id"));
                 String gson = cursor.getString(cursor.getColumnIndex("gson"));
-//                long timestamp = cursor.getLong(cursor.getColumnIndex("timestamp"));
+                long timestamp = cursor.getLong(cursor.getColumnIndex("timestamp"));
 
                 T t = GSON.fromJson(gson, clazz);
                 list.add(t);
