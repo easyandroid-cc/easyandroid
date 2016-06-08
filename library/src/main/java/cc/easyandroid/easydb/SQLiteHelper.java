@@ -8,7 +8,7 @@ import android.util.Log;
 import cc.easyandroid.easydb.exception.SQLiteHelperException;
 
 /**
- * @author Antonio L¨®pez Mar¨ªn
+ * @author
  */
 public final class SQLiteHelper extends SQLiteOpenHelper {
 
@@ -73,7 +73,6 @@ public final class SQLiteHelper extends SQLiteOpenHelper {
             if (builder.tableNames == null) {
                 throw new SQLiteHelperException("The array of String tableNames can't be null!!");
             }
-
             builder.onUpgradeCallback.onUpgrade(db, oldVersion, newVersion);
         } catch (SQLiteHelperException e) {
             Log.e(this.getClass().toString(), Log.getStackTraceString(e), e);
@@ -340,11 +339,11 @@ public final class SQLiteHelper extends SQLiteOpenHelper {
     }
 
     public interface OnCreateCallback {
-        public void onCreate(SQLiteDatabase db);
+        void onCreate(SQLiteDatabase db);
     }
 
     public interface OnUpgradeCallback {
-        public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion);
+        void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion);
     }
 
     public interface SQLiteHelperCallback extends OnCreateCallback, OnUpgradeCallback {
