@@ -8,7 +8,7 @@ import android.util.Log;
 import cc.easyandroid.easydb.exception.SQLiteHelperException;
 
 /**
- * @author cgp
+ * @author cgpllx
  */
 public final class SQLiteHelper extends SQLiteOpenHelper {
 
