@@ -20,16 +20,18 @@ import android.database.Cursor;
 import java.util.ArrayList;
 
 
-public interface DataAccesObject {
-    <T extends EasyDbObject> void insert(T dto) throws Exception;
+public interface DataAccesObject<T> {
+    void insert(T dto) throws Exception;
 
-    <T extends EasyDbObject> T findById(String id) throws Exception;
+    T findById(String id) throws Exception;
 
     boolean delete(String id) throws Exception;
 
     boolean deleteAll() throws Exception;
 
-    <T> ArrayList<T> findAllFromTabName(String orderBy) throws Exception;
+    ArrayList<T> findAllFromTabName(String orderBy) throws Exception;
 
     Cursor findAllCursor(String orderBy);
+
+
 }

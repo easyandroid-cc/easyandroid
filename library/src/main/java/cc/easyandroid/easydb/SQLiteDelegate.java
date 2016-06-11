@@ -27,17 +27,15 @@ import java.util.ArrayList;
 
 /**
  * Class delegated charge of implementing CRUD methods for any object model.
- *
- * @author Antonio López Marín
  */
-public class SQLiteDelegate<T extends EasyDbObject> implements DataAccesObject {
+public class SQLiteDelegate<T extends EasyDbObject> implements DataAccesObject<T> {
     public static final Gson GSON = new Gson();
-    private static final String ID = "id";
-    private static final String TIMESTAMP = "timestamp";
-    private static final String GSONSTRING = "gson";
-    protected SQLiteDatabase db;
-    protected String tabName;
-    protected Class<T> clazz;
+    public static final String ID = "id";
+    public static final String TIMESTAMP = "timestamp";
+    public static final String GSONSTRING = "gson";
+    protected final SQLiteDatabase db;
+    protected final String tabName;
+    protected final Class<T> clazz;
 
     public SQLiteDelegate(SQLiteDatabase db, String tabName, Class<T> clazz) {
         this.db = db;
@@ -46,13 +44,12 @@ public class SQLiteDelegate<T extends EasyDbObject> implements DataAccesObject {
     }
 
     @Override
-    public <T extends EasyDbObject> void insert(T dto) throws Exception {
-        String table = null;
+    public void insert(T dto) throws Exception {
         ContentValues contentValues = new ContentValues();
         contentValues.put(ID, dto.buildKeyColumn());
         contentValues.put(TIMESTAMP, System.currentTimeMillis());
         contentValues.put(GSONSTRING, GSON.toJson(dto));
-        long rowid = db.replace(table, null, contentValues);
+        long rowid = db.replace(tabName, null, contentValues);
         if (rowid == -1)
             throw new SQLiteException("Error inserting " + dto.getClass().toString());
     }
@@ -60,13 +57,10 @@ public class SQLiteDelegate<T extends EasyDbObject> implements DataAccesObject {
     @Override
     public T findById(String id) throws Exception {
 
-        String[] columns = null;
         String selection = ID + "=?";
         String[] selectionArgs = {id};
-        String groupBy = null;
-        String having = null;
-        String orderBy = "DESC";//从大到小排序，查出来的是最后一个
-        Cursor cursor = db.query(tabName, columns, selection, selectionArgs, groupBy, having, orderBy);
+        String orderBy = TIMESTAMP+" "+"DESC";//
+        Cursor cursor = db.query(tabName, null, selection, selectionArgs, null, null, orderBy);
         T easyDbObject = null;
         try {
             if (cursor.moveToFirst()) {
@@ -74,7 +68,7 @@ public class SQLiteDelegate<T extends EasyDbObject> implements DataAccesObject {
                 easyDbObject = GSON.fromJson(gson, clazz);
             }
         } catch (Exception e) {
-            throw new SQLiteException("Error findAllFromTabName " + tabName.toString());
+            throw new SQLiteException("Error findAllFromTabName " + tabName);
         } finally {
             if (cursor != null) {
                 cursor.close();
@@ -82,6 +76,8 @@ public class SQLiteDelegate<T extends EasyDbObject> implements DataAccesObject {
         }
         return easyDbObject;
     }
+
+
 
     @Override
     public synchronized boolean delete(String id) throws Exception {
@@ -97,26 +93,23 @@ public class SQLiteDelegate<T extends EasyDbObject> implements DataAccesObject {
         return confirm != 0;
     }
 
+    /**
+     * @param order eg "_id" DESC  鏃堕棿姝ｅ簭杩樻槸鍊掑簭
+     * @return Cursor
+     */
     @Override
-    public Cursor findAllCursor(String orderBy) {
-        String[] columns = null;
-        String selection = null;
-        String[] selectionArgs = null;
-        String groupBy = null;
-        String having = null;
-        Cursor cursor = db.query(tabName, columns, selection, selectionArgs, groupBy, having, orderBy);
-        return cursor;
+    public Cursor findAllCursor(String order) {
+        String orderBy = TIMESTAMP + " " + order;
+        return db.query(tabName, null, null, null, null, null, orderBy);
     }
 
     /**
-     * 根据条件查询
-     *
-     * @param orderBy eg "_id" DESC 表示按倒序排序(即:从大到小排序) 用 ACS 表示按正序排序(即:从小到大排序)
-     * @return
+     * @param order eg "_id" DESC  鏃堕棿姝ｅ簭杩樻槸鍊掑簭
+     * @return ArrayList
      */
     @Override
-    public ArrayList<T> findAllFromTabName(String orderBy) throws Exception {
-        Cursor cursor = findAllCursor(orderBy);
+    public ArrayList<T> findAllFromTabName(String order) throws Exception {
+        Cursor cursor = findAllCursor(order);
         ArrayList<T> list = new ArrayList<>();
         try {
             if (cursor.moveToFirst()) {
@@ -127,7 +120,7 @@ public class SQLiteDelegate<T extends EasyDbObject> implements DataAccesObject {
                 } while (cursor.moveToNext());
             }
         } catch (Exception e) {
-            throw new SQLiteException("Error findAllFromTabName " + tabName.toString());
+            throw new SQLiteException("Error findAllFromTabName " + tabName);
         } finally {
             if (cursor != null) {
                 cursor.close();
@@ -135,4 +128,5 @@ public class SQLiteDelegate<T extends EasyDbObject> implements DataAccesObject {
         }
         return list;
     }
+
 }

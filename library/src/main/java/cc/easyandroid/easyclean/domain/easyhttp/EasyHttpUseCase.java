@@ -25,7 +25,7 @@ import cc.easyandroid.easylog.EALog;
 import cc.easyandroid.easymvp.exception.EasyException;
 
 /**
- * Fetches the list of tasks.
+ * EasyHttpUseCase
  */
 public class EasyHttpUseCase<T> extends UseCase<EasyHttpUseCase.RequestValues, EasyHttpUseCase.ResponseValue<T>> {
 
