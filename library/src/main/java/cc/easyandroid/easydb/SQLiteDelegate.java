@@ -29,13 +29,14 @@ import java.util.ArrayList;
  * Class delegated charge of implementing CRUD methods for any object model.
  */
 public class SQLiteDelegate<T extends EasyDbObject> implements DataAccesObject<T> {
-    public static final Gson GSON = new Gson();
+    private static final Gson GSON = new Gson();
     public static final String ID = "id";
-    public static final String TIMESTAMP = "timestamp";
+    public static final String CREATEDTIME = "createdTime";
     public static final String GSONSTRING = "gson";
     protected final SQLiteDatabase db;
     protected final String tabName;
     protected final Class<T> clazz;
+
 
     public SQLiteDelegate(SQLiteDatabase db, String tabName, Class<T> clazz) {
         this.db = db;
@@ -47,7 +48,7 @@ public class SQLiteDelegate<T extends EasyDbObject> implements DataAccesObject<T
     public void insert(T dto) throws Exception {
         ContentValues contentValues = new ContentValues();
         contentValues.put(ID, dto.buildKeyColumn());
-        contentValues.put(TIMESTAMP, System.currentTimeMillis());
+        contentValues.put(CREATEDTIME, System.currentTimeMillis());
         contentValues.put(GSONSTRING, GSON.toJson(dto));
         long rowid = db.replace(tabName, null, contentValues);
         if (rowid == -1)
@@ -55,11 +56,25 @@ public class SQLiteDelegate<T extends EasyDbObject> implements DataAccesObject<T
     }
 
     @Override
+    public void insertAll(ArrayList<T> arrayList) throws Exception {
+        try {
+            db.beginTransaction();
+            for (int i = 0; i < arrayList.size(); i++) {
+                T dto = arrayList.get(i);
+                insert(dto);
+            }
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
+        }
+    }
+
+    @Override
     public T findById(String id) throws Exception {
 
         String selection = ID + "=?";
         String[] selectionArgs = {id};
-        String orderBy = TIMESTAMP+" "+"DESC";//
+        String orderBy = CREATEDTIME + " " + "DESC";//
         Cursor cursor = db.query(tabName, null, selection, selectionArgs, null, null, orderBy);
         T easyDbObject = null;
         try {
@@ -76,7 +91,6 @@ public class SQLiteDelegate<T extends EasyDbObject> implements DataAccesObject<T
         }
         return easyDbObject;
     }
-
 
 
     @Override
@@ -99,7 +113,7 @@ public class SQLiteDelegate<T extends EasyDbObject> implements DataAccesObject<T
      */
     @Override
     public Cursor findAllCursor(String order) {
-        String orderBy = TIMESTAMP + " " + order;
+        String orderBy = CREATEDTIME + " " + order;
         return db.query(tabName, null, null, null, null, null, orderBy);
     }
 

@@ -16,7 +16,7 @@
 package cc.easyandroid.easydb.exception;
 
 /**
- * @author Antonio L¨®pez Mar¨ªn
+ * @author Antonio  
  */
 public class SQLiteHelperException extends Exception {
 

@@ -23,6 +23,8 @@ import java.util.ArrayList;
 public interface DataAccesObject<T> {
     void insert(T dto) throws Exception;
 
+    void insertAll(ArrayList<T> arrayList) throws Exception;
+
     T findById(String id) throws Exception;
 
     boolean delete(String id) throws Exception;
