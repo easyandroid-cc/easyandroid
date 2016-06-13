@@ -20,10 +20,14 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
+import android.database.sqlite.SQLiteOpenHelper;
 
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+
+import cc.easyandroid.easydb.abs.DataAccesObject;
+import cc.easyandroid.easydb.core.EasyDbObject;
 
 /**
  * Class delegated charge of implementing CRUD methods for any object model.
@@ -33,19 +37,20 @@ public class SQLiteDelegate<T extends EasyDbObject> implements DataAccesObject<T
     public static final String ID = "id";
     public static final String CREATEDTIME = "createdTime";
     public static final String GSONSTRING = "gson";
-    protected final SQLiteDatabase db;
+    protected final SQLiteOpenHelper helper;
     protected final String tabName;
     protected final Class<T> clazz;
 
 
-    public SQLiteDelegate(SQLiteDatabase db, String tabName, Class<T> clazz) {
-        this.db = db;
+    public SQLiteDelegate(SQLiteOpenHelper helper, String tabName, Class<T> clazz) {
+        this.helper = helper;
         this.tabName = tabName;
         this.clazz = clazz;
     }
 
     @Override
     public void insert(T dto) throws Exception {
+        SQLiteDatabase db=getDb();
         ContentValues contentValues = new ContentValues();
         contentValues.put(ID, dto.buildKeyColumn());
         contentValues.put(CREATEDTIME, System.currentTimeMillis());
@@ -57,6 +62,7 @@ public class SQLiteDelegate<T extends EasyDbObject> implements DataAccesObject<T
 
     @Override
     public void insertAll(ArrayList<T> arrayList) throws Exception {
+        SQLiteDatabase db=getDb();
         try {
             db.beginTransaction();
             for (int i = 0; i < arrayList.size(); i++) {
@@ -71,7 +77,7 @@ public class SQLiteDelegate<T extends EasyDbObject> implements DataAccesObject<T
 
     @Override
     public T findById(String id) throws Exception {
-
+        SQLiteDatabase db=getDb();
         String selection = ID + "=?";
         String[] selectionArgs = {id};
         String orderBy = CREATEDTIME + " " + "DESC";//
@@ -95,6 +101,7 @@ public class SQLiteDelegate<T extends EasyDbObject> implements DataAccesObject<T
 
     @Override
     public synchronized boolean delete(String id) throws Exception {
+        SQLiteDatabase db=getDb();
         String whereClause = ID + "=?";
         String[] whereArgs = {id};
         int confirm = db.delete(tabName, whereClause, whereArgs);
@@ -103,6 +110,7 @@ public class SQLiteDelegate<T extends EasyDbObject> implements DataAccesObject<T
 
     @Override
     public synchronized boolean deleteAll() throws Exception {
+        SQLiteDatabase db=getDb();
         int confirm = db.delete(tabName, null, null);
         return confirm != 0;
     }
@@ -113,6 +121,7 @@ public class SQLiteDelegate<T extends EasyDbObject> implements DataAccesObject<T
      */
     @Override
     public Cursor findAllCursor(String order) {
+        SQLiteDatabase db=getDb();
         String orderBy = CREATEDTIME + " " + order;
         return db.query(tabName, null, null, null, null, null, orderBy);
     }
@@ -143,4 +152,12 @@ public class SQLiteDelegate<T extends EasyDbObject> implements DataAccesObject<T
         return list;
     }
 
+    private SQLiteDatabase mSQLiteDatabase;
+
+    private SQLiteDatabase getDb() {
+        if (mSQLiteDatabase == null) {
+            mSQLiteDatabase = helper.getWritableDatabase();
+        }
+        return mSQLiteDatabase;
+    }
 }

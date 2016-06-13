@@ -4,36 +4,45 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import cc.easyandroid.easydb.abs.DataAccesObject;
+import cc.easyandroid.easydb.core.DaoInfo;
+import cc.easyandroid.easydb.core.EasyDbObject;
+import cc.easyandroid.easydb.core.TableManager;
+import cc.easyandroid.easylog.EALog;
+
 /**
  * Created by cgpllx on 2016/6/12.
  */
-public class EasySqliteHelper extends SQLiteOpenHelper {
-    private volatile boolean isOpen = false;
+public abstract class EasySqliteHelper extends SQLiteOpenHelper {
+    private final TableManager tableManager;
 
-    public EasySqliteHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
-        super(context, name, factory, version);
+    private volatile boolean isCreated = false;
+
+    public EasySqliteHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int newVersion) {
+        super(context, name, factory, newVersion);//如果是升级onUpgrade方法会先执行
+        tableManager = new TableManager();
+        getWritableDatabase();
     }
 
     /**
-     * TableUtils.createTable(db, "", Tab.class);
+     * TableManager.createTable(db, "", Tab.class);
      *
      * @param db SQLiteDatabase
      */
     @Override
     public void onCreate(SQLiteDatabase db) {
-        try {
-            TableUtils.createTable(db, "", Tab.class);
-            TableUtils.createTable(db, "", Tab.class);
-            TableUtils.createTable(db, "", Tab.class);
-            TableUtils.createTable(db, "", Tab.class);
-            TableUtils.createTable(db, "", Tab.class);
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (!isCreated) {
+            onCreate(db, tableManager);
+            isCreated = true;
         }
+        EALog.d("easyandroid onCreate is : %1$s", isCreated);
+        tableManager.execute(db);
     }
 
+    public abstract void onCreate(SQLiteDatabase db, TableManager tableManager);
+
     /**
-     * TableUtils.dropTable(db, "", Tab.class);
+     * TableManager.dropTable(db, "", Tab.class);
      *
      * @param db         SQLiteDatabase
      * @param oldVersion oldVersion
@@ -41,41 +50,47 @@ public class EasySqliteHelper extends SQLiteOpenHelper {
      */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        try {
-            TableUtils.dropTable(db, "", Tab.class);
-            TableUtils.dropTable(db, "", Tab.class);
-            TableUtils.dropTable(db, "", Tab.class);
-            TableUtils.dropTable(db, "", Tab.class);
-            onCreate(db);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        onUpgrade(db, oldVersion, newVersion, tableManager);
     }
+
+    public abstract void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion, TableManager tableManager);
 
     @Override
     public synchronized void close() {
         super.close();
-        isOpen = false;
     }
-
-    SQLiteDatabase mSQLiteDatabase;
 
     @Override
     public void onOpen(SQLiteDatabase db) {
         super.onOpen(db);
-        isOpen = true;
+        if (!isCreated) {
+            onCreate(db, tableManager);
+            isCreated = true;
+        }
+        EALog.d("easyandroid onCreate is : %1$s", isCreated);
     }
 
-    public <T extends EasyDbObject> SQLiteDelegate<T> getSQLiteDelegate(String tableName) {
-        TableInfo tableInfo = TableInfo.getTableInfo(tableName);
-        SQLiteDelegate<T> sqLiteDelegate = new SQLiteDelegate(getSQLiteDatabase(), tableInfo.getTableName(), tableInfo.getTableMappingClass());
+    /**
+     * DataAccesObject
+     *
+     * @param tableName table name
+     * @param <T>       class
+     * @return DataAccesObject
+     */
+    public <T extends EasyDbObject> DataAccesObject<T> getDao(String tableName) {
+        DaoInfo daoInfo = DaoInfo.getDaoInfo(tableName);
+        DataAccesObject<T> sqLiteDelegate = null;
+        if (daoInfo == null) {
+            sqLiteDelegate = new SQLiteDelegate(this, tableName, tableManager.getTableMappingClass(tableName));
+            DaoInfo.addDaoInfo(tableName, sqLiteDelegate);
+        } else {
+            try {
+                sqLiteDelegate = (DataAccesObject<T>) daoInfo.getDao();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
         return sqLiteDelegate;
     }
 
-    private SQLiteDatabase getSQLiteDatabase() {
-        if (mSQLiteDatabase == null) {
-            mSQLiteDatabase = getWritableDatabase();
-        }
-        return mSQLiteDatabase;
-    }
 }
