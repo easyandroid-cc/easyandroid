@@ -27,6 +27,7 @@ import cc.easyandroid.easyutils.TypeUtils;
 /**
  * Listens to user actions from the UI ({@link EasyHttpContract}), retrieves the data and updates
  * the UI as required. view by  attachView(view) method incoming;
+ * 所有http请求的presenter都类似，EasyHttpPresenter是将他们封装的一个通用的模块
  */
 public class EasyHttpPresenter<T> extends EasyBasePresenter<EasyHttpContract.View<T>> implements EasyHttpContract.Presenter<T> {
 

@@ -34,5 +34,6 @@ public interface SimpleContract {
     interface Presenter<T> extends EasyIPresenter<SimpleContract.View<T>> {
 
         void start();
+        void detachView();
     }
 }

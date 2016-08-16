@@ -19,7 +19,7 @@ public class GetDatasFormDbUseCase<T extends EasyDbObject> extends UseCase<GetDa
 
     @Override
     protected void executeUseCase(final RequestValues values) {
-        this.dbRepository.getAll(values.getTaskId(), new DbDataSource.LoadDatasCallback<T>() {
+        this.dbRepository.getAll(values.getTabeName(), new DbDataSource.LoadDatasCallback<T>() {
             @Override
             public void ondDatasLoaded(ArrayList<T> tasks) {
                 ResponseValue responseValue = new ResponseValue(tasks);
@@ -42,7 +42,7 @@ public class GetDatasFormDbUseCase<T extends EasyDbObject> extends UseCase<GetDa
             mTabeName = tabeName;
         }
 
-        public String getTaskId() {
+        public String getTabeName() {
             return mTabeName;
         }
     }
