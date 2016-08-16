@@ -12,19 +12,25 @@ import cc.easyandroid.simple.core.SimpleSqlite;
  * 数据库的仓库
  */
 public class DbRepository implements DbDataSource {
+
+    public DbRepository(Context context) {
+        simpleSqlite = new SimpleSqlite(context);
+    }
+
     @Override
     public <T> T getObject(Class<T> clazz) {
         return null;
     }
 
-    public <T extends EasyDbObject> ArrayList<T> getAll(String tabName) {
+    public <T extends EasyDbObject> void getAll(String tabName, DbDataSource.LoadDatasCallback callback) {
         DataAccesObject<T> dataAccesObject = simpleSqlite.getDao(tabName);
         try {
-            return dataAccesObject.findAllFromTabName("DESC");
+            callback.ondDatasLoaded(dataAccesObject.findAllFromTabName("DESC"));
+            return;
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
+        callback.onDataNotAvailable();
     }
 
     public <T extends EasyDbObject> boolean deleteAll(String tabName) {
@@ -66,10 +72,6 @@ public class DbRepository implements DbDataSource {
     }
 
     public final SimpleSqlite simpleSqlite;
-
-    public DbRepository(Context context) {
-        simpleSqlite = new SimpleSqlite(context);
-    }
 
 
 }
