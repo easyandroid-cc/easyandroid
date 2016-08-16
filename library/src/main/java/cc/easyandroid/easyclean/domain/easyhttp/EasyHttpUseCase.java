@@ -25,7 +25,7 @@ import cc.easyandroid.easylog.EALog;
 import cc.easyandroid.easymvp.exception.EasyException;
 
 /**
- * EasyHttpUseCase
+ * EasyHttp用例
  */
 public class EasyHttpUseCase<T> extends UseCase<EasyHttpUseCase.RequestValues, EasyHttpUseCase.ResponseValue<T>> {
 

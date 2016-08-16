@@ -18,7 +18,7 @@ package cc.easyandroid.easyclean;
 
 
 /**
- * Runs {@link UseCase}s using a {@link UseCaseScheduler}.
+ * UseCaseHandler 是用来处理useCase的
  */
 public class UseCaseHandler {
 

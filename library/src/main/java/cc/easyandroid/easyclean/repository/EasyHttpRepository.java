@@ -13,7 +13,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 /**
- *
+ * http的数据仓库，其实数据最终来自Model也就是这里的easycall
  */
 public class EasyHttpRepository implements EasyHttpDataSource {
 

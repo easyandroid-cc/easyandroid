@@ -38,6 +38,11 @@ public class EasyHttpPresenter<T> extends EasyBasePresenter<EasyHttpContract.Vie
         mEasyHttpUseCase = easyHttpUseCase;
     }
 
+    /**
+     * 用户传入RequestValues执行网络请求
+     *
+     * @param requestValues 用户请求的参数
+     */
     @Override
     public void execute(EasyHttpUseCase.RequestValues requestValues) {//这里是执行网络请求
         setRequestValues(requestValues);

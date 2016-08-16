@@ -27,6 +27,7 @@ public interface SimpleContract {
     interface View<T> extends IEasyView {
 
         String getString(Object tag);
+        void setTitle(CharSequence title);
 
     }
 
