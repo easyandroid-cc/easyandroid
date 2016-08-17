@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package cc.easyandroid.easyclean.domain.simple;
+package cc.easyandroid.simple.clean;
 
 import cc.easyandroid.easyclean.presentation.presenter.base.EasyIPresenter;
 import cc.easyandroid.easyclean.presentation.view.IEasyView;

@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -93,6 +94,23 @@ public class HttpUtils {
         header.put("Cache-Control", "max-age=10");
         okhttp3.Request request = OKHttp3RequestFactory.createGetRequest(url, header);
         return EasyHttpUtils.getInstance().executeHttpRequestToCall(request, presenter.getDeliverResultType());
+    }
+
+    /**
+     * 先网络后缓存
+     *
+     * @param url
+     * @param type
+     * @param <T>
+     * @return
+     */
+    public static <T> EasyCall<T> creatGetCall(String url, Type type) {
+        HashMap<String, String> header = new HashMap<>();
+//        header.put("Cache-Mode", CacheMode.LOAD_CACHE_ELSE_NETWORK);
+        header.put("Cache-Mode", CacheMode.LOAD_NETWORK_ELSE_CACHE);
+        header.put("Cache-Control", "max-age=10");
+        okhttp3.Request request = OKHttp3RequestFactory.createGetRequest(url, header);
+        return EasyHttpUtils.getInstance().executeHttpRequestToCall(request, type);
     }
 
 

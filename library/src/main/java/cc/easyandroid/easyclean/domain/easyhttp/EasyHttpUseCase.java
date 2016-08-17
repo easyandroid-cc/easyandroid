@@ -42,7 +42,8 @@ public class EasyHttpUseCase<T> extends UseCase<EasyHttpUseCase.RequestValues, E
         cancelRequest();
     }
 
-    public EasyHttpUseCase(EasyHttpRepository easyHttpRepository) {
+    public
+    EasyHttpUseCase(EasyHttpRepository easyHttpRepository) {
         mEasyHttpRepository = easyHttpRepository;
     }
 

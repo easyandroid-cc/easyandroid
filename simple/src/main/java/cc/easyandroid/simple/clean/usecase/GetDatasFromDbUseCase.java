@@ -4,22 +4,21 @@ import java.util.ArrayList;
 
 import cc.easyandroid.easyclean.UseCase;
 import cc.easyandroid.easydb.core.EasyDbObject;
-import cc.easyandroid.simple.clean.repository.DbDataSource;
-import cc.easyandroid.simple.clean.repository.DbRepository;
+import cc.easyandroid.simple.clean.repository.abs.DbDataSource;
 
 /**
  * Created by cgpllx on 2016/8/16.
  */
-public class GetDatasFormDbUseCase<T extends EasyDbObject> extends UseCase<GetDatasFormDbUseCase.RequestValues, GetDatasFormDbUseCase.ResponseValue<T>> {
-    public final DbRepository dbRepository;
+public class GetDatasFromDbUseCase<T extends EasyDbObject> extends UseCase<GetDatasFromDbUseCase.RequestValues, GetDatasFromDbUseCase.ResponseValue<T>> {
+    public final DbDataSource mDbDataSource;
 
-    public GetDatasFormDbUseCase(DbRepository dbRepository) {
-        this.dbRepository = dbRepository;
+    public GetDatasFromDbUseCase(DbDataSource dbDataSource) {
+        this.mDbDataSource = dbDataSource;
     }
 
     @Override
     protected void executeUseCase(final RequestValues values) {
-        this.dbRepository.getAll(values.getTabeName(), new DbDataSource.LoadDatasCallback<T>() {
+        this.mDbDataSource.getAll(values.getTabeName(), new DbDataSource.LoadDatasCallback<T>() {
             @Override
             public void ondDatasLoaded(ArrayList<T> tasks) {
                 ResponseValue responseValue = new ResponseValue(tasks);
@@ -31,7 +30,6 @@ public class GetDatasFormDbUseCase<T extends EasyDbObject> extends UseCase<GetDa
                 getUseCaseCallback().onError(null);
             }
         });
-
     }
 
     public static final class RequestValues implements UseCase.RequestValues {

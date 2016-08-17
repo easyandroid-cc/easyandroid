@@ -2,6 +2,7 @@ package cc.easyandroid.easyutils;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.List;
 
 import cc.easyandroid.easyclean.domain.easyhttp.EasyHttpContract;
 import cc.easyandroid.easyclean.presentation.view.IEasyView;
@@ -81,7 +82,7 @@ public class TypeUtils {
 
     public static void main(String[] args) {
         System.out.println("dddddddddddddddddddd");
-        EasyHttpContract.View<EasyToast> view = new EasyHttpContract.View<EasyToast>() {
+        ChildView<List<EasyToast>> view = new ChildView<List<EasyToast>>() {
             @Override
             public void onStart(Object tag) {
 
@@ -93,11 +94,15 @@ public class TypeUtils {
             }
 
             @Override
-            public void onSuccess(Object tag, EasyToast results) {
+            public void onSuccess(Object tag, List<EasyToast> results) {
 
             }
-        };
 
+        };
         System.out.println("dddddddddddddddddddd---" + TypeUtils.newInstance(view).getViewType());
+    }
+
+    public static abstract class ChildView<T> implements EasyHttpContract.View<T> {
+
     }
 }

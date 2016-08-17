@@ -10,6 +10,6 @@ public interface EasyHttpUtilsModule {
 
     void applyOptions(Context context, EAConfiguration.Builder builder);
 
-    void registerComponents(Context context, EasyHttpUtils glide);
+    void registerComponents(Context context, EasyHttpUtils easyHttpUtils);
 }
 

@@ -20,6 +20,7 @@
         </activity>
         <activity android:name=".StringActivity" />
         <activity android:name=".GsonActivity" />
+        <activity android:name=".Gson2Activity" />
         <activity android:name=".DownLoadActivity" />
         <activity android:name=".UpLoadActivity" />
         <activity android:name=".ThreadActivity"></activity>

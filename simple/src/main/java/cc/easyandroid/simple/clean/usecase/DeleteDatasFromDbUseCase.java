@@ -1,19 +1,15 @@
 package cc.easyandroid.simple.clean.usecase;
 
-import java.util.ArrayList;
-
 import cc.easyandroid.easyclean.UseCase;
-import cc.easyandroid.easydb.core.EasyDbObject;
-import cc.easyandroid.simple.clean.repository.DbDataSource;
-import cc.easyandroid.simple.clean.repository.DbRepository;
+import cc.easyandroid.simple.clean.repository.abs.DbDataSource;
 
 /**
  * Created by cgpllx on 2016/8/16.
  */
-public class DeleteDatasFormDbUseCase<T extends EasyDbObject> extends UseCase<DeleteDatasFormDbUseCase.RequestValues, DeleteDatasFormDbUseCase.ResponseValue> {
-    public final DbRepository dbRepository;
+public class DeleteDatasFromDbUseCase extends UseCase<DeleteDatasFromDbUseCase.RequestValues, DeleteDatasFromDbUseCase.ResponseValue> {
+    public final DbDataSource dbRepository;
 
-    public DeleteDatasFormDbUseCase(DbRepository dbRepository) {
+    public DeleteDatasFromDbUseCase(DbDataSource dbRepository) {
         this.dbRepository = dbRepository;
     }
 
@@ -21,7 +17,7 @@ public class DeleteDatasFormDbUseCase<T extends EasyDbObject> extends UseCase<De
     protected void executeUseCase(final RequestValues values) {
         boolean seccess = this.dbRepository.deleteAll(values.getTabeName());
         if (seccess) {
-            getUseCaseCallback().onSuccess(new ResponseValue(true));
+            getUseCaseCallback().onSuccess(new ResponseValue());
         } else {
             getUseCaseCallback().onError(null);
         }
@@ -43,14 +39,10 @@ public class DeleteDatasFormDbUseCase<T extends EasyDbObject> extends UseCase<De
 
     public static final class ResponseValue implements UseCase.ResponseValue {
 
-        private boolean seccess;
 
-        public ResponseValue(boolean seccess) {
-            this.seccess = seccess;
+        public ResponseValue() {
         }
 
-        public boolean getDatas() {
-            return seccess;
-        }
+
     }
 }

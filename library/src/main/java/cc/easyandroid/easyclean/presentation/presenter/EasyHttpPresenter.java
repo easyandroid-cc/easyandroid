@@ -22,7 +22,6 @@ import cc.easyandroid.easyclean.domain.easyhttp.EasyHttpContract;
 import cc.easyandroid.easyclean.domain.easyhttp.EasyHttpUseCase;
 import cc.easyandroid.easyclean.presentation.presenter.base.EasyBasePresenter;
 import cc.easyandroid.easylog.EALog;
-import cc.easyandroid.easyutils.TypeUtils;
 
 /**
  * Listens to user actions from the UI ({@link EasyHttpContract}), retrieves the data and updates
@@ -104,6 +103,7 @@ public class EasyHttpPresenter<T> extends EasyBasePresenter<EasyHttpContract.Vie
     @Override
     protected void onAttachView(EasyHttpContract.View<T> view) {
         super.onAttachView(view);
-        TypeUtils.newInstance(view).getViewType();
+//        Type viewType = TypeUtils.newInstance(view).getViewType();
     }
+
 }

@@ -4,32 +4,45 @@ import cc.easyandroid.easyclean.UseCase;
 import cc.easyandroid.easyclean.UseCaseHandler;
 import cc.easyandroid.easyclean.domain.easyhttp.EasyHttpContract;
 import cc.easyandroid.easyclean.domain.easyhttp.EasyHttpUseCase;
-import cc.easyandroid.easyclean.domain.simple.SimpleContract;
 import cc.easyandroid.easyclean.presentation.presenter.EasyHttpPresenter;
 import cc.easyandroid.easyclean.presentation.presenter.base.EasyBasePresenter;
 import cc.easyandroid.easyclean.repository.EasyHttpRepository;
 import cc.easyandroid.easydb.core.EasyDbObject;
-import cc.easyandroid.simple.clean.usecase.GetDatasFormDbUseCase;
+import cc.easyandroid.simple.clean.usecase.DeleteByIdFromDbUseCase;
+import cc.easyandroid.simple.clean.usecase.DeleteDatasFromDbUseCase;
+import cc.easyandroid.simple.clean.usecase.GetDatasFromDbUseCase;
+import cc.easyandroid.simple.clean.usecase.InsertDataFromDbUseCase;
+import cc.easyandroid.simple.clean.usecase.InsertDatasFromDbUseCase;
 
 /**
- * Created by Administrator on 2016/6/3.
+ * Created by cgpllx on 2016/6/3.
  */
 public class SimplePresenter1<D1, D2, D3 extends EasyDbObject> extends EasyBasePresenter<SimpleContract.View<D1>> implements SimpleContract.Presenter<D1> {
     private final UseCaseHandler mUseCaseHandler = UseCaseHandler.getInstance();
     EasyHttpPresenter<String> easyHttpPresenter1;
     EasyHttpPresenter<String> easyHttpPresenter2;
 
-    public SimplePresenter1(EasyHttpUseCase<D1> easyHttpUseCase,GetDatasFormDbUseCase<D3> getDatasFormDbUseCase) {
-        mGetDatasFormDbUseCase=getDatasFormDbUseCase;
+    public SimplePresenter1(DeleteByIdFromDbUseCase deleteByIdFromDbUseCase,//
+                            DeleteDatasFromDbUseCase deleteDatasFromDbUseCase,//
+                            GetDatasFromDbUseCase<D3> getDatasFromDbUseCase,//
+                            InsertDataFromDbUseCase<D3> insertDataFromDbUseCase,//
+                            InsertDatasFromDbUseCase<D3> insertDatasFromDbUseCase) {
+        mDeleteByIdFromDbUseCase = deleteByIdFromDbUseCase;
+        mDeleteDatasFromDbUseCase = deleteDatasFromDbUseCase;
+        mGetDatasFromDbUseCase = getDatasFromDbUseCase;
+        mInsertDataFromDbUseCase = insertDataFromDbUseCase;
+        mInsertDatasFromDbUseCase = insertDatasFromDbUseCase;
         easyHttpPresenter1 = new EasyHttpPresenter(new EasyHttpUseCase(new EasyHttpRepository()));
         easyHttpPresenter2 = new EasyHttpPresenter(new EasyHttpUseCase(new EasyHttpRepository()));
         setupPresenter1View();
         setupPresenter2View();
-
-
     }
 
-    private final GetDatasFormDbUseCase<D3> mGetDatasFormDbUseCase;
+    private final DeleteByIdFromDbUseCase mDeleteByIdFromDbUseCase;
+    private final DeleteDatasFromDbUseCase mDeleteDatasFromDbUseCase;
+    private final GetDatasFromDbUseCase<D3> mGetDatasFromDbUseCase;
+    private final InsertDataFromDbUseCase<D3> mInsertDataFromDbUseCase;
+    private final InsertDatasFromDbUseCase<D3> mInsertDatasFromDbUseCase;
 
     public void exe1(EasyHttpUseCase.RequestValues<D1> requestValues) {
         easyHttpPresenter1.setRequestValues(requestValues);
@@ -41,10 +54,66 @@ public class SimplePresenter1<D1, D2, D3 extends EasyDbObject> extends EasyBaseP
         easyHttpPresenter2.execute();
     }
 
-    public void exe3(GetDatasFormDbUseCase.RequestValues requestValues) {
-        mUseCaseHandler.execute(mGetDatasFormDbUseCase, requestValues, new UseCase.UseCaseCallback<GetDatasFormDbUseCase.ResponseValue<D3>>() {
+    public void exe3(DeleteByIdFromDbUseCase.RequestValues requestValues) {
+        mUseCaseHandler.execute(mDeleteByIdFromDbUseCase, requestValues, new UseCase.UseCaseCallback<DeleteByIdFromDbUseCase.ResponseValue>() {
             @Override
-            public void onSuccess(GetDatasFormDbUseCase.ResponseValue<D3> response) {
+            public void onSuccess(DeleteByIdFromDbUseCase.ResponseValue response) {
+
+            }
+
+            @Override
+            public void onError(Throwable t) {
+
+            }
+        });
+    }
+
+    public void exe4(DeleteDatasFromDbUseCase.RequestValues requestValues) {
+        mUseCaseHandler.execute(mDeleteDatasFromDbUseCase, requestValues, new UseCase.UseCaseCallback<DeleteDatasFromDbUseCase.ResponseValue>() {
+            @Override
+            public void onSuccess(DeleteDatasFromDbUseCase.ResponseValue response) {
+
+            }
+
+            @Override
+            public void onError(Throwable t) {
+
+            }
+        });
+    }
+
+    public void exe5(GetDatasFromDbUseCase.RequestValues requestValues) {
+        mUseCaseHandler.execute(mGetDatasFromDbUseCase, requestValues, new UseCase.UseCaseCallback<GetDatasFromDbUseCase.ResponseValue<D3>>() {
+            @Override
+            public void onSuccess(GetDatasFromDbUseCase.ResponseValue<D3> response) {
+
+            }
+
+            @Override
+            public void onError(Throwable t) {
+
+            }
+        });
+    }
+
+    public void exe6(InsertDataFromDbUseCase.RequestValues requestValues) {
+        mUseCaseHandler.execute(mInsertDataFromDbUseCase, requestValues, new UseCase.UseCaseCallback<InsertDataFromDbUseCase.ResponseValue>() {
+            @Override
+            public void onSuccess(InsertDataFromDbUseCase.ResponseValue response) {
+
+            }
+
+            @Override
+            public void onError(Throwable t) {
+
+            }
+        });
+    }
+
+    public void exe7(InsertDatasFromDbUseCase.RequestValues requestValues) {
+        mUseCaseHandler.execute(mInsertDatasFromDbUseCase, requestValues, new UseCase.UseCaseCallback<InsertDatasFromDbUseCase.ResponseValue>() {
+            @Override
+            public void onSuccess(InsertDatasFromDbUseCase.ResponseValue response) {
 
             }
 

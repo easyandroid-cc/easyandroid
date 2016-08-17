@@ -9,7 +9,7 @@ import java.util.List;
 
 /**
  */
-public final class   ManifestParser {
+public final class ManifestParser {
     private static final String GLIDE_MODULE_VALUE = "EasyHttpUtilsModule";
 
     private final Context context;
