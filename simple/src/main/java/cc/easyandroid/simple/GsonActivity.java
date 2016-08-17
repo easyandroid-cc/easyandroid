@@ -54,7 +54,6 @@ public class GsonActivity extends Activity implements ISimpleCallView<QfangResul
         textView.setText("出错" + e.getMessage());
         EasyToast.showShort(getApplicationContext(), "onError" + e.getMessage());
         System.out.println("cgp onError tag=" + presenterId);
-//        sys
     }
 
     @Override
