@@ -18,7 +18,7 @@ public abstract class EasyThreadCall<T> implements EasyCall<T>, PresenterLoader<
     }
 
     @Override
-    public void enqueue(EasyHttpStateCallback<T> callback) {
+    public void enqueue(EasyHttpStateCallback<T> callback,String tag) {
         synchronized (this) {
             if (executed)
                 throw new IllegalStateException("Already enqueue");

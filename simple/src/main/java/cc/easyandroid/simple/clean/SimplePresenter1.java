@@ -2,11 +2,11 @@ package cc.easyandroid.simple.clean;
 
 import cc.easyandroid.easyclean.UseCase;
 import cc.easyandroid.easyclean.UseCaseHandler;
-import cc.easyandroid.easyclean.domain.easyhttp.EasyHttpContract;
-import cc.easyandroid.easyclean.domain.easyhttp.EasyHttpUseCase;
-import cc.easyandroid.easyclean.presentation.presenter.EasyHttpPresenter;
+import cc.easyandroid.easyclean.domain.easywork.EasyWorkContract;
+import cc.easyandroid.easyclean.domain.easywork.EasyWorkUseCase;
+import cc.easyandroid.easyclean.presentation.presenter.EasyWorkPresenter;
 import cc.easyandroid.easyclean.presentation.presenter.base.EasyBasePresenter;
-import cc.easyandroid.easyclean.repository.EasyHttpRepository;
+import cc.easyandroid.easyclean.repository.EasyWorkRepository;
 import cc.easyandroid.easydb.core.EasyDbObject;
 import cc.easyandroid.simple.clean.usecase.DeleteByIdFromDbUseCase;
 import cc.easyandroid.simple.clean.usecase.DeleteDatasFromDbUseCase;
@@ -19,8 +19,8 @@ import cc.easyandroid.simple.clean.usecase.InsertDatasFromDbUseCase;
  */
 public class SimplePresenter1<D1, D2, D3 extends EasyDbObject> extends EasyBasePresenter<SimpleContract.View<D1>> implements SimpleContract.Presenter<D1> {
     private final UseCaseHandler mUseCaseHandler = UseCaseHandler.getInstance();
-    EasyHttpPresenter<String> easyHttpPresenter1;
-    EasyHttpPresenter<String> easyHttpPresenter2;
+    EasyWorkPresenter<String> easyWorkPresenter1;
+    EasyWorkPresenter<String> easyWorkPresenter2;
 
     public SimplePresenter1(DeleteByIdFromDbUseCase deleteByIdFromDbUseCase,//
                             DeleteDatasFromDbUseCase deleteDatasFromDbUseCase,//
@@ -32,8 +32,8 @@ public class SimplePresenter1<D1, D2, D3 extends EasyDbObject> extends EasyBaseP
         mGetDatasFromDbUseCase = getDatasFromDbUseCase;
         mInsertDataFromDbUseCase = insertDataFromDbUseCase;
         mInsertDatasFromDbUseCase = insertDatasFromDbUseCase;
-        easyHttpPresenter1 = new EasyHttpPresenter(new EasyHttpUseCase(new EasyHttpRepository()));
-        easyHttpPresenter2 = new EasyHttpPresenter(new EasyHttpUseCase(new EasyHttpRepository()));
+        easyWorkPresenter1 = new EasyWorkPresenter(new EasyWorkUseCase(new EasyWorkRepository()));
+        easyWorkPresenter2 = new EasyWorkPresenter(new EasyWorkUseCase(new EasyWorkRepository()));
         setupPresenter1View();
         setupPresenter2View();
     }
@@ -44,14 +44,14 @@ public class SimplePresenter1<D1, D2, D3 extends EasyDbObject> extends EasyBaseP
     private final InsertDataFromDbUseCase<D3> mInsertDataFromDbUseCase;
     private final InsertDatasFromDbUseCase<D3> mInsertDatasFromDbUseCase;
 
-    public void exe1(EasyHttpUseCase.RequestValues<D1> requestValues) {
-        easyHttpPresenter1.setRequestValues(requestValues);
-        easyHttpPresenter1.execute();
+    public void exe1(EasyWorkUseCase.RequestValues<D1> requestValues) {
+        easyWorkPresenter1.setRequestValues(requestValues);
+        easyWorkPresenter1.execute();
     }
 
-    public void exe2(EasyHttpUseCase.RequestValues<D2> requestValues) {
-        easyHttpPresenter2.setRequestValues(requestValues);
-        easyHttpPresenter2.execute();
+    public void exe2(EasyWorkUseCase.RequestValues<D2> requestValues) {
+        easyWorkPresenter2.setRequestValues(requestValues);
+        easyWorkPresenter2.execute();
     }
 
     public void exe3(DeleteByIdFromDbUseCase.RequestValues requestValues) {
@@ -125,7 +125,7 @@ public class SimplePresenter1<D1, D2, D3 extends EasyDbObject> extends EasyBaseP
     }
 
     private void setupPresenter1View() {
-        easyHttpPresenter1.attachView(new EasyHttpContract.View<String>() {
+        easyWorkPresenter1.attachView(new EasyWorkContract.View<String>() {
             @Override
             public void onStart(Object tag) {
                 getView().setTitle("title");
@@ -144,7 +144,7 @@ public class SimplePresenter1<D1, D2, D3 extends EasyDbObject> extends EasyBaseP
     }
 
     private void setupPresenter2View() {
-        easyHttpPresenter2.attachView(new EasyHttpContract.View<String>() {
+        easyWorkPresenter2.attachView(new EasyWorkContract.View<String>() {
             @Override
             public void onStart(Object tag) {
 
@@ -170,7 +170,7 @@ public class SimplePresenter1<D1, D2, D3 extends EasyDbObject> extends EasyBaseP
     @Override
     protected void onDetachView() {
         super.onDetachView();
-        easyHttpPresenter1.detachView();
-        easyHttpPresenter2.detachView();
+        easyWorkPresenter1.detachView();
+        easyWorkPresenter2.detachView();
     }
 }

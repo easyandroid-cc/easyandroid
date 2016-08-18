@@ -1,5 +1,6 @@
 package cc.easyandroid.simple;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import java.io.File;
@@ -87,13 +88,14 @@ public class HttpUtils {
      * @param <T>
      * @return
      */
-    public static <T> EasyCall<T> creatGetCall(String url, EasyWorkPresenter<T> presenter) {
+    public static <T> EasyCall<T> creatGetCall(Context context,String url, EasyWorkPresenter<T> presenter) {
         HashMap<String, String> header = new HashMap<>();
 //        header.put("Cache-Mode", CacheMode.LOAD_CACHE_ELSE_NETWORK);
         header.put("Cache-Mode", CacheMode.LOAD_NETWORK_ELSE_CACHE);
         header.put("Cache-Control", "max-age=10");
         okhttp3.Request request = OKHttp3RequestFactory.createGetRequest(url, header);
-        return EasyHttpUtils.getInstance().executeHttpRequestToCall(request, presenter.getDeliverResultType());
+        return EasyHttpUtils.get(context).executeHttpRequestToCall(request, presenter.getDeliverResultType());
+//        return EasyHttpUtils.getInstance().executeHttpRequestToCall(request, presenter.getDeliverResultType());
     }
 
     /**
@@ -104,13 +106,14 @@ public class HttpUtils {
      * @param <T>
      * @return
      */
-    public static <T> EasyCall<T> creatGetCall(String url, Type type) {
+    public static <T> EasyCall<T> creatGetCall(Context context,String url, Type type) {
         HashMap<String, String> header = new HashMap<>();
 //        header.put("Cache-Mode", CacheMode.LOAD_CACHE_ELSE_NETWORK);
         header.put("Cache-Mode", CacheMode.LOAD_NETWORK_ELSE_CACHE);
         header.put("Cache-Control", "max-age=10");
         okhttp3.Request request = OKHttp3RequestFactory.createGetRequest(url, header);
-        return EasyHttpUtils.getInstance().executeHttpRequestToCall(request, type);
+        return EasyHttpUtils.get(context).executeHttpRequestToCall(request, type);
+//        return EasyHttpUtils.getInstance().executeHttpRequestToCall(request, type);
     }
 
 
@@ -171,9 +174,9 @@ public class HttpUtils {
      * @param listener 进度监听接口
      * @return
      */
-    public static EasyCall<OkHttpDownLoadEasyCall.DownLoadResult> creatGetDownLoadCall(String url, Map<String, String> header, File file, final ProgressListener listener) {
+    public static EasyCall<OkHttpDownLoadEasyCall.DownLoadResult> creatGetDownLoadCall(Context context,String url, Map<String, String> header, File file, final ProgressListener listener) {
         okhttp3.Request request = OKHttp3RequestFactory.createGetRequest(url, header);
-        OkHttpClient client = EasyHttpUtils.getInstance().getOkHttpClient().newBuilder().addNetworkInterceptor(new Interceptor() {
+        OkHttpClient client = EasyHttpUtils.get(context).getOkHttpClient().newBuilder().addNetworkInterceptor(new Interceptor() {
             @Override
             public Response intercept(Chain chain) throws IOException {
                 Response originalResponse = chain.proceed(chain.request());

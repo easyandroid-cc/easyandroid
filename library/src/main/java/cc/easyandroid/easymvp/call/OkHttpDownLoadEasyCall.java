@@ -29,7 +29,7 @@ public class OkHttpDownLoadEasyCall implements EasyCall<OkHttpDownLoadEasyCall.D
     }
 
     @Override
-    public void enqueue(final EasyHttpStateCallback<DownLoadResult> callback) {
+    public void enqueue(final EasyHttpStateCallback<DownLoadResult> callback,String tag) {
         synchronized (this) {
             if (executed)
                 throw new IllegalStateException("Already executed");

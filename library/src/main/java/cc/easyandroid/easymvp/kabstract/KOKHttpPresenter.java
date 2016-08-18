@@ -44,7 +44,7 @@ public abstract class KOKHttpPresenter<V extends ISimpleView<T>, T> extends KPre
             throw new IllegalArgumentException("please Override onCreateCall method, And can not be null，");
         }
         easyCall = originalEasyCall;
-        originalEasyCall.enqueue(new OKEasyHttpStateCallback(mController, tag));
+        originalEasyCall.enqueue(new OKEasyHttpStateCallback(mController, tag),null);
     }
 
     public void execute() {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package cc.easyandroid.easyclean.domain.easyhttp;
+package cc.easyandroid.easyclean.domain.easywork;
 
 import cc.easyandroid.easyclean.presentation.presenter.base.EasyIPresenter;
 import cc.easyandroid.easyclean.presentation.view.IEasyView;
@@ -22,7 +22,7 @@ import cc.easyandroid.easyclean.presentation.view.IEasyView;
 /**
  * This specifies the contract between the view and the presenter.
  */
-public interface EasyHttpContract {
+public interface EasyWorkContract {
 
     interface View<T> extends IEasyView {
 
@@ -39,9 +39,9 @@ public interface EasyHttpContract {
         void onSuccess(Object tag, final T results);
     }
 
-    interface Presenter<T> extends EasyIPresenter<EasyHttpContract.View<T>> {
+    interface Presenter<T> extends EasyIPresenter<EasyWorkContract.View<T>> {
 
-        void execute(EasyHttpUseCase.RequestValues requestValues);
+        void execute(EasyWorkUseCase.RequestValues requestValues);
 
         void reExecute();
 

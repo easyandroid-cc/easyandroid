@@ -25,13 +25,19 @@ import okhttp3.Request;
 public class EasyHttpUtils {
     static final EasyHttpUtils mInstance = new EasyHttpUtils();
     private OkHttpClient mOkHttpClient;
-    public Gson mGson;
+    private Gson mGson;
     private StateCodeHandler stateCodeProcessing;
     private DiskBasedCache easyHttpCache;
 
     private EasyHttpUtils() {
     }
 
+    /**
+     * 请使用 cc.easyandroid.easyhttp.EasyHttpUtils#get(android.content.Context)
+     *
+     * @return EasyHttpUtils
+     */
+    @Deprecated
     public static EasyHttpUtils getInstance() {
         return mInstance;
     }
@@ -45,13 +51,6 @@ public class EasyHttpUtils {
         mOkHttpClient = config.getOkHttpClient();
         stateCodeProcessing = config.getStateCodeProcessing();
 
-        // cookie enabled
-//        mOkHttpClient.setHostnameVerifier(new HostnameVerifier() {
-//            @Override
-//            public boolean verify(String hostname, SSLSession session) {
-//                return true;
-//            }
-//        });
     }
 
 
@@ -71,18 +70,24 @@ public class EasyHttpUtils {
         } else {
             responseConverter = getConverterFactory().getGsonConverter(type);
         }
-        EasyCall<T> easyCall = new OkHttpEasyCall<T>(mOkHttpClient, responseConverter, request);
+        EasyCall<T> easyCall = new OkHttpEasyCall<>(mOkHttpClient, responseConverter, request);
 
         return easyCall;
     }
 
+    public <T> EasyCall<T> executeHttpRequestToCall(Request request, Converter<T> responseConverter) {
+        checkNull(mOkHttpClient);
+        EasyCall<T> easyCall = new OkHttpEasyCall<>(mOkHttpClient, responseConverter, request);
+        return easyCall;
+    }
+
     /**
-     * 使用就的 OkHttpClient
+     * 使用自己的 OkHttpClient
      *
-     * @param client
-     * @param request
-     * @param type
-     * @param <T>
+     * @param client  client
+     * @param request request
+     * @param type    type
+     * @param <T>     type
      * @return
      */
     public <T> EasyCall<T> executeHttpRequestToCall(OkHttpClient client, Request request, Type type) {
@@ -128,6 +133,7 @@ public class EasyHttpUtils {
     }
 
     private static EasyHttpUtils easyHttpUtils;
+
     /**
      * Get the singleton.
      *
@@ -144,7 +150,7 @@ public class EasyHttpUtils {
                     for (EasyHttpUtilsModule module : modules) {
                         module.applyOptions(applicationContext, builder);
                     }
-                    easyHttpUtils =  new EasyHttpUtils();
+                    easyHttpUtils = new EasyHttpUtils();
                     easyHttpUtils.init(builder.build());
 
                     for (EasyHttpUtilsModule module : modules) {

@@ -40,7 +40,7 @@ public class DownLoadActivity extends Activity implements ISimpleCallView<OkHttp
 //        String url = "http://www.anzhi.com";
 //        String url = "http://hk.qfang.com/qfang-api/mobile/common/query/getVerifyCodeImg?1" + System.currentTimeMillis();
         File file = new File(Environment.getExternalStorageDirectory(), "xxx4.apk");
-        return HttpUtils.creatGetDownLoadCall(url, null, file, this);
+        return HttpUtils.creatGetDownLoadCall(this,url, null, file, this);
     }
 
     @Override

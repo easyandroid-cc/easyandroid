@@ -18,24 +18,25 @@ package cc.easyandroid.easyclean.presentation.presenter;
 
 import cc.easyandroid.easyclean.UseCase;
 import cc.easyandroid.easyclean.UseCaseHandler;
-import cc.easyandroid.easyclean.domain.easyhttp.EasyHttpContract;
-import cc.easyandroid.easyclean.domain.easyhttp.EasyHttpUseCase;
+import cc.easyandroid.easyclean.domain.easywork.EasyWorkContract;
+import cc.easyandroid.easyclean.domain.easywork.EasyWorkUseCase;
 import cc.easyandroid.easyclean.presentation.presenter.base.EasyBasePresenter;
 import cc.easyandroid.easylog.EALog;
 
 /**
- * Listens to user actions from the UI ({@link EasyHttpContract}), retrieves the data and updates
+ * Listens to user actions from the UI ({@link EasyWorkContract}), retrieves the data and updates
  * the UI as required. view by  attachView(view) method incoming;
- * 所有http请求的presenter都类似，EasyHttpPresenter是将他们封装的一个通用的模块
+ * 将   触发时间--后台任务--返回结果 这样的工作流的一个封装
+ * EasyCall 目前有几个实现  CallToEasyCall，EasyThreadCall，OkHttpEasyCall，OkHttpDownLoadEasyCall
  */
-public class EasyHttpPresenter<T> extends EasyBasePresenter<EasyHttpContract.View<T>> implements EasyHttpContract.Presenter<T> {
+public class EasyWorkPresenter<T> extends EasyBasePresenter<EasyWorkContract.View<T>> implements EasyWorkContract.Presenter<T> {
 
     protected final UseCaseHandler mUseCaseHandler = UseCaseHandler.getInstance();
-    private final EasyHttpUseCase<T> mEasyHttpUseCase;
+    private final EasyWorkUseCase<T> mEasyWorkUseCase;
 
 
-    public EasyHttpPresenter(EasyHttpUseCase<T> easyHttpUseCase) {
-        mEasyHttpUseCase = easyHttpUseCase;
+    public EasyWorkPresenter(EasyWorkUseCase<T> easyWorkUseCase) {
+        mEasyWorkUseCase = easyWorkUseCase;
     }
 
     /**
@@ -44,7 +45,7 @@ public class EasyHttpPresenter<T> extends EasyBasePresenter<EasyHttpContract.Vie
      * @param requestValues 用户请求的参数
      */
     @Override
-    public void execute(EasyHttpUseCase.RequestValues requestValues) {//这里是执行网络请求
+    public void execute(EasyWorkUseCase.RequestValues requestValues) {//这里是执行网络请求
         setRequestValues(requestValues);
         handleRequest(requestValues);
     }
@@ -54,15 +55,15 @@ public class EasyHttpPresenter<T> extends EasyBasePresenter<EasyHttpContract.Vie
         execute();
     }
 
-    private EasyHttpUseCase.RequestValues mRequestValues;
+    private EasyWorkUseCase.RequestValues mRequestValues;
 
-    private void handleRequest(final EasyHttpUseCase.RequestValues requestValues) {
+    private void handleRequest(final EasyWorkUseCase.RequestValues requestValues) {
         if (isViewAttached())
             getView().onStart(requestValues.getTag());
-        //mEasyHttpUseCase 自己会判断是否有call在运行，如果有，他会自己取消之前的
-        mUseCaseHandler.execute(mEasyHttpUseCase, requestValues, new UseCase.UseCaseCallback<EasyHttpUseCase.ResponseValue<T>>() {
+        //mEasyWorkUseCase 自己会判断是否有call在运行，如果有，他会自己取消之前的
+        mUseCaseHandler.execute(mEasyWorkUseCase, requestValues, new UseCase.UseCaseCallback<EasyWorkUseCase.ResponseValue<T>>() {
             @Override
-            public void onSuccess(EasyHttpUseCase.ResponseValue<T> response) {
+            public void onSuccess(EasyWorkUseCase.ResponseValue<T> response) {
                 if (isViewAttached())
                     getView().onSuccess(requestValues.getTag(), response.getData());
             }
@@ -75,7 +76,7 @@ public class EasyHttpPresenter<T> extends EasyBasePresenter<EasyHttpContract.Vie
         });
     }
 
-    public void setRequestValues(EasyHttpUseCase.RequestValues requestValues) {
+    public void setRequestValues(EasyWorkUseCase.RequestValues requestValues) {
         mRequestValues = requestValues;
     }
 
@@ -84,9 +85,9 @@ public class EasyHttpPresenter<T> extends EasyBasePresenter<EasyHttpContract.Vie
         if (mRequestValues != null) {
             handleRequest(mRequestValues);
         } else {
-            throw new IllegalArgumentException("must be call setRequestValues(EasyHttpUseCase.RequestValues<T> requestValues) method");
+            throw new IllegalArgumentException("must be call setRequestValues(EasyWorkUseCase.RequestValues<T> requestValues) method");
         }
-        EALog.e("EasyHttpPresenter", "execute");
+        EALog.e("EasyWorkPresenter", "execute");
     }
 
     @Override
@@ -97,11 +98,11 @@ public class EasyHttpPresenter<T> extends EasyBasePresenter<EasyHttpContract.Vie
     @Override
     protected void onCancel() {
         super.onCancel();
-        mEasyHttpUseCase.cancle();
+        mEasyWorkUseCase.cancle();
     }
 
     @Override
-    protected void onAttachView(EasyHttpContract.View<T> view) {
+    protected void onAttachView(EasyWorkContract.View<T> view) {
         super.onAttachView(view);
 //        Type viewType = TypeUtils.newInstance(view).getViewType();
     }

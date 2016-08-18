@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package cc.easyandroid.easyclean.domain.easyhttp;
+package cc.easyandroid.easyclean.domain.easywork;
 
 import cc.easyandroid.easyclean.UseCase;
-import cc.easyandroid.easyclean.repository.EasyHttpRepository;
+import cc.easyandroid.easyclean.repository.EasyWorkDataSource;
+import cc.easyandroid.easyclean.repository.EasyWorkRepository;
 import cc.easyandroid.easycore.EAResult;
 import cc.easyandroid.easycore.EasyCall;
 import cc.easyandroid.easycore.EasyResponse;
@@ -27,24 +28,24 @@ import cc.easyandroid.easymvp.exception.EasyException;
 /**
  * EasyHttp用例
  */
-public class EasyHttpUseCase<T> extends UseCase<EasyHttpUseCase.RequestValues, EasyHttpUseCase.ResponseValue<T>> {
+public class EasyWorkUseCase<T> extends UseCase<EasyWorkUseCase.RequestValues, EasyWorkUseCase.ResponseValue<T>> {
 
     private volatile EasyCall<T> lastEasyCall;//记录最后一个easycall
-    public final EasyHttpRepository mEasyHttpRepository;
+    public final EasyWorkDataSource mEasyWorkDataSource;
 
     private void cancelRequest() {
         if (lastEasyCall != null && !lastEasyCall.isCancel()) {
             lastEasyCall.cancel();
         }
     }
+
     @Override
-    public void cancle(){
+    public void cancle() {
         cancelRequest();
     }
 
-    public
-    EasyHttpUseCase(EasyHttpRepository easyHttpRepository) {
-        mEasyHttpRepository = easyHttpRepository;
+    public EasyWorkUseCase(EasyWorkDataSource easyWorkDataSource) {
+        mEasyWorkDataSource = easyWorkDataSource;
     }
 
     @Override
@@ -55,7 +56,7 @@ public class EasyHttpUseCase<T> extends UseCase<EasyHttpUseCase.RequestValues, E
          * 请求后每次记住easycall，防止重复调用，第二次进来会检测之前的是否完成，如果没有就调用cancelRequest取消之前的请求
          */
         lastEasyCall = easyCall;
-        mEasyHttpRepository.executeRequest(easyCall, new EasyHttpRepository.HttpRequestCallback<T>() {
+        mEasyWorkDataSource.executeRequest(easyCall, new EasyWorkRepository.HttpRequestCallback<T>() {
             @Override
             public void onResponse(EasyResponse<T> easyResponse) {
                 T t = easyResponse != null ? easyResponse.body() : null;
@@ -72,31 +73,37 @@ public class EasyHttpUseCase<T> extends UseCase<EasyHttpUseCase.RequestValues, E
                         return;
                     }
                 }
-                getUseCaseCallback().onSuccess(new EasyHttpUseCase.ResponseValue<>(values.getTag(), t));
+                getUseCaseCallback().onSuccess(new EasyWorkUseCase.ResponseValue<>(values.getTag(), t));
             }
 
             @Override
             public void onFailure(Throwable t) {
                 getUseCaseCallback().onError(t);
             }
-        });
+        },values.getCacheMode());
     }
 
     public static final class RequestValues<T> implements UseCase.RequestValues {
-        private final EasyCall<T> easyCall;
-        private final Object tag;
+        private final EasyCall<T> mEasyCall;
+        private final Object mTag;
+        private final String mCacheMode;
 
-        public RequestValues(Object tag, EasyCall<T> easyCall) {
-            this.tag = tag;
-            this.easyCall = easyCall;
+        public RequestValues(Object tag, EasyCall<T> easyCall, String cacheMode) {
+            this.mTag = tag;
+            this.mEasyCall = easyCall;
+            this.mCacheMode = cacheMode;
         }
 
         public Object getTag() {
-            return tag;
+            return mTag;
         }
 
         public EasyCall<T> getEasyCall() {
-            return easyCall;
+            return mEasyCall;
+        }
+
+        public String getCacheMode() {
+            return mCacheMode;
         }
     }
 

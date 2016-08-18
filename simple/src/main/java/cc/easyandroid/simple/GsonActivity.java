@@ -33,7 +33,7 @@ public class GsonActivity extends Activity implements ISimpleCallView<QfangResul
 
     @Override
     public EasyCall<QfangResult<PagingResult<PriceInfo>>> onCreateCall(Object presenterId, Bundle bundle) {
-        return HttpUtils.creatGetCall(url, presenter);
+        return HttpUtils.creatGetCall(this,url, presenter);
     }
 
     @Override

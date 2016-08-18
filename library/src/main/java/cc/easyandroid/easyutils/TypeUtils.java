@@ -4,7 +4,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.List;
 
-import cc.easyandroid.easyclean.domain.easyhttp.EasyHttpContract;
+import cc.easyandroid.easyclean.domain.easywork.EasyWorkContract;
 import cc.easyandroid.easyclean.presentation.view.IEasyView;
 
 /**
@@ -102,7 +102,7 @@ public class TypeUtils {
         System.out.println("dddddddddddddddddddd---" + TypeUtils.newInstance(view).getViewType());
     }
 
-    public static abstract class ChildView<T> implements EasyHttpContract.View<T> {
+    public static abstract class ChildView<T> implements EasyWorkContract.View<T> {
 
     }
 }

@@ -15,7 +15,7 @@ import okhttp3.Response;
 /**
  * http的数据仓库，其实数据最终来自Model也就是这里的easycall
  */
-public class EasyHttpRepository implements EasyHttpDataSource {
+public class EasyWorkRepository implements EasyWorkDataSource {
 
     public <T> void executeRequest(EasyCall<T> easyCall, final HttpRequestCallback<T> callback) {
         easyCall.enqueue(new EasyHttpStateCallback<T>() {
@@ -28,7 +28,21 @@ public class EasyHttpRepository implements EasyHttpDataSource {
             public void onFailure(Throwable t) {
                 callback.onFailure(t);
             }
-        });
+        }, null);
+    }
+
+    public <T> void executeRequest(EasyCall<T> easyCall, final HttpRequestCallback<T> callback, String cacheMode) {
+        easyCall.enqueue(new EasyHttpStateCallback<T>() {
+            @Override
+            public void onResponse(EasyResponse<T> easyResponse) {
+                callback.onResponse(easyResponse);
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                callback.onFailure(t);
+            }
+        }, cacheMode);
     }
 
     @Override
@@ -44,7 +58,7 @@ public class EasyHttpRepository implements EasyHttpDataSource {
             public void onFailure(Throwable t) {
                 callback.onFailure(t);
             }
-        });
+        }, null);
         return easyCall;
     }
 

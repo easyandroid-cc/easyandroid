@@ -23,7 +23,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         listview = (ListView) findViewById(R.id.listview);
         listview.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, str_name));
         listview.setOnItemClickListener(this);
-        SimpleSqlite simpleSqlite = new SimpleSqlite(this);
+        SimpleSqlite simpleSqlite = new SimpleSqlite(this.getApplicationContext());
         DataAccesObject<Tab> dataAccesObject = simpleSqlite.getDao("a1");
         try {
             dataAccesObject.insert(new Tab());
@@ -34,6 +34,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         } catch (Exception e) {
             e.printStackTrace();
         }
+//        simpleSqlite.
     }
 
 

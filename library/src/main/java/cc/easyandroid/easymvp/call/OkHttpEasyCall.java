@@ -86,7 +86,7 @@ public class OkHttpEasyCall<T> implements EasyCall<T> {
     }
 
     @Override
-    public void enqueue(final EasyHttpStateCallback<T> callback) {
+    public void enqueue(final EasyHttpStateCallback<T> callback, String tag) {
         synchronized (this) {
             if (executed)
                 throw new IllegalStateException("Already enqueue");
@@ -98,8 +98,14 @@ public class OkHttpEasyCall<T> implements EasyCall<T> {
 //                callback.start();
 //            }
 //        });
+
+        String cacheMode;//= getCacheMode(request);
         final Request request = createRequest();
-        String cacheMode = getCacheMode(request);
+        if (!TextUtils.isEmpty(tag)) {
+            cacheMode = tag;
+        } else {
+            cacheMode = getCacheMode(request);
+        }
         // ----------------------------------------------------------------------cgp
         if (!TextUtils.isEmpty(cacheMode)) {
             switch (cacheMode) {

@@ -24,7 +24,7 @@ public class StringActivity extends Activity implements ISimpleCallView<String> 
 
     @Override
     public EasyCall<String> onCreateCall(Object presenterId, Bundle bundle) {
-        return HttpUtils.creatGetCall("http://www.baidu.com", presenter);
+        return HttpUtils.creatGetCall(this,"http://www.baidu.com", presenter);
     }
 
     @Override

@@ -6,19 +6,20 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import cc.easyandroid.easyclean.domain.easyhttp.EasyHttpContract;
-import cc.easyandroid.easyclean.domain.easyhttp.EasyHttpUseCase;
-import cc.easyandroid.easyclean.presentation.presenter.EasyHttpPresenter;
-import cc.easyandroid.easyclean.repository.EasyHttpRepository;
+import cc.easyandroid.easyclean.domain.easywork.EasyWorkContract;
+import cc.easyandroid.easyclean.domain.easywork.EasyWorkUseCase;
+import cc.easyandroid.easyclean.presentation.presenter.EasyWorkPresenter;
+import cc.easyandroid.easyclean.repository.EasyWorkRepository;
 import cc.easyandroid.easycore.EasyCall;
+import cc.easyandroid.easyhttp.core.CacheMode;
 import cc.easyandroid.easyutils.EasyToast;
 import cc.easyandroid.easyutils.TypeUtils;
 import cc.easyandroid.simple.pojo.PagingResult;
 import cc.easyandroid.simple.pojo.PriceInfo;
 import cc.easyandroid.simple.pojo.QfangResult;
 
-public class Gson2Activity extends Activity implements EasyHttpContract.View<QfangResult<PagingResult<PriceInfo>>> {
-    EasyHttpPresenter<QfangResult<PagingResult<PriceInfo>>> presenter = new EasyHttpPresenter(new EasyHttpUseCase(new EasyHttpRepository()));
+public class Gson2Activity extends Activity implements EasyWorkContract.View<QfangResult<PagingResult<PriceInfo>>> {
+    EasyWorkPresenter<QfangResult<PagingResult<PriceInfo>>> presenter = new EasyWorkPresenter(new EasyWorkUseCase(new EasyWorkRepository()));
     TextView textView;
 
     @Override
@@ -27,8 +28,8 @@ public class Gson2Activity extends Activity implements EasyHttpContract.View<Qfa
         setContentView(R.layout.activity_string);
         textView = (TextView) findViewById(R.id.text);
         presenter.attachView(this);
-        EasyCall<QfangResult<PagingResult<PriceInfo>>> easyCall = HttpUtils.creatGetCall(url, TypeUtils.newInstance(this).getViewType());
-        presenter.execute(new EasyHttpUseCase.RequestValues("测试1", easyCall));
+        EasyCall<QfangResult<PagingResult<PriceInfo>>> easyCall = HttpUtils.creatGetCall(this,url, TypeUtils.newInstance(this).getViewType());
+        presenter.execute(new EasyWorkUseCase.RequestValues("测试1", easyCall, CacheMode.LOAD_CACHE_ELSE_NETWORK));
     }
 
     String url = "http://hk.qfang.com/qfang-api/mobile/common/query/querySalePriceCondition";

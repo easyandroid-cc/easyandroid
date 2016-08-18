@@ -20,11 +20,13 @@ import java.lang.reflect.Type;
 import cc.easyandroid.easycore.EasyCall;
 import cc.easyandroid.easycore.EasyResponse;
 
-public interface EasyHttpDataSource {
+public interface EasyWorkDataSource {
 
     <T> void executeRequest(EasyCall<T> easyCall, final HttpRequestCallback<T> callback);
 
     <T> EasyCall<T> executeRequest(okhttp3.Request request, Type type, HttpRequestCallback<T> callback);
+
+    <T> void executeRequest(EasyCall<T> easyCall, final HttpRequestCallback<T> callback, String cacheMode);
 
     interface HttpRequestCallback<T> {
         void onResponse(EasyResponse<T> easyResponse);

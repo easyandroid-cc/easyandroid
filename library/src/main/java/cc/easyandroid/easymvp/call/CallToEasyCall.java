@@ -76,7 +76,7 @@ public class CallToEasyCall<T> implements EasyCall<T> {
     }
 
     @Override
-    public void enqueue(final EasyHttpStateCallback<T> callback) {
+    public void enqueue(final EasyHttpStateCallback<T> callback,String tag) {
         synchronized (this) {
             if (executed)
                 throw new IllegalStateException("Already enqueue");

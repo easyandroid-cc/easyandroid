@@ -16,7 +16,7 @@
 package cc.easyandroid.easycore;
 
 public interface EasyCall<T> {
-    void enqueue(EasyHttpStateCallback<T> callback);//子线程执行
+    void enqueue(EasyHttpStateCallback<T> callback,String tag);//子线程执行
 
     void cancel();
 

@@ -24,6 +24,9 @@
         <activity android:name=".DownLoadActivity" />
         <activity android:name=".UpLoadActivity" />
         <activity android:name=".ThreadActivity"></activity>
+        <meta-data
+            android:name="cc.easyandroid.simple.Module"
+            android:value="GlideModule" />
     </application>
 
 </manifest>
