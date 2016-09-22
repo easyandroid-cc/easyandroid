@@ -24,6 +24,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import com.google.gson.Gson;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 import cc.easyandroid.easydb.abs.DataAccesObject;
@@ -50,7 +51,7 @@ public class SQLiteDelegate<T extends EasyDbObject> implements DataAccesObject<T
 
     @Override
     public void insert(T dto) throws Exception {
-        SQLiteDatabase db=getDb();
+        SQLiteDatabase db = getDb();
         ContentValues contentValues = new ContentValues();
         contentValues.put(ID, dto.buildKeyColumn());
         contentValues.put(CREATEDTIME, System.currentTimeMillis());
@@ -62,7 +63,7 @@ public class SQLiteDelegate<T extends EasyDbObject> implements DataAccesObject<T
 
     @Override
     public void insertAll(ArrayList<T> arrayList) throws Exception {
-        SQLiteDatabase db=getDb();
+        SQLiteDatabase db = getDb();
         try {
             db.beginTransaction();
             for (int i = 0; i < arrayList.size(); i++) {
@@ -76,8 +77,8 @@ public class SQLiteDelegate<T extends EasyDbObject> implements DataAccesObject<T
     }
 
     @Override
-    public T findById(String id) throws Exception {
-        SQLiteDatabase db=getDb();
+    public T findById(String id, Type type) throws Exception {
+        SQLiteDatabase db = getDb();
         String selection = ID + "=?";
         String[] selectionArgs = {id};
         String orderBy = CREATEDTIME + " " + "DESC";//
@@ -86,7 +87,7 @@ public class SQLiteDelegate<T extends EasyDbObject> implements DataAccesObject<T
         try {
             if (cursor.moveToFirst()) {
                 String gson = cursor.getString(cursor.getColumnIndex("gson"));
-                easyDbObject = GSON.fromJson(gson, clazz);
+                easyDbObject = GSON.fromJson(gson, type);
             }
         } catch (Exception e) {
             throw new SQLiteException("Error findAllFromTabName " + tabName);
@@ -98,10 +99,15 @@ public class SQLiteDelegate<T extends EasyDbObject> implements DataAccesObject<T
         return easyDbObject;
     }
 
+    @Override
+    public T findById(String id) throws Exception {
+        return findById(id, clazz);
+    }
+
 
     @Override
     public synchronized boolean delete(String id) throws Exception {
-        SQLiteDatabase db=getDb();
+        SQLiteDatabase db = getDb();
         String whereClause = ID + "=?";
         String[] whereArgs = {id};
         int confirm = db.delete(tabName, whereClause, whereArgs);
@@ -110,35 +116,20 @@ public class SQLiteDelegate<T extends EasyDbObject> implements DataAccesObject<T
 
     @Override
     public synchronized boolean deleteAll() throws Exception {
-        SQLiteDatabase db=getDb();
+        SQLiteDatabase db = getDb();
         int confirm = db.delete(tabName, null, null);
         return confirm != 0;
     }
 
-    /**
-     * @param order eg "_id" DESC  时间正序还是倒序
-     * @return Cursor
-     */
     @Override
-    public Cursor findAllCursor(String order) {
-        SQLiteDatabase db=getDb();
-        String orderBy = CREATEDTIME + " " + order;
-        return db.query(tabName, null, null, null, null, null, orderBy);
-    }
-
-    /**
-     * @param order eg "_id" DESC  时间正序还是倒序
-     * @return ArrayList
-     */
-    @Override
-    public ArrayList<T> findAllFromTabName(String order) throws Exception {
-        Cursor cursor = findAllCursor(order);
+    public ArrayList<T> findAllFromTabName(String orderBy, Type type) throws Exception {
+        Cursor cursor = findAllCursor(orderBy);
         ArrayList<T> list = new ArrayList<>();
         try {
             if (cursor.moveToFirst()) {
                 do {
                     String gson = cursor.getString(cursor.getColumnIndex("gson"));
-                    T t = GSON.fromJson(gson, clazz);
+                    T t = GSON.fromJson(gson, type);
                     list.add(t);
                 } while (cursor.moveToNext());
             }
@@ -150,6 +141,26 @@ public class SQLiteDelegate<T extends EasyDbObject> implements DataAccesObject<T
             }
         }
         return list;
+    }
+
+    /**
+     * @param order eg "_id" DESC  时间正序还是倒序
+     * @return Cursor
+     */
+    @Override
+    public Cursor findAllCursor(String order) {
+        SQLiteDatabase db = getDb();
+        String orderBy = CREATEDTIME + " " + order;
+        return db.query(tabName, null, null, null, null, null, orderBy);
+    }
+
+    /**
+     * @param orderBy eg "_id" DESC  时间正序还是倒序
+     * @return ArrayList
+     */
+    @Override
+    public ArrayList<T> findAllFromTabName(String orderBy) throws Exception {
+        return findAllFromTabName(orderBy, clazz);
     }
 
     private SQLiteDatabase mSQLiteDatabase;
