@@ -25,8 +25,6 @@ import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 
 import cc.easyandroid.easycache.EasyHttpCache;
-import cc.easyandroid.easycore.EAResult;
-import cc.easyandroid.easyhttp.core.StateCodeHandler;
 import cc.easyandroid.easylog.EALog;
 import okhttp3.MediaType;
 import okhttp3.Request;
@@ -37,18 +35,11 @@ public final class GsonConverter<T> implements Converter<T> {
     public static final MediaType MEDIA_TYPE = MediaType.parse("application/json; charset=UTF-8");
     public static final String UTF8 = "UTF-8";
     private final TypeAdapter<T> typeAdapter;
-//    private final Cache cache;
-    private final StateCodeHandler stateCodeProcessing;
 
-    public GsonConverter(TypeAdapter<T> adapter,  StateCodeHandler stateCodeProcessing) {
+    public GsonConverter(TypeAdapter<T> adapter) {
         this.typeAdapter = adapter;
-//        this.cache = cache;
-        this.stateCodeProcessing = stateCodeProcessing;
     }
 
-//    public Cache getCache() {
-//        return cache;
-//    }
 
     public T fromBody(ResponseBody value, Request request, boolean fromNetWork) throws IOException {
         String string = value.string();
@@ -60,27 +51,15 @@ public final class GsonConverter<T> implements Converter<T> {
             EALog.d(" Finally converted to : %1$s", t.toString());
             String mimeType = value.contentType().toString();
             parseCache(request, t, string, mimeType, fromNetWork);
-            parseStateCode(t);
             return t;
         } finally {
             closeQuietly(reader);
         }
     }
 
-    private void parseStateCode(T object) {
-        if (object instanceof EAResult) {
-            if (stateCodeProcessing != null) {
-                EAResult eaResult = (EAResult) object;
-                if (eaResult != null) {
-                    stateCodeProcessing.handleCode(eaResult.getEACode());
-                }
-            }
-        }
-    }
-
     private void parseCache(Request request, T object, String string, String mimeType, boolean fromNetWork) throws UnsupportedEncodingException {
-        if(fromNetWork){
-            EasyHttpCache.getInstance().put(request,object,string.getBytes(UTF8));
+        if (fromNetWork) {
+            EasyHttpCache.getInstance().put(request, object, string.getBytes(UTF8));
         }
     }
 

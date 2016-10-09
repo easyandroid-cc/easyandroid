@@ -10,7 +10,6 @@ import java.util.List;
 
 import cc.easyandroid.easycore.EasyCall;
 import cc.easyandroid.easyhttp.config.EAConfiguration;
-import cc.easyandroid.easyhttp.core.StateCodeHandler;
 import cc.easyandroid.easyhttp.core.converter.Converter;
 import cc.easyandroid.easyhttp.core.converter.ConverterFactory;
 import cc.easyandroid.easymvp.call.OkHttpDownLoadEasyCall;
@@ -24,7 +23,6 @@ public class EasyHttpUtils {
     static final EasyHttpUtils mInstance = new EasyHttpUtils();
     private OkHttpClient mOkHttpClient;
     private Gson mGson;
-    private StateCodeHandler stateCodeProcessing;
     private EasyHttpUtils() {
 
     }
@@ -42,7 +40,6 @@ public class EasyHttpUtils {
         }
         mGson = config.getGson();
         mOkHttpClient = config.getOkHttpClient();
-        stateCodeProcessing = config.getStateCodeProcessing();
 
     }
 
@@ -51,6 +48,9 @@ public class EasyHttpUtils {
         return mOkHttpClient;
     }
 
+    public Gson getGson() {
+        return mGson;
+    }
 
     public <T> EasyCall<T> executeHttpRequestToCall(Request request, Type type) {
         checkNull(mOkHttpClient);
@@ -101,15 +101,13 @@ public class EasyHttpUtils {
 
 
     ConverterFactory converterFactory;// =KGsonConverterFactory.create(mGson,
-    // cache);
 
     public ConverterFactory getConverterFactory() {
         if (converterFactory == null) {
             synchronized (EasyHttpUtils.class) {
                 if (converterFactory == null) {
                     checkNull(mGson);
-//                    checkNull(cache);
-                    converterFactory = ConverterFactory.create(mGson,   stateCodeProcessing);
+                    converterFactory = ConverterFactory.create(mGson   );
                 }
             }
         }
@@ -130,7 +128,7 @@ public class EasyHttpUtils {
      * @return the singleton
      */
     @Deprecated
-    private static EasyHttpUtils get(Context context) {
+    public static EasyHttpUtils get(Context context) {
         if (easyHttpUtils == null) {
             synchronized (EasyHttpUtils.class) {
                 if (easyHttpUtils == null) {

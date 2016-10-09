@@ -21,9 +21,6 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 
-import cc.easyandroid.easycache.volleycache.Cache;
-import cc.easyandroid.easyhttp.core.StateCodeHandler;
-
 /**
  */
 public final class ConverterFactory {
@@ -31,30 +28,23 @@ public final class ConverterFactory {
      * Create an instance using a default {@link Gson} instance for conversion. Encoding to JSON and decoding from JSON (when no charset is specified by a header) will use UTF-8.
      */
     public static ConverterFactory create() {
-        return create(new Gson(), null);
+        return create(new Gson()  );
     }
 
     /**
      * Create an instance using {@code gson} for conversion. Encoding to JSON and decoding from JSON (when no charset is specified by a header) will use UTF-8.
      */
-    public static ConverterFactory create(Gson gson, StateCodeHandler stateCodeProcessing) {
-        return new ConverterFactory(gson, stateCodeProcessing);
+    public static ConverterFactory create(Gson gson   ) {
+        return new ConverterFactory(gson  );
     }
 
-    public static ConverterFactory create(Cache cache) {
-        return create(new Gson(), null);
-    }
 
     private final Gson gson;
-    //    private final Cache cache;
-    private final StateCodeHandler stateCodeProcessing;
 
-    private ConverterFactory(Gson gson, StateCodeHandler stateCodeProcessing) {
+    private ConverterFactory(Gson gson    ) {
         if (gson == null)
             throw new NullPointerException("gson == null");
         this.gson = gson;
-//        this.cache = cache;
-        this.stateCodeProcessing = stateCodeProcessing;
     }
 
     /**
@@ -62,7 +52,7 @@ public final class ConverterFactory {
      */
     public Converter<?> getGsonConverter(Type type) {
         TypeAdapter<?> adapter = gson.getAdapter(TypeToken.get(type));
-        return new GsonConverter<>(adapter, stateCodeProcessing);
+        return new GsonConverter<>(adapter  );
     }
 
     /**
