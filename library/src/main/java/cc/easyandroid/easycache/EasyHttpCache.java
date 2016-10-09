@@ -74,6 +74,11 @@ public class EasyHttpCache {
         return null;
     }
 
+    public void clearCache() {
+        checkNull(cache);
+        cache.clear();
+    }
+
     //将结果保存到cache中
     private void parseCache(Request request, Object object, byte[] data, String mimeType) throws UnsupportedEncodingException {
         okhttp3.CacheControl cacheControl = request.cacheControl();
