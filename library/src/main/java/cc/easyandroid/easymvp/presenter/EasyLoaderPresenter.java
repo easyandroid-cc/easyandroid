@@ -12,6 +12,7 @@ import cc.easyandroid.easymvp.view.ISimpleLoaderView;
  *
  * @param <T>
  */
+@Deprecated
 public class EasyLoaderPresenter<T> extends KLoaderPresenterAbstract<ISimpleLoaderView<T>, T> {
 
 	@Override

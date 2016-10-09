@@ -20,15 +20,14 @@ import android.text.TextUtils;
 import java.io.IOException;
 import java.util.Locale;
 
-import cc.easyandroid.easycache.volleycache.Cache;
-import cc.easyandroid.easycache.volleycache.Cache.Entry;
+import cc.easyandroid.easycache.EasyHttpCache;
 import cc.easyandroid.easycore.EasyCall;
 import cc.easyandroid.easycore.EasyExecutor;
 import cc.easyandroid.easycore.EasyHttpStateCallback;
 import cc.easyandroid.easycore.EasyResponse;
 import cc.easyandroid.easyhttp.core.CacheMode;
-import cc.easyandroid.easyhttp.core.converter.Converter;
 import cc.easyandroid.easyhttp.core.Utils;
+import cc.easyandroid.easyhttp.core.converter.Converter;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Protocol;
@@ -59,29 +58,17 @@ public class OkHttpEasyCall<T> implements EasyCall<T> {
     }
 
     private EasyResponse<T> execCacheRequest(Request request) {
-        Cache cache = responseConverter.getCache();
-        if (cache == null) {
-            return null;
-        }
-        Entry entry = cache.get(request.url().toString());// 充缓存中获取entry
-        if (entry == null) {
-            return null;
-        }
-        if (entry.isExpired()) {// 缓存过期了
-            return null;
-        }
-        if (entry.data != null) {// 如果有数据就使用缓存
-            MediaType contentType = MediaType.parse(entry.mimeType);
-            byte[] bytes = entry.data;
-            try {
-                okhttp3.Response rawResponse = new okhttp3.Response.Builder()//
-                        .code(200).request(request).protocol(Protocol.HTTP_1_1).body(ResponseBody.create(contentType, bytes)).build();
-                return parseResponse(rawResponse, request, false, false);
-            } catch (Exception e) {
-                e.printStackTrace();
+        try {
+            ResponseBody responseBody = EasyHttpCache.getInstance().get(request);
+            if (responseBody == null) {
+                return null;
             }
+            okhttp3.Response rawResponse = new okhttp3.Response.Builder()//
+                    .code(200).request(request).protocol(Protocol.HTTP_1_1).body(responseBody).build();
+            return parseResponse(rawResponse, request, false, false);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
         return null;
     }
 

@@ -8,8 +8,6 @@ import java.io.File;
 import java.lang.reflect.Type;
 import java.util.List;
 
-import cc.easyandroid.easycache.volleycache.Cache;
-import cc.easyandroid.easycache.volleycache.DiskBasedCache;
 import cc.easyandroid.easycore.EasyCall;
 import cc.easyandroid.easyhttp.config.EAConfiguration;
 import cc.easyandroid.easyhttp.core.StateCodeHandler;
@@ -27,17 +25,13 @@ public class EasyHttpUtils {
     private OkHttpClient mOkHttpClient;
     private Gson mGson;
     private StateCodeHandler stateCodeProcessing;
-    private DiskBasedCache easyHttpCache;
-
     private EasyHttpUtils() {
+
     }
 
     /**
-     * 请使用 cc.easyandroid.easyhttp.EasyHttpUtils#get(android.content.Context)
-     *
      * @return EasyHttpUtils
      */
-    @Deprecated
     public static EasyHttpUtils getInstance() {
         return mInstance;
     }
@@ -46,7 +40,6 @@ public class EasyHttpUtils {
         if (config == null) {
             new IllegalArgumentException("EAConfiguration config can not is null");
         }
-        easyHttpCache = config.getCache();
         mGson = config.getGson();
         mOkHttpClient = config.getOkHttpClient();
         stateCodeProcessing = config.getStateCodeProcessing();
@@ -58,9 +51,6 @@ public class EasyHttpUtils {
         return mOkHttpClient;
     }
 
-    public Cache getCache() {
-        return easyHttpCache;
-    }
 
     public <T> EasyCall<T> executeHttpRequestToCall(Request request, Type type) {
         checkNull(mOkHttpClient);
@@ -111,15 +101,15 @@ public class EasyHttpUtils {
 
 
     ConverterFactory converterFactory;// =KGsonConverterFactory.create(mGson,
-    // easyHttpCache);
+    // cache);
 
     public ConverterFactory getConverterFactory() {
         if (converterFactory == null) {
             synchronized (EasyHttpUtils.class) {
                 if (converterFactory == null) {
                     checkNull(mGson);
-                    checkNull(easyHttpCache);
-                    converterFactory = ConverterFactory.create(mGson, easyHttpCache, stateCodeProcessing);
+//                    checkNull(cache);
+                    converterFactory = ConverterFactory.create(mGson,   stateCodeProcessing);
                 }
             }
         }
@@ -139,7 +129,8 @@ public class EasyHttpUtils {
      *
      * @return the singleton
      */
-    public static EasyHttpUtils get(Context context) {
+    @Deprecated
+    private static EasyHttpUtils get(Context context) {
         if (easyHttpUtils == null) {
             synchronized (EasyHttpUtils.class) {
                 if (easyHttpUtils == null) {

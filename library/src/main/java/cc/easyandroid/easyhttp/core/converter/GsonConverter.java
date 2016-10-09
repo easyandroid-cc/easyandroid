@@ -24,9 +24,9 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 
-import cc.easyandroid.easycache.volleycache.Cache;
-import cc.easyandroid.easyhttp.core.StateCodeHandler;
+import cc.easyandroid.easycache.EasyHttpCache;
 import cc.easyandroid.easycore.EAResult;
+import cc.easyandroid.easyhttp.core.StateCodeHandler;
 import cc.easyandroid.easylog.EALog;
 import okhttp3.MediaType;
 import okhttp3.Request;
@@ -37,19 +37,18 @@ public final class GsonConverter<T> implements Converter<T> {
     public static final MediaType MEDIA_TYPE = MediaType.parse("application/json; charset=UTF-8");
     public static final String UTF8 = "UTF-8";
     private final TypeAdapter<T> typeAdapter;
-    private final Cache cache;
+//    private final Cache cache;
     private final StateCodeHandler stateCodeProcessing;
 
-    public GsonConverter(TypeAdapter<T> adapter, Cache cache, StateCodeHandler stateCodeProcessing) {
+    public GsonConverter(TypeAdapter<T> adapter,  StateCodeHandler stateCodeProcessing) {
         this.typeAdapter = adapter;
-        this.cache = cache;
+//        this.cache = cache;
         this.stateCodeProcessing = stateCodeProcessing;
     }
 
-    public Cache getCache() {
-        return cache;
-    }
-
+//    public Cache getCache() {
+//        return cache;
+//    }
 
     public T fromBody(ResponseBody value, Request request, boolean fromNetWork) throws IOException {
         String string = value.string();
@@ -60,7 +59,7 @@ public final class GsonConverter<T> implements Converter<T> {
             T t = typeAdapter.fromJson(reader);
             EALog.d(" Finally converted to : %1$s", t.toString());
             String mimeType = value.contentType().toString();
-            parseCache(request, t, string, mimeType,fromNetWork);
+            parseCache(request, t, string, mimeType, fromNetWork);
             parseStateCode(t);
             return t;
         } finally {
@@ -80,27 +79,8 @@ public final class GsonConverter<T> implements Converter<T> {
     }
 
     private void parseCache(Request request, T object, String string, String mimeType, boolean fromNetWork) throws UnsupportedEncodingException {
-        okhttp3.CacheControl cacheControl = request.cacheControl();
-        if (cacheControl != null && fromNetWork) {
-            if (!cacheControl.noCache() && !cacheControl.noStore()) {
-                if (object instanceof EAResult) {
-                    EAResult kResult = (EAResult) object;
-                    if (kResult != null && kResult.isSuccess()) {
-                        long now = System.currentTimeMillis();
-                        long maxAge = cacheControl.maxAgeSeconds();
-                        long softExpire = now + maxAge * 1000;
-                        EALog.d("缓存时长: %1$s秒", (softExpire - now) / 1000 + "");
-                        Cache.Entry entry = new Cache.Entry();
-                        entry.softTtl = softExpire;
-                        entry.ttl = entry.softTtl;
-                        // entry.serverDate = serverDate;
-                        // entry.responseHeaders = headers;
-                        entry.mimeType = mimeType;
-                        entry.data = string.getBytes(UTF8);
-                        cache.put(request.url().toString(), entry);
-                    }
-                }
-            }
+        if(fromNetWork){
+            EasyHttpCache.getInstance().put(request,object,string.getBytes(UTF8));
         }
     }
 
@@ -112,6 +92,4 @@ public final class GsonConverter<T> implements Converter<T> {
         } catch (IOException ignored) {
         }
     }
-
-
 }

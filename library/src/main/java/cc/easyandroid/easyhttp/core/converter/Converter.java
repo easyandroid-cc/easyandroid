@@ -17,7 +17,6 @@ package cc.easyandroid.easyhttp.core.converter;
 
 import java.io.IOException;
 
-import cc.easyandroid.easycache.volleycache.Cache;
 import okhttp3.Request;
 import okhttp3.ResponseBody;
 
@@ -27,7 +26,6 @@ import okhttp3.ResponseBody;
  */
 public interface Converter<T> {
     /**
-     *
      * @param value
      * @param request
      * @param fromNetWork 是否来自网络一般来自网络的才进行缓存
@@ -36,5 +34,5 @@ public interface Converter<T> {
      */
     T fromBody(ResponseBody value, Request request,boolean fromNetWork) throws IOException;
 
-    Cache getCache();
+//    Cache getCache();
 }

@@ -31,29 +31,29 @@ public final class ConverterFactory {
      * Create an instance using a default {@link Gson} instance for conversion. Encoding to JSON and decoding from JSON (when no charset is specified by a header) will use UTF-8.
      */
     public static ConverterFactory create() {
-        return create(new Gson(), null, null);
+        return create(new Gson(), null);
     }
 
     /**
      * Create an instance using {@code gson} for conversion. Encoding to JSON and decoding from JSON (when no charset is specified by a header) will use UTF-8.
      */
-    public static ConverterFactory create(Gson gson, Cache cache, StateCodeHandler stateCodeProcessing) {
-        return new ConverterFactory(gson, cache, stateCodeProcessing);
+    public static ConverterFactory create(Gson gson, StateCodeHandler stateCodeProcessing) {
+        return new ConverterFactory(gson, stateCodeProcessing);
     }
 
     public static ConverterFactory create(Cache cache) {
-        return create(new Gson(), cache, null);
+        return create(new Gson(), null);
     }
 
     private final Gson gson;
-    private final Cache cache;
+    //    private final Cache cache;
     private final StateCodeHandler stateCodeProcessing;
 
-    private ConverterFactory(Gson gson, Cache cache, StateCodeHandler stateCodeProcessing) {
+    private ConverterFactory(Gson gson, StateCodeHandler stateCodeProcessing) {
         if (gson == null)
             throw new NullPointerException("gson == null");
         this.gson = gson;
-        this.cache = cache;
+//        this.cache = cache;
         this.stateCodeProcessing = stateCodeProcessing;
     }
 
@@ -62,14 +62,14 @@ public final class ConverterFactory {
      */
     public Converter<?> getGsonConverter(Type type) {
         TypeAdapter<?> adapter = gson.getAdapter(TypeToken.get(type));
-        return new GsonConverter<>(adapter, cache, stateCodeProcessing);
+        return new GsonConverter<>(adapter, stateCodeProcessing);
     }
 
     /**
      * Create a converter for {@code type}.
      */
     public Converter<?> getStringConverter() {
-        return new StringConverter(cache);
+        return new StringConverter();
     }
 
 }

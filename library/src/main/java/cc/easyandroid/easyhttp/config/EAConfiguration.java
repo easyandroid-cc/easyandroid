@@ -11,7 +11,7 @@ import com.google.gson.Gson;
 import java.util.concurrent.TimeUnit;
 
 import cc.easyandroid.easycache.CacheUtils;
-import cc.easyandroid.easycache.volleycache.DiskBasedCache;
+import cc.easyandroid.easycache.EasyHttpCache;
 import cc.easyandroid.easyhttp.core.StateCodeHandler;
 import okhttp3.Cache;
 import okhttp3.CookieJar;
@@ -19,7 +19,7 @@ import okhttp3.OkHttpClient;
 
 public class EAConfiguration {
     private Gson mGson;
-    private DiskBasedCache mCache;
+//    private DiskBasedCache mCache;
     private CookieJar mCookieJar;
     private OkHttpClient mOkHttpClient;
     private StateCodeHandler stateCodeProcessing;
@@ -32,9 +32,9 @@ public class EAConfiguration {
         return mGson;
     }
 
-    public DiskBasedCache getCache() {
-        return mCache;
-    }
+//    public DiskBasedCache getCache() {
+//        return mCache;
+//    }
 
     public CookieJar getCookieJar() {
         return mCookieJar;
@@ -46,7 +46,7 @@ public class EAConfiguration {
 
     private EAConfiguration(Builder builder) {
         mGson = builder.gson;
-        mCache = builder.valleyCache;
+//        mCache = builder.valleyCache;
 //        mCookieStore = builder.cookieStore;
         mOkHttpClient = builder.okHttpClient;
         stateCodeProcessing = builder.stateCodeProcessing;
@@ -54,7 +54,7 @@ public class EAConfiguration {
 
     public static class Builder {
         private Gson gson;
-        private final DiskBasedCache valleyCache;
+//        private final DiskBasedCache valleyCache;
         private final Cache okHttpCache;
         private OkHttpClient okHttpClient;
         private StateCodeHandler stateCodeProcessing;
@@ -76,8 +76,9 @@ public class EAConfiguration {
 
         public Builder(Context context) {
             // 根据volley 缓存cache修改 ，不需要http协议就可保存
-            valleyCache = new DiskBasedCache(CacheUtils.getDiskCacheDir(context.getApplicationContext(), "volleycache"));// retrofit缓存
-            valleyCache.initialize();
+            EasyHttpCache.getInstance().initialize(context.getApplicationContext());
+//            valleyCache = new DiskBasedCache(CacheUtils.getDiskCacheDir(context.getApplicationContext(), "volleycache"));// retrofit缓存
+//            valleyCache.initialize();
             okHttpCache = new Cache(CacheUtils.getDiskCacheDir(context.getApplicationContext(), "okhttpcache"), 10 * 1024 * 1024);
             cookieJar = new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(context));
         }
