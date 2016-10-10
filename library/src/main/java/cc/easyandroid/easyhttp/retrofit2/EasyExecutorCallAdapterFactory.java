@@ -153,7 +153,7 @@ public class EasyExecutorCallAdapterFactory extends CallAdapter.Factory {
         /**
          * @param callback    回调接口
          * @param request     request
-         * @param fromNetWork 请求网络失败后是否要从缓存中拿数据
+         * @param fromNetWork 这个请求是从哪里来的，如果是从网络，请求网络失败后是否要从缓存中拿数据
          */
         public void exeRequest(final Callback<T> callback, final Request request, final boolean fromNetWork) {
             delegate.enqueue(new Callback<T>() {
@@ -190,12 +190,18 @@ public class EasyExecutorCallAdapterFactory extends CallAdapter.Factory {
                     //网络请求失败，回调
                     if (fromNetWork) {//失败后拿缓存的数据
                         final Response<T> wrapper = execCacheRequest(request);
+
                         callbackExecutor.execute(new Runnable() {
                             @Override
                             public void run() {
-                                callback.onResponse(call, wrapper);
+                                if (wrapper != null) {
+                                    callback.onResponse(call, wrapper);
+                                } else {
+                                    callback.onFailure(ExecutorCallbackCall.this, t);
+                                }
                             }
                         });
+
                     } else {
                         callbackExecutor.execute(new Runnable() {
                             @Override
