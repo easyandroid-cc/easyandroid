@@ -4,7 +4,9 @@ import android.app.Application;
 
 import com.squareup.leakcanary.LeakCanary;
 
+import cc.easyandroid.easyhttp.EasyHttpUtils;
 import cc.easyandroid.easyhttp.config.EAConfiguration;
+import cc.easyandroid.easyhttp.core.OkHttpClientFactory;
 
 /**
  * app
@@ -19,8 +21,8 @@ public class HKQfangApplication extends Application {
     }
 
     private void initEasyAndroid() {
-        EAConfiguration eaConfiguration = new EAConfiguration.Builder(this).build();
-//        EasyHttpUtils.getInstance().init(eaConfiguration);
+        EAConfiguration eaConfiguration = new EAConfiguration.Builder(this).setOkHttpClient(OkHttpClientFactory.getGenericClient(this)).build();
+        EasyHttpUtils.getInstance().init(eaConfiguration);
 //        EasyHttpUtils.getInstance().getOkHttpClient().setCookieHandler((new CookieManager(eaConfiguration.getCookieStore(), CookiePolicy.ACCEPT_ALL)));
 //        EasyHttpUtils.getInstance().getOkHttpClient().interceptors().add(new Interceptor() {
 //            @Override

@@ -18,7 +18,7 @@ public abstract class EasyThreadCall<T> implements EasyCall<T>, PresenterLoader<
     }
 
     @Override
-    public void enqueue(EasyHttpStateCallback<T> callback,String tag) {
+    public void enqueue(EasyHttpStateCallback<T> callback, String tag) {
         synchronized (this) {
             if (executed)
                 throw new IllegalStateException("Already enqueue");
@@ -40,6 +40,11 @@ public abstract class EasyThreadCall<T> implements EasyCall<T>, PresenterLoader<
     @Override
     public boolean isCancel() {
         return canceled;
+    }
+
+    @Override
+    public EasyCall<T> clone() {
+        return this;
     }
 
     public abstract T loadInBackground() throws Exception;

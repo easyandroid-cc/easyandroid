@@ -29,7 +29,7 @@ public class OkHttpDownLoadEasyCall implements EasyCall<OkHttpDownLoadEasyCall.D
     }
 
     @Override
-    public void enqueue(final EasyHttpStateCallback<DownLoadResult> callback,String tag) {
+    public void enqueue(final EasyHttpStateCallback<DownLoadResult> callback, String tag) {
         synchronized (this) {
             if (executed)
                 throw new IllegalStateException("Already executed");
@@ -107,6 +107,11 @@ public class OkHttpDownLoadEasyCall implements EasyCall<OkHttpDownLoadEasyCall.D
     @Override
     public boolean isCancel() {
         return canceled;
+    }
+
+    @Override
+    public EasyCall<DownLoadResult> clone() {
+        return new OkHttpDownLoadEasyCall(client, request, file);
     }
 
     public static class DownLoadResult implements EAResult {

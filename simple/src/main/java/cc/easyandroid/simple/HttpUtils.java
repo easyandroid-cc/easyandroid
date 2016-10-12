@@ -94,7 +94,7 @@ public class HttpUtils {
         header.put("Cache-Mode", CacheMode.LOAD_NETWORK_ELSE_CACHE);
         header.put("Cache-Control", "max-age=10");
         okhttp3.Request request = OKHttp3RequestFactory.createGetRequest(url, header);
-        return EasyHttpUtils.get(context).executeHttpRequestToCall(request, presenter.getDeliverResultType());
+        return EasyHttpUtils.getInstance( ).executeHttpRequestToCall(request, presenter.getDeliverResultType());
 //        return EasyHttpUtils.getInstance().executeHttpRequestToCall(request, presenter.getDeliverResultType());
     }
 
@@ -112,7 +112,7 @@ public class HttpUtils {
         header.put("Cache-Mode", CacheMode.LOAD_NETWORK_ELSE_CACHE);
         header.put("Cache-Control", "max-age=10");
         okhttp3.Request request = OKHttp3RequestFactory.createGetRequest(url, header);
-        return EasyHttpUtils.get(context).executeHttpRequestToCall(request, type);
+        return EasyHttpUtils.getInstance( ).executeHttpRequestToCall(request, type);
 //        return EasyHttpUtils.getInstance().executeHttpRequestToCall(request, type);
     }
 
@@ -176,7 +176,7 @@ public class HttpUtils {
      */
     public static EasyCall<OkHttpDownLoadEasyCall.DownLoadResult> creatGetDownLoadCall(Context context,String url, Map<String, String> header, File file, final ProgressListener listener) {
         okhttp3.Request request = OKHttp3RequestFactory.createGetRequest(url, header);
-        OkHttpClient client = EasyHttpUtils.get(context).getOkHttpClient().newBuilder().addNetworkInterceptor(new Interceptor() {
+        OkHttpClient client = EasyHttpUtils.getInstance( ).getOkHttpClient().newBuilder().addNetworkInterceptor(new Interceptor() {
             @Override
             public Response intercept(Chain chain) throws IOException {
                 Response originalResponse = chain.proceed(chain.request());

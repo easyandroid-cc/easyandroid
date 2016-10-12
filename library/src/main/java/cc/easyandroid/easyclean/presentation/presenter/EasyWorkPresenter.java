@@ -52,7 +52,14 @@ public class EasyWorkPresenter<T> extends EasyBasePresenter<EasyWorkContract.Vie
 
     @Override
     public void reExecute() {
-        execute();
+        if (mRequestValues != null) {//EasyCall只能执行一次，so这里必须clone
+            EasyWorkUseCase.RequestValues requestValues = new EasyWorkUseCase.RequestValues(mRequestValues.getTag(), mRequestValues.getEasyCall().clone(), mRequestValues.getCacheMode());
+            setRequestValues(requestValues);
+            handleRequest(mRequestValues);
+        } else {
+            throw new IllegalArgumentException("must be call setRequestValues(EasyWorkUseCase.RequestValues<T> requestValues) method");
+        }
+        EALog.e("EasyWorkPresenter", "execute");
     }
 
     private EasyWorkUseCase.RequestValues mRequestValues;
