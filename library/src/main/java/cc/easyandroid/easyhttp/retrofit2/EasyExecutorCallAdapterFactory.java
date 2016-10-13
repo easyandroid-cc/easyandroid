@@ -159,6 +159,8 @@ public class EasyExecutorCallAdapterFactory extends CallAdapter.Factory {
             delegate.enqueue(new Callback<T>() {
                 @Override
                 public void onResponse(Call<T> call, final Response<T> response) {
+                    //TODO： 先缓存，然后给用户数据，防止用户编辑数据后缓存的数据不正确
+                    cacheResponse(response, request);
                     //执行网络请求操作
                     callbackExecutor.execute(new Runnable() {
                         @Override
@@ -171,18 +173,6 @@ public class EasyExecutorCallAdapterFactory extends CallAdapter.Factory {
                             }
                         }
                     });
-                    //这里要将数据缓存
-                    try {
-                        if (response != null && response.body() != null) {
-                            Converter<T, RequestBody> converter = getRequestConverter(retrofit, responseType, annotations);
-                            Buffer buffer = new Buffer();
-                            RequestBody requestBody = converter.convert(response.body());
-                            requestBody.writeTo(buffer);//对象转byte[]
-                            EasyHttpCache.getInstance().put(request, response.body(), buffer.readByteArray());
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
                 }
 
                 @Override
@@ -212,6 +202,21 @@ public class EasyExecutorCallAdapterFactory extends CallAdapter.Factory {
                     }
                 }
             });
+        }
+
+        private void cacheResponse(Response<T> response, Request request) {
+            //这里要将数据缓存
+            try {
+                if (response != null && response.body() != null) {
+                    Converter<T, RequestBody> converter = getRequestConverter(retrofit, responseType, annotations);
+                    Buffer buffer = new Buffer();
+                    RequestBody requestBody = converter.convert(response.body());
+                    requestBody.writeTo(buffer);//对象转byte[]
+                    EasyHttpCache.getInstance().put(request, response.body(), buffer.readByteArray());
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         @Override

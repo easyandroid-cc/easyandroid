@@ -45,14 +45,6 @@ public class EasyRunnable<T> implements Runnable {
             if (isCancel()) {
                 return;
             }
-//            callbackExecutor.execute(new Runnable() {
-//                @Override
-//                public void run() {
-//                    if (!isCancel()) {
-//                        callback.start();
-//                    }
-//                }
-//            });
             if (isCancel()) {
                 return;
             }

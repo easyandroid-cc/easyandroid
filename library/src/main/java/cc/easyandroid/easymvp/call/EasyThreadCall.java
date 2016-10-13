@@ -9,12 +9,14 @@ import cc.easyandroid.easymvp.PresenterLoader;
 /**
  *
  */
-public abstract class EasyThreadCall<T> implements EasyCall<T>, PresenterLoader<T> {
+public class EasyThreadCall<T> implements EasyCall<T> {
     protected EasyRunnable easyRunnable;
     private boolean executed; // Guarded by this.
     private volatile boolean canceled;
+    private final PresenterLoader<T> loader;
 
-    public EasyThreadCall() {
+    public EasyThreadCall(PresenterLoader<T> loader) {
+        this.loader = loader;
     }
 
     @Override
@@ -24,7 +26,7 @@ public abstract class EasyThreadCall<T> implements EasyCall<T>, PresenterLoader<
                 throw new IllegalStateException("Already enqueue");
             executed = true;
         }
-        EasyRunnable originalRunnable = new EasyRunnable(this, callback);
+        EasyRunnable originalRunnable = new EasyRunnable(loader, callback);
         this.easyRunnable = originalRunnable;
         EasyExecutor.getThreadExecutor().execute(originalRunnable);
     }
@@ -44,8 +46,6 @@ public abstract class EasyThreadCall<T> implements EasyCall<T>, PresenterLoader<
 
     @Override
     public EasyCall<T> clone() {
-        return this;
+        return new EasyThreadCall(loader);
     }
-
-    public abstract T loadInBackground() throws Exception;
 }
