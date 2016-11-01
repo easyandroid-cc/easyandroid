@@ -51,21 +51,23 @@ public class EasyWorkUseCase<T> extends UseCase<EasyWorkUseCase.RequestValues, E
     @Override
     protected void executeUseCase(final RequestValues values) {
         EasyCall<T> easyCall = values.getEasyCall();
-        if (easyCall.isExecuted()) {
-            EALog.e("EasyAndroid", easyCall+" isExecuted");
-            return;
+        synchronized (this){
+            if (easyCall == lastEasyCall) {
+                EALog.e("EasyAndroid this EasyCall is execute"  );
+                return;
+            }
+            cancle();
+            /**
+             * 请求后每次记住easycall，防止重复调用，第二次进来会检测之前的是否完成，如果没有就调用cancelRequest取消之前的请求
+             */
+            lastEasyCall = easyCall;
         }
-        cancle();
-        /**
-         * 请求后每次记住easycall，防止重复调用，第二次进来会检测之前的是否完成，如果没有就调用cancelRequest取消之前的请求
-         */
-        lastEasyCall = easyCall;
         mEasyWorkDataSource.executeRequest(easyCall, new EasyWorkRepository.HttpRequestCallback<T>() {
             @Override
             public void onResponse(EasyResponse<T> easyResponse) {
                 T t = easyResponse != null ? easyResponse.body() : null;
                 String defaultMessage = easyResponse != null ? easyResponse.message() : "";//"服务器或网络异常";
-                EALog.e("EasyAndroid", "tag=" + values.getTag() + "   t=" + t);
+                EALog.e("EasyAndroid " + "tag=" + values.getTag() + "   t=" + t);
                 if (t == null) {
                     onFailure(new EasyException(defaultMessage));
                     return;

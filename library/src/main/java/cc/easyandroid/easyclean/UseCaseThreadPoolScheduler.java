@@ -18,8 +18,8 @@ package cc.easyandroid.easyclean;
 
 import android.os.Handler;
 
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -43,7 +43,7 @@ public class UseCaseThreadPoolScheduler implements UseCaseScheduler {
 
     public UseCaseThreadPoolScheduler() {
         mThreadPoolExecutor = new ThreadPoolExecutor(POOL_SIZE, MAX_POOL_SIZE, TIMEOUT,
-                TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(POOL_SIZE));
+                TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(POOL_SIZE));//ArrayBlockingQueue
     }
 
     @Override

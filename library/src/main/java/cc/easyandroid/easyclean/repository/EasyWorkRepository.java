@@ -7,6 +7,7 @@ import cc.easyandroid.easycore.EasyCall;
 import cc.easyandroid.easycore.EasyHttpStateCallback;
 import cc.easyandroid.easycore.EasyResponse;
 import cc.easyandroid.easyhttp.EasyHttpUtils;
+import cc.easyandroid.easylog.EALog;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Request;
@@ -32,6 +33,10 @@ public class EasyWorkRepository implements EasyWorkDataSource {
     }
 
     public <T> void executeRequest(EasyCall<T> easyCall, final HttpRequestCallback<T> callback, String cacheMode) {
+        if (easyCall.isExecuted()) {
+            EALog.e("EasyAndroid", easyCall + " isExecuted");
+            return;
+        }
         easyCall.enqueue(new EasyHttpStateCallback<T>() {
             @Override
             public void onResponse(EasyResponse<T> easyResponse) {
