@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 
 import cc.easyandroid.easycore.EasyCall;
+import cc.easyandroid.easymvp.PresenterLoader;
 import cc.easyandroid.easymvp.call.EasyThreadCall;
 import cc.easyandroid.easymvp.presenter.EasyWorkPresenter;
 import cc.easyandroid.easymvp.view.ISimpleCallView;
@@ -20,12 +21,13 @@ public class ThreadActivity extends Activity implements ISimpleCallView<String> 
 
     @Override
     public EasyCall<String> onCreateCall(Object presenterId, Bundle bundle) {
-        return new EasyThreadCall<String>() {
+
+        return new EasyThreadCall<String>(new PresenterLoader<String>() {
             @Override
             public String loadInBackground() throws Exception {
                 return "测试";
             }
-        };
+        });
     }
 
     @Override

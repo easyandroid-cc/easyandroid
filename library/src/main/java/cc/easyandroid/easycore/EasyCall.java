@@ -23,4 +23,6 @@ public interface EasyCall<T> {
     boolean isCancel();
 
     EasyCall<T> clone();
+
+    boolean isCanceled();
 }

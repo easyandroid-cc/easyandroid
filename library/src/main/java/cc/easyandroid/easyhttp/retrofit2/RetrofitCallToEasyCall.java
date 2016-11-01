@@ -112,4 +112,9 @@ public class RetrofitCallToEasyCall<T> implements EasyCall<T> {
     public EasyCall<T> clone() {
         return new RetrofitCallToEasyCall<>(rawCall.clone());
     }
+
+    @Override
+    public boolean isCanceled() {
+        return executed;
+    }
 }

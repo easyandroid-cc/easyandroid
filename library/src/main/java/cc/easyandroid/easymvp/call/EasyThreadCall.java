@@ -48,4 +48,9 @@ public class EasyThreadCall<T> implements EasyCall<T> {
     public EasyCall<T> clone() {
         return new EasyThreadCall(loader);
     }
+
+    @Override
+    public boolean isCanceled() {
+        return executed;
+    }
 }

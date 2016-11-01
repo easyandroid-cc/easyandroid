@@ -251,6 +251,11 @@ public class CallToEasyCall<T> implements EasyCall<T> {
         return new CallToEasyCall<>(rawCall, responseConverter);
     }
 
+    @Override
+    public boolean isCanceled() {
+        return executed;
+    }
+
     static final class ExceptionCatchingRequestBody extends ResponseBody {
         private final ResponseBody delegate;
         IOException thrownException;

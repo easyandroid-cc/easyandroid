@@ -114,6 +114,11 @@ public class OkHttpDownLoadEasyCall implements EasyCall<OkHttpDownLoadEasyCall.D
         return new OkHttpDownLoadEasyCall(client, request, file);
     }
 
+    @Override
+    public boolean isCanceled() {
+        return executed;
+    }
+
     public static class DownLoadResult implements EAResult {
         private boolean success;
 

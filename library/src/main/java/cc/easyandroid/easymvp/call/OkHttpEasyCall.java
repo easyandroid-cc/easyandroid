@@ -322,6 +322,11 @@ public class OkHttpEasyCall<T> implements EasyCall<T> {
         return new OkHttpEasyCall<>(client, responseConverter, request);
     }
 
+    @Override
+    public boolean isCanceled() {
+        return executed;
+    }
+
     static final class ExceptionCatchingRequestBody extends ResponseBody {
         private final ResponseBody delegate;
         IOException thrownException;
