@@ -114,7 +114,7 @@ public class RetrofitCallToEasyCall<T> implements EasyCall<T> {
     }
 
     @Override
-    public boolean isCanceled() {
+    public boolean isExecuted() {
         return executed;
     }
 }

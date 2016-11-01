@@ -50,8 +50,12 @@ public class EasyWorkUseCase<T> extends UseCase<EasyWorkUseCase.RequestValues, E
 
     @Override
     protected void executeUseCase(final RequestValues values) {
-        cancle();
         EasyCall<T> easyCall = values.getEasyCall();
+        if (easyCall.isExecuted()) {
+            EALog.e("EasyAndroid", easyCall+" isExecuted");
+            return;
+        }
+        cancle();
         /**
          * 请求后每次记住easycall，防止重复调用，第二次进来会检测之前的是否完成，如果没有就调用cancelRequest取消之前的请求
          */
@@ -80,7 +84,7 @@ public class EasyWorkUseCase<T> extends UseCase<EasyWorkUseCase.RequestValues, E
             public void onFailure(Throwable t) {
                 getUseCaseCallback().onError(t);
             }
-        },values.getCacheMode());
+        }, values.getCacheMode());
     }
 
     public static final class RequestValues<T> implements UseCase.RequestValues {

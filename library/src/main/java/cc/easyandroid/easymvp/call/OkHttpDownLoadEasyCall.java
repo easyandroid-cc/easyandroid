@@ -115,7 +115,7 @@ public class OkHttpDownLoadEasyCall implements EasyCall<OkHttpDownLoadEasyCall.D
     }
 
     @Override
-    public boolean isCanceled() {
+    public boolean isExecuted() {
         return executed;
     }
 

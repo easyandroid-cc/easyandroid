@@ -323,7 +323,7 @@ public class OkHttpEasyCall<T> implements EasyCall<T> {
     }
 
     @Override
-    public boolean isCanceled() {
+    public boolean isExecuted() {
         return executed;
     }
 
