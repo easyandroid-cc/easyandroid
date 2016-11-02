@@ -256,6 +256,11 @@ public class CallToEasyCall<T> implements EasyCall<T> {
         return executed;
     }
 
+    @Override
+    public Request request() {
+        return rawCall.request();
+    }
+
     static final class ExceptionCatchingRequestBody extends ResponseBody {
         private final ResponseBody delegate;
         IOException thrownException;

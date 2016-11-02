@@ -15,6 +15,8 @@
  */
 package cc.easyandroid.easycore;
 
+import okhttp3.Request;
+
 public interface EasyCall<T> {
     void enqueue(EasyHttpStateCallback<T> callback,String tag);//子线程执行
 
@@ -25,4 +27,7 @@ public interface EasyCall<T> {
     EasyCall<T> clone();
 
     boolean isExecuted();
+
+    /** The original HTTP request. */
+    Request request();
 }

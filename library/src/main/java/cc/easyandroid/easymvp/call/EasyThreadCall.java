@@ -5,6 +5,7 @@ import cc.easyandroid.easycore.EasyExecutor;
 import cc.easyandroid.easycore.EasyHttpStateCallback;
 import cc.easyandroid.easycore.EasyRunnable;
 import cc.easyandroid.easymvp.PresenterLoader;
+import okhttp3.Request;
 
 /**
  *
@@ -52,5 +53,10 @@ public class EasyThreadCall<T> implements EasyCall<T> {
     @Override
     public boolean isExecuted() {
         return executed;
+    }
+
+    @Override
+    public Request request() {//网络请求才用到
+        return null;
     }
 }

@@ -6,9 +6,9 @@ import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.concurrent.Executor;
 
 import cc.easyandroid.easycache.EasyHttpCache;
+import cc.easyandroid.easycore.EAResult;
 import cc.easyandroid.easycore.EasyExecutor;
 import cc.easyandroid.easyhttp.core.CacheMode;
 import okhttp3.Request;
@@ -27,10 +27,8 @@ import retrofit2.Retrofit;
  * CallAdapter 集成cache
  */
 public class EasyExecutorCallAdapterFactory extends CallAdapter.Factory {
-    final Executor callbackExecutor;
 
-    public EasyExecutorCallAdapterFactory(Executor callbackExecutor) {
-        this.callbackExecutor = callbackExecutor;
+    public EasyExecutorCallAdapterFactory() {
     }
 
     @Override
@@ -47,7 +45,7 @@ public class EasyExecutorCallAdapterFactory extends CallAdapter.Factory {
 
             @Override
             public <R> Call<R> adapt(Call<R> call) {
-                return new ExecutorCallbackCall<>(responseType, annotations, callbackExecutor, call, retrofit);
+                return new ExecutorCallbackCall<>(responseType, annotations, call, retrofit);
             }
         };
     }
@@ -63,14 +61,12 @@ public class EasyExecutorCallAdapterFactory extends CallAdapter.Factory {
     }
 
     static final class ExecutorCallbackCall<T> implements Call<T>, ICacheModeInject {
-        final Executor callbackExecutor;
         final Call<T> delegate;
         final Type responseType;
         final Retrofit retrofit;
         final Annotation[] annotations;
 
-        ExecutorCallbackCall(Type responseType, Annotation[] annotations, Executor callbackExecutor, Call<T> delegate, Retrofit retrofit) {
-            this.callbackExecutor = callbackExecutor;
+        ExecutorCallbackCall(Type responseType, Annotation[] annotations, Call<T> delegate, Retrofit retrofit) {
             this.delegate = delegate;
             this.retrofit = retrofit;
             this.responseType = responseType;
@@ -151,60 +147,57 @@ public class EasyExecutorCallAdapterFactory extends CallAdapter.Factory {
 
 
         /**
-         * @param callback    回调接口
-         * @param request     request
-         * @param fromNetWork 这个请求是从哪里来的，如果是从网络，请求网络失败后是否要从缓存中拿数据
+         * @param callback               回调接口
+         * @param request                request
+         * @param ifFailedToLoadTheCache 这个请求是从哪里来的，如果是从网络，请求网络失败后是否要从缓存中拿数据
          */
-        public void exeRequest(final Callback<T> callback, final Request request, final boolean fromNetWork) {
+        public void exeRequest(final Callback<T> callback, final Request request, final boolean ifFailedToLoadTheCache) {
             delegate.enqueue(new Callback<T>() {
                 @Override
-                public void onResponse(Call<T> call, final Response<T> response) {
-                    //TODO： 先缓存，然后给用户数据，防止用户编辑数据后缓存的数据不正确
-                    cacheResponse(response, request);
-                    //执行网络请求操作
-                    callbackExecutor.execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (delegate.isCanceled()) {
-                                // Emulate OkHttp's behavior of throwing/delivering an IOException on cancellation.
-                                callback.onFailure(ExecutorCallbackCall.this, new IOException("Canceled"));
-                            } else {
+                public void onResponse(final Call<T> call, final Response<T> response) {//子线程
+                    if (delegate.isCanceled()) {
+                        // Emulate OkHttp's behavior of throwing/delivering an IOException on cancellation.
+                        callback.onFailure(ExecutorCallbackCall.this, new IOException("Canceled"));
+                    } else {
+                        if (response != null && response.body() != null) {
+                            T t = response.body();
+                            if (t instanceof EAResult) {
+                                EAResult eaResult = (EAResult) t;
+                                if (eaResult.isSuccess()) {//成功
+                                    //TODO： 先缓存，然后给用户数据，防止用户编辑数据后缓存的数据不正确
+                                    cacheResponse(response, request);
+                                    callback.onResponse(ExecutorCallbackCall.this, response);
+                                } else if (ifFailedToLoadTheCache) {
+                                    onFailure(call, new IOException("EAResult not isSuccess"));
+                                }
+                            } else {//这里也是成功
                                 callback.onResponse(ExecutorCallbackCall.this, response);
                             }
+                        } else if (ifFailedToLoadTheCache) {
+                            onFailure(call, new IOException("response  == null || response.body() == null "));
                         }
-                    });
+                    }
                 }
 
                 @Override
                 public void onFailure(final Call<T> call, final Throwable t) {
                     //网络请求失败，回调
-                    if (fromNetWork) {//失败后拿缓存的数据
+                    if (ifFailedToLoadTheCache) {//失败后拿缓存的数据
                         final Response<T> wrapper = execCacheRequest(request);
-
-                        callbackExecutor.execute(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (wrapper != null) {
-                                    callback.onResponse(call, wrapper);
-                                } else {
-                                    callback.onFailure(ExecutorCallbackCall.this, t);
-                                }
-                            }
-                        });
-
+                        if (wrapper != null) {
+                            callback.onResponse(call, wrapper);
+                        } else {
+                            callback.onFailure(ExecutorCallbackCall.this, t);
+                        }
                     } else {
-                        callbackExecutor.execute(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onFailure(ExecutorCallbackCall.this, t);
-                            }
-                        });
+                        callback.onFailure(ExecutorCallbackCall.this, t);
                     }
                 }
             });
         }
 
         private void cacheResponse(Response<T> response, Request request) {
+//            response.raw().body().bytes()
             //这里要将数据缓存
             try {
                 if (response != null && response.body() != null) {
@@ -242,7 +235,7 @@ public class EasyExecutorCallAdapterFactory extends CallAdapter.Factory {
         @SuppressWarnings("CloneDoesntCallSuperClone") // Performing deep clone.
         @Override
         public Call<T> clone() {
-            return new ExecutorCallbackCall<>(responseType, annotations, callbackExecutor, delegate.clone(), retrofit);
+            return new ExecutorCallbackCall<>(responseType, annotations, delegate.clone(), retrofit);
         }
 
         @Override

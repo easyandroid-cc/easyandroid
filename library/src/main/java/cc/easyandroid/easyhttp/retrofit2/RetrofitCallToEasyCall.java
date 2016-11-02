@@ -6,6 +6,7 @@ import cc.easyandroid.easycore.EasyCall;
 import cc.easyandroid.easycore.EasyExecutor;
 import cc.easyandroid.easycore.EasyHttpStateCallback;
 import cc.easyandroid.easycore.EasyResponse;
+import okhttp3.Request;
 
 /**
  * RetrofitCall 转换为EasyCall
@@ -116,5 +117,10 @@ public class RetrofitCallToEasyCall<T> implements EasyCall<T> {
     @Override
     public boolean isExecuted() {
         return executed;
+    }
+
+    @Override
+    public Request request() {
+        return rawCall.request();
     }
 }

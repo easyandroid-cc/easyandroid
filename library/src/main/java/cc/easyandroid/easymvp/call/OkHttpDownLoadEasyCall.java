@@ -118,7 +118,10 @@ public class OkHttpDownLoadEasyCall implements EasyCall<OkHttpDownLoadEasyCall.D
     public boolean isExecuted() {
         return executed;
     }
-
+    @Override
+    public Request request() {
+        return request;
+    }
     public static class DownLoadResult implements EAResult {
         private boolean success;
 
