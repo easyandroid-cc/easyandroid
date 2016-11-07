@@ -197,7 +197,6 @@ public class EasyExecutorCallAdapterFactory extends CallAdapter.Factory {
         }
 
         private void cacheResponse(Response<T> response, Request request) {
-//            response.raw().body().bytes()
             //这里要将数据缓存
             try {
                 if (response != null && response.body() != null) {
