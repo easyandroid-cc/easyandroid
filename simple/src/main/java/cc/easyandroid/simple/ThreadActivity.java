@@ -3,14 +3,13 @@ package cc.easyandroid.simple;
 import android.app.Activity;
 import android.os.Bundle;
 
-import cc.easyandroid.easycore.EasyCall;
-import cc.easyandroid.easymvp.PresenterLoader;
-import cc.easyandroid.easymvp.call.EasyThreadCall;
-import cc.easyandroid.easymvp.presenter.EasyWorkPresenter;
-import cc.easyandroid.easymvp.view.ISimpleCallView;
+import cc.easyandroid.easyclean.domain.easywork.EasyWorkContract;
+import cc.easyandroid.easyclean.domain.easywork.EasyWorkUseCase;
+import cc.easyandroid.easyclean.presentation.presenter.EasyWorkPresenter;
+import cc.easyandroid.easyclean.repository.EasyWorkRepository;
 
-public class ThreadActivity extends Activity implements ISimpleCallView<String> {
-    EasyWorkPresenter<String> presenter = new EasyWorkPresenter<>();
+public class ThreadActivity extends Activity implements EasyWorkContract.View<String> {
+    EasyWorkPresenter<String> presenter = new EasyWorkPresenter<>(new EasyWorkUseCase<String>(new EasyWorkRepository()));
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,23 +18,23 @@ public class ThreadActivity extends Activity implements ISimpleCallView<String> 
         presenter.attachView(this);
     }
 
-    @Override
-    public EasyCall<String> onCreateCall(Object presenterId, Bundle bundle) {
-
-        return new EasyThreadCall<String>(new PresenterLoader<String>() {
-            @Override
-            public String loadInBackground() throws Exception {
-                return "测试";
-            }
-        });
-    }
+//    @Override
+//    public EasyCall<String> onCreateCall(Object presenterId, Bundle bundle) {
+//
+//        return new EasyThreadCall<String>(new PresenterLoader<String>() {
+//            @Override
+//            public String loadInBackground() throws Exception {
+//                return "测试";
+//            }
+//        });
+//    }
 
     @Override
     public void onStart(Object presenterId) {
 
     }
 
-    @Override
+
     public void onCompleted(Object presenterId) {
 
     }
@@ -46,8 +45,15 @@ public class ThreadActivity extends Activity implements ISimpleCallView<String> 
     }
 
     @Override
+    public void onSuccess(Object tag, String results) {
+        deliverResult(tag, results);
+        onCompleted(tag);
+    }
+
+
     public void deliverResult(Object presenterId, String results) {
         System.out.println();
+
     }
 
     @Override

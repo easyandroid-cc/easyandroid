@@ -21,30 +21,31 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 
+import cc.easyandroid.easycache.EasyHttpCache;
+
 /**
  */
 public final class ConverterFactory {
-    /**
-     * Create an instance using a default {@link Gson} instance for conversion. Encoding to JSON and decoding from JSON (when no charset is specified by a header) will use UTF-8.
-     */
-    public static ConverterFactory create() {
-        return create(new Gson()  );
-    }
+
 
     /**
      * Create an instance using {@code gson} for conversion. Encoding to JSON and decoding from JSON (when no charset is specified by a header) will use UTF-8.
      */
-    public static ConverterFactory create(Gson gson   ) {
-        return new ConverterFactory(gson  );
+    public static ConverterFactory create(Gson gson, EasyHttpCache mEasyHttpCache) {
+        return new ConverterFactory(gson, mEasyHttpCache);
     }
 
 
     private final Gson gson;
+    private final EasyHttpCache mEasyHttpCache;
 
-    private ConverterFactory(Gson gson    ) {
+    private ConverterFactory(Gson gson, EasyHttpCache easyHttpCache) {
         if (gson == null)
             throw new NullPointerException("gson == null");
+        if (easyHttpCache == null)
+            throw new NullPointerException("easyHttpCache == null");
         this.gson = gson;
+        this.mEasyHttpCache = easyHttpCache;
     }
 
     /**
@@ -52,14 +53,14 @@ public final class ConverterFactory {
      */
     public Converter<?> getGsonConverter(Type type) {
         TypeAdapter<?> adapter = gson.getAdapter(TypeToken.get(type));
-        return new GsonConverter<>(adapter  );
+        return new GsonConverter<>(adapter,mEasyHttpCache);
     }
 
     /**
      * Create a converter for {@code type}.
      */
     public Converter<?> getStringConverter() {
-        return new StringConverter();
+        return new StringConverter(mEasyHttpCache);
     }
 
 }

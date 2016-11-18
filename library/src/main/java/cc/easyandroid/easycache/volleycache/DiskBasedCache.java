@@ -70,7 +70,6 @@ public class DiskBasedCache implements Cache {
 	}
 
 	/**
-	 * Constructs an instance of the DiskBasedCache at the specified directory using
 	 * the default maximum cache size of 5MB.
 	 * @param rootDirectory The root directory of the cache.
 	 */

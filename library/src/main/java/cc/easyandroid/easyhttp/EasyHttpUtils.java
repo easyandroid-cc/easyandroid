@@ -1,28 +1,27 @@
 package cc.easyandroid.easyhttp;
 
-import android.content.Context;
-
 import com.google.gson.Gson;
 
 import java.io.File;
 import java.lang.reflect.Type;
-import java.util.List;
 
+import cc.easyandroid.easycache.EasyHttpCache;
 import cc.easyandroid.easycore.EasyCall;
 import cc.easyandroid.easyhttp.config.EAConfiguration;
 import cc.easyandroid.easyhttp.core.converter.Converter;
 import cc.easyandroid.easyhttp.core.converter.ConverterFactory;
 import cc.easyandroid.easymvp.call.OkHttpDownLoadEasyCall;
 import cc.easyandroid.easymvp.call.OkHttpEasyCall;
-import cc.easyandroid.module.EasyHttpUtilsModule;
-import cc.easyandroid.module.ManifestParser;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 
+@Deprecated
 public class EasyHttpUtils {
     static final EasyHttpUtils mInstance = new EasyHttpUtils();
     private OkHttpClient mOkHttpClient;
     private Gson mGson;
+    private EasyHttpCache mEasyHttpCache;
+
     private EasyHttpUtils() {
 
     }
@@ -40,6 +39,7 @@ public class EasyHttpUtils {
         }
         mGson = config.getGson();
         mOkHttpClient = config.getOkHttpClient();
+        mEasyHttpCache = config.getEasyHttpCache();
 
     }
 
@@ -60,14 +60,14 @@ public class EasyHttpUtils {
         } else {
             responseConverter = getConverterFactory().getGsonConverter(type);
         }
-        EasyCall<T> easyCall = new OkHttpEasyCall<>(mOkHttpClient, responseConverter, request);
+        EasyCall<T> easyCall = new OkHttpEasyCall<>(mOkHttpClient, responseConverter, request,null);
 
         return easyCall;
     }
 
     public <T> EasyCall<T> executeHttpRequestToCall(Request request, Converter<T> responseConverter) {
         checkNull(mOkHttpClient);
-        EasyCall<T> easyCall = new OkHttpEasyCall<>(mOkHttpClient, responseConverter, request);
+        EasyCall<T> easyCall = new OkHttpEasyCall<>(mOkHttpClient, responseConverter, request,null);
         return easyCall;
     }
 
@@ -88,7 +88,7 @@ public class EasyHttpUtils {
         } else {
             responseConverter = getConverterFactory().getGsonConverter(type);
         }
-        EasyCall<T> easyCall = new OkHttpEasyCall<T>(client, responseConverter, request);
+        EasyCall<T> easyCall = new OkHttpEasyCall<T>(client, responseConverter, request,null);
 
         return easyCall;
     }
@@ -107,7 +107,7 @@ public class EasyHttpUtils {
             synchronized (EasyHttpUtils.class) {
                 if (converterFactory == null) {
                     checkNull(mGson);
-                    converterFactory = ConverterFactory.create(mGson   );
+                    converterFactory = ConverterFactory.create(mGson, mEasyHttpCache);
                 }
             }
         }
@@ -120,34 +120,4 @@ public class EasyHttpUtils {
         }
     }
 
-    private static EasyHttpUtils easyHttpUtils;
-
-    /**
-     * Get the singleton.
-     *
-     * @return the singleton
-     */
-    @Deprecated
-    public static EasyHttpUtils get(Context context) {
-        if (easyHttpUtils == null) {
-            synchronized (EasyHttpUtils.class) {
-                if (easyHttpUtils == null) {
-                    Context applicationContext = context.getApplicationContext();
-                    List<EasyHttpUtilsModule> modules = new ManifestParser(applicationContext).parse();
-
-                    EAConfiguration.Builder builder = new EAConfiguration.Builder(applicationContext);
-                    for (EasyHttpUtilsModule module : modules) {
-                        module.applyOptions(applicationContext, builder);
-                    }
-                    easyHttpUtils = new EasyHttpUtils();
-                    easyHttpUtils.init(builder.build());
-
-                    for (EasyHttpUtilsModule module : modules) {
-                        module.registerComponents(applicationContext, easyHttpUtils);
-                    }
-                }
-            }
-        }
-        return easyHttpUtils;
-    }
 }

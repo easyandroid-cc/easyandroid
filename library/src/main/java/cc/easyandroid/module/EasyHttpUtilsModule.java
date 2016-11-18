@@ -2,14 +2,13 @@ package cc.easyandroid.module;
 
 import android.content.Context;
 
-import cc.easyandroid.easyhttp.EasyHttpUtils;
-import cc.easyandroid.easyhttp.config.EAConfiguration;
+import cc.easyandroid.easyhttp.EasyHttp;
 
 public interface EasyHttpUtilsModule {
 
 
-    void applyOptions(Context context, EAConfiguration.Builder builder);
+    void applyOptions(Context context, EasyHttp.Builder builder);
 
-    void registerComponents(Context context, EasyHttpUtils easyHttpUtils);
+    void registerComponents(Context context, EasyHttp easyHttp);
 }
 

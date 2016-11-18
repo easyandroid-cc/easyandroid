@@ -35,9 +35,11 @@ public final class GsonConverter<T> implements Converter<T> {
     public static final MediaType MEDIA_TYPE = MediaType.parse("application/json; charset=UTF-8");
     public static final String UTF8 = "UTF-8";
     private final TypeAdapter<T> typeAdapter;
+    private final EasyHttpCache mEasyHttpCache;
 
-    public GsonConverter(TypeAdapter<T> adapter) {
+    public GsonConverter(TypeAdapter<T> adapter,EasyHttpCache mEasyHttpCache) {
         this.typeAdapter = adapter;
+        this.mEasyHttpCache = mEasyHttpCache;
     }
 
 
@@ -59,7 +61,7 @@ public final class GsonConverter<T> implements Converter<T> {
 
     private void parseCache(Request request, T object, String string, String mimeType, boolean fromNetWork) throws UnsupportedEncodingException {
         if (fromNetWork) {
-            EasyHttpCache.getInstance().put(request, object, string.getBytes(UTF8));
+            mEasyHttpCache.put(request, object, string.getBytes(UTF8));
         }
     }
 

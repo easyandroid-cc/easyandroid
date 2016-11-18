@@ -24,8 +24,10 @@ import okhttp3.ResponseBody;
 
 public final class StringConverter implements Converter<java.lang.String> {
     public static final String UTF8 = "UTF-8";
+    public final EasyHttpCache mEasyHttpCache;
 
-    public StringConverter() {
+    public StringConverter(EasyHttpCache easyHttpCache) {
+        this.mEasyHttpCache = easyHttpCache;
     }
 
 
@@ -42,7 +44,7 @@ public final class StringConverter implements Converter<java.lang.String> {
 
     private void parseCache(Request request, String string, String mimeType, boolean fromNetWork) throws UnsupportedEncodingException {
         if (fromNetWork) {
-            EasyHttpCache.getInstance().put(request, string, string.getBytes(UTF8));
+            mEasyHttpCache.put(request, string, string.getBytes(UTF8));
         }
     }
 }

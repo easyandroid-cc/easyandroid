@@ -27,8 +27,10 @@ import retrofit2.Retrofit;
  * CallAdapter 集成cache
  */
 public class EasyExecutorCallAdapterFactory extends CallAdapter.Factory {
+    EasyHttpCache cache;
 
-    public EasyExecutorCallAdapterFactory() {
+    public EasyExecutorCallAdapterFactory(EasyHttpCache cache) {
+        this.cache = cache;
     }
 
     @Override
@@ -45,7 +47,7 @@ public class EasyExecutorCallAdapterFactory extends CallAdapter.Factory {
 
             @Override
             public <R> Call<R> adapt(Call<R> call) {
-                return new ExecutorCallbackCall<>(responseType, annotations, call, retrofit);
+                return new ExecutorCallbackCall<>(responseType, annotations, call, retrofit, cache);
             }
         };
     }
@@ -65,12 +67,15 @@ public class EasyExecutorCallAdapterFactory extends CallAdapter.Factory {
         final Type responseType;
         final Retrofit retrofit;
         final Annotation[] annotations;
+        final EasyHttpCache cache;
+        ;
 
-        ExecutorCallbackCall(Type responseType, Annotation[] annotations, Call<T> delegate, Retrofit retrofit) {
+        ExecutorCallbackCall(Type responseType, Annotation[] annotations, Call<T> delegate, Retrofit retrofit, EasyHttpCache cache) {
             this.delegate = delegate;
             this.retrofit = retrofit;
             this.responseType = responseType;
             this.annotations = annotations;
+            this.cache = cache;
         }
 
         String cacheMode = null;
@@ -132,7 +137,7 @@ public class EasyExecutorCallAdapterFactory extends CallAdapter.Factory {
          * @return Response
          */
         private Response<T> execCacheRequest(Request request) {
-            ResponseBody responseBody = EasyHttpCache.getInstance().get(request);
+            ResponseBody responseBody = cache.get(request);
             if (responseBody != null) {
                 Converter<ResponseBody, T> converter = getResponseConverter(retrofit, responseType, annotations);
                 try {
@@ -204,7 +209,7 @@ public class EasyExecutorCallAdapterFactory extends CallAdapter.Factory {
                     Buffer buffer = new Buffer();
                     RequestBody requestBody = converter.convert(response.body());
                     requestBody.writeTo(buffer);//对象转byte[]
-                    EasyHttpCache.getInstance().put(request, response.body(), buffer.readByteArray());
+                    cache.put(request, response.body(), buffer.readByteArray());
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -234,7 +239,7 @@ public class EasyExecutorCallAdapterFactory extends CallAdapter.Factory {
         @SuppressWarnings("CloneDoesntCallSuperClone") // Performing deep clone.
         @Override
         public Call<T> clone() {
-            return new ExecutorCallbackCall<>(responseType, annotations, delegate.clone(), retrofit);
+            return new ExecutorCallbackCall<>(responseType, annotations, delegate.clone(), retrofit,cache);
         }
 
         @Override

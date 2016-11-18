@@ -11,42 +11,23 @@ import cc.easyandroid.easylog.EALog;
 import okhttp3.MediaType;
 import okhttp3.Request;
 import okhttp3.ResponseBody;
+import okhttp3.internal.http.HeaderParser;
 
 /**
  * 缓存http的响应体
  */
 public class EasyHttpCache {
-    private static EasyHttpCache easyHttpCache;
-
-    private EasyHttpCache() {
-    }
-
-    void setCache(Cache valleyCache) {
-        this.cache = valleyCache;
-    }
-
-    private Cache cache;
-
-    public static EasyHttpCache getInstance() {
-        if (easyHttpCache == null) {
-            synchronized (EasyHttpCache.class) {
-                if (easyHttpCache == null) {
-                    easyHttpCache = new EasyHttpCache();
-                }
-            }
-        }
-        return easyHttpCache;
-    }
+    public static final int DEFAULTCACHEDURATION = 60 * 60 * 24 * 5;//默认缓存时长 5天  单位是秒
+    final Cache cache;
 
     /**
      * 使用前先进行初始化
      *
      * @param context context
      */
-    public void initialize(Context context) {
-        Cache valleyCache = new DiskBasedCache(CacheUtils.getDiskCacheDir(context.getApplicationContext(), "volleycache"));
-        valleyCache.initialize();
-        setCache(valleyCache);
+    public EasyHttpCache(Context context) {
+        cache = new DiskBasedCache(CacheUtils.getDiskCacheDir(context.getApplicationContext(), "volleycache"));
+        cache.initialize();
     }
 
     public void put(Request request, Object object, byte[] data) throws UnsupportedEncodingException {
@@ -80,8 +61,10 @@ public class EasyHttpCache {
     }
 
     //将结果保存到cache中
-    private void parseCache(Request request, Object object, byte[] data, String mimeType) throws UnsupportedEncodingException {
+    private void parseCache2(Request request, Object object, byte[] data, String mimeType) throws UnsupportedEncodingException {
         okhttp3.CacheControl cacheControl = request.cacheControl();
+        String cache_time = request.header("Cache-Duration");//缓存时长
+        long maxAgeSeconds = HeaderParser.parseSeconds(cache_time, 60 * 60 * 24 * 5);
         if (cacheControl != null) {
             if (!cacheControl.noCache() && !cacheControl.noStore()) {
                 if (chechCanSave(object)) {
@@ -98,6 +81,25 @@ public class EasyHttpCache {
                     cache.put(request.url().toString(), entry);
                 }
             }
+        }
+    }
+
+    //将结果保存到cache中
+    private void parseCache(Request request, Object object, byte[] data, String mimeType) throws UnsupportedEncodingException {
+        String cache_time = request.header("Cache-Duration");//缓存时长
+        long maxAgeSeconds = HeaderParser.parseSeconds(cache_time, DEFAULTCACHEDURATION);
+        if (chechCanSave(object)) {
+            long now = System.currentTimeMillis();
+            long maxAge = maxAgeSeconds;
+            long softExpire = now + maxAge * 1000;
+            EALog.d("easycache When long: %1$s秒", (softExpire - now) / 1000 + "");
+            Cache.Entry entry = new Cache.Entry();
+            entry.softTtl = softExpire;
+            entry.ttl = entry.softTtl;
+            entry.mimeType = mimeType;
+            entry.data = data;
+            checkNull(cache);
+            cache.put(request.url().toString(), entry);
         }
     }
 

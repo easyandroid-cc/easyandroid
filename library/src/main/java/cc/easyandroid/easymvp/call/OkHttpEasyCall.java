@@ -45,13 +45,14 @@ public class OkHttpEasyCall<T> implements EasyCall<T> {
     private volatile okhttp3.Call rawCall;
     private boolean executed; // Guarded by this.
     private volatile boolean canceled;
+    protected final EasyHttpCache mEasyHttpCache;
 
-    public OkHttpEasyCall(OkHttpClient client, Converter<T> responseConverter, Request request) {
+    public OkHttpEasyCall(OkHttpClient client, Converter<T> responseConverter, Request request, EasyHttpCache easyHttpCache) {
         this.client = client;
         this.request = request;
         this.responseConverter = responseConverter;
+        this.mEasyHttpCache = easyHttpCache;
     }
-
 
     public Request createRequest() {
         return request;
@@ -59,7 +60,7 @@ public class OkHttpEasyCall<T> implements EasyCall<T> {
 
     private EasyResponse<T> execCacheRequest(Request request) {
         try {
-            ResponseBody responseBody = EasyHttpCache.getInstance().get(request);
+            ResponseBody responseBody = mEasyHttpCache.get(request);
             if (responseBody == null) {
                 return null;
             }
@@ -319,7 +320,7 @@ public class OkHttpEasyCall<T> implements EasyCall<T> {
 
     @Override
     public EasyCall<T> clone() {
-        return new OkHttpEasyCall<>(client, responseConverter, request);
+        return new OkHttpEasyCall<>(client, responseConverter, request,mEasyHttpCache);
     }
 
     @Override
