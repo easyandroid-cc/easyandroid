@@ -11,7 +11,6 @@ import cc.easyandroid.easylog.EALog;
 import okhttp3.MediaType;
 import okhttp3.Request;
 import okhttp3.ResponseBody;
-import okhttp3.internal.http.HeaderParser;
 
 /**
  * 缓存http的响应体
@@ -64,7 +63,7 @@ public class EasyHttpCache {
     private void parseCache2(Request request, Object object, byte[] data, String mimeType) throws UnsupportedEncodingException {
         okhttp3.CacheControl cacheControl = request.cacheControl();
         String cache_time = request.header("Cache-Duration");//缓存时长
-        long maxAgeSeconds = HeaderParser.parseSeconds(cache_time, 60 * 60 * 24 * 5);
+        long maxAgeSeconds = parseSeconds(cache_time, 60 * 60 * 24 * 5);
         if (cacheControl != null) {
             if (!cacheControl.noCache() && !cacheControl.noStore()) {
                 if (chechCanSave(object)) {
@@ -87,7 +86,7 @@ public class EasyHttpCache {
     //将结果保存到cache中
     private void parseCache(Request request, Object object, byte[] data, String mimeType) throws UnsupportedEncodingException {
         String cache_time = request.header("Cache-Duration");//缓存时长
-        long maxAgeSeconds = HeaderParser.parseSeconds(cache_time, DEFAULTCACHEDURATION);
+        long maxAgeSeconds = parseSeconds(cache_time, DEFAULTCACHEDURATION);
         if (chechCanSave(object)) {
             long now = System.currentTimeMillis();
             long maxAge = maxAgeSeconds;
@@ -102,7 +101,20 @@ public class EasyHttpCache {
             cache.put(request.url().toString(), entry);
         }
     }
-
+    public static int parseSeconds(String value, int defaultValue) {
+        try {
+            long seconds = Long.parseLong(value);
+            if (seconds > Integer.MAX_VALUE) {
+                return Integer.MAX_VALUE;
+            } else if (seconds < 0) {
+                return 0;
+            } else {
+                return (int) seconds;
+            }
+        } catch (NumberFormatException e) {
+            return defaultValue;
+        }
+    }
     boolean chechCanSave(Object object) {
         if (object != null && object instanceof EAResult) {
             EAResult kResult = (EAResult) object;
