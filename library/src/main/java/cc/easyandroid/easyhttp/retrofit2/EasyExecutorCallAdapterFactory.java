@@ -172,13 +172,13 @@ public class EasyExecutorCallAdapterFactory extends CallAdapter.Factory {
                                     //TODO： 先缓存，然后给用户数据，防止用户编辑数据后缓存的数据不正确
                                     cacheResponse(response, request);
                                     callback.onResponse(ExecutorCallbackCall.this, response);
-                                } else if (ifFailedToLoadTheCache) {
+                                } else  {
                                     onFailure(call, new IOException("EAResult not isSuccess"));
                                 }
                             } else {//这里也是成功
                                 callback.onResponse(ExecutorCallbackCall.this, response);
                             }
-                        } else if (ifFailedToLoadTheCache) {
+                        } else {
                             onFailure(call, new IOException("response  == null || response.body() == null "));
                         }
                     }
