@@ -1,4 +1,4 @@
-package cc.easyandroid.easyui.config;
+package cc.easyandroid.simple.his;
 
 
 public class TabConfig {

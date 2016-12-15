@@ -173,13 +173,13 @@ public class EasyExecutorCallAdapterFactory extends CallAdapter.Factory {
                                     cacheResponse(response, request);
                                     callback.onResponse(ExecutorCallbackCall.this, response);
                                 } else  {
-                                    onFailure(call, new IOException("EAResult not isSuccess"));
+                                    onFailure(call, new IOException(eaResult.getEADesc()));
                                 }
                             } else {//这里也是成功
                                 callback.onResponse(ExecutorCallbackCall.this, response);
                             }
                         } else {
-                            onFailure(call, new IOException("response  == null || response.body() == null "));
+                            onFailure(call, new IOException());
                         }
                     }
                 }

@@ -1,4 +1,4 @@
-package cc.easyandroid.easyui;
+package cc.easyandroid.simple.his;
 
 public final class EasyR {
 	public static final class id {

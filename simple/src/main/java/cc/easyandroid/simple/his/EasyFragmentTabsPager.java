@@ -1,6 +1,4 @@
-package cc.easyandroid.easyui.fragment;
-
-import java.util.ArrayList;
+package cc.easyandroid.simple.his;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -12,10 +10,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TabHost;
 import android.widget.TabWidget;
-import cc.easyandroid.easyui.EasyR;
-import cc.easyandroid.easyui.config.TabConfig;
+
+import java.util.ArrayList;
+
 import cc.easyandroid.easyui.pojo.EasyTab;
-import cc.easyandroid.easyui.utils.ViewFactory;
 
 /**
  * Tab+Fragment+ViewPager

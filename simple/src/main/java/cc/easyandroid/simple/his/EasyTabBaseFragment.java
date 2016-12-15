@@ -1,9 +1,9 @@
-package cc.easyandroid.easyui.fragment;
+package cc.easyandroid.simple.his;
+
+import android.support.v4.app.Fragment;
 
 import java.util.List;
 
-import android.support.v4.app.Fragment;
-import cc.easyandroid.easyui.config.TabConfig;
 import cc.easyandroid.easyui.pojo.EasyTab;
 
 /**

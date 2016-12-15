@@ -1,13 +1,11 @@
-package cc.easyandroid.easyui.fragment;
+package cc.easyandroid.simple.his;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import cc.easyandroid.easyui.EasyR;
-import cc.easyandroid.easyui.config.TabConfig;
+
 import cc.easyandroid.easyui.pojo.EasyTab;
-import cc.easyandroid.easyui.utils.ViewFactory;
 import cc.easyandroid.easyui.view.EasyFragmentTabHostSaveState;
 
 /**
