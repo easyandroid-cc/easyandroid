@@ -75,7 +75,7 @@ public class EasyWorkUseCase<T> extends UseCase<EasyWorkUseCase.RequestValues, E
                     EAResult kResult = (EAResult) t;
                     if (!kResult.isSuccess()) {
                         String errorMessage = kResult.getEADesc();
-                        onFailure(new EasyException(errorMessage));
+                        onFailure(new EasyException(errorMessage, kResult.getEACode()));
                         return;
                     }
                 }
