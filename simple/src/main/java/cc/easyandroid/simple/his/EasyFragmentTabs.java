@@ -24,16 +24,16 @@ public abstract class EasyFragmentTabs extends EasyTabBaseFragment {
 		if (tabConfig == null) {
 			tabConfig = TabConfig.getSimpleInstance();
 		}
-		View view = ViewFactory.getFragmentTabHostView(inflater.getContext(), tabConfig.getTabGravity());
-		mFragmentTabHost = (FragmentTabHost) view.findViewById(android.R.id.tabhost);
-		mFragmentTabHost.setup(view.getContext(), getChildFragmentManager(), EasyR.id.realtabcontent);
+//		View view = ViewFactory.getFragmentTabHostView(inflater.getContext(), tabConfig.getTabGravity());
+//		mFragmentTabHost = (FragmentTabHost) view.findViewById(android.R.id.tabhost);
+//		mFragmentTabHost.setup(view.getContext(), getChildFragmentManager(), EasyR.id.realtabcontent);
 		creatTab();
 		int tabcount = mFragmentTabHost.getTabWidget().getChildCount();
 		if (tabcount == 0) {
 			throw new IllegalArgumentException("Please in the onCreatTab() method to addTab ");
 		}
 		mFragmentTabHost.getTabWidget().setBackgroundResource(tabConfig.getWidgetBackgroundResource());
-		return view;
+		return null;
 	}
 	/**
 	 * eg:EATab eaTab=new EATab(tabSpec, tabView, yourFragment.class, bundle);
