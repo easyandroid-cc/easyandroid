@@ -11,6 +11,7 @@ import cc.easyandroid.easycache.EasyHttpCache;
 import cc.easyandroid.easycore.EAResult;
 import cc.easyandroid.easycore.EasyExecutor;
 import cc.easyandroid.easyhttp.core.CacheMode;
+import cc.easyandroid.easymvp.exception.EasyException;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
@@ -162,7 +163,7 @@ public class EasyExecutorCallAdapterFactory extends CallAdapter.Factory {
                 public void onResponse(final Call<T> call, final Response<T> response) {//子线程
                     if (delegate.isCanceled()) {
                         // Emulate OkHttp's behavior of throwing/delivering an IOException on cancellation.
-                        callback.onFailure(ExecutorCallbackCall.this, new IOException("Canceled"));
+                        callback.onFailure(ExecutorCallbackCall.this, new EasyException("Canceled"));
                     } else {
                         if (response != null && response.body() != null) {
                             T t = response.body();
@@ -173,13 +174,13 @@ public class EasyExecutorCallAdapterFactory extends CallAdapter.Factory {
                                     cacheResponse(response, request);
                                     callback.onResponse(ExecutorCallbackCall.this, response);
                                 } else  {
-                                    onFailure(call, new IOException(eaResult.getEADesc()));
+                                    onFailure(call, new EasyException(eaResult.getEADesc(),eaResult.getEACode()));
                                 }
                             } else {//这里也是成功
                                 callback.onResponse(ExecutorCallbackCall.this, response);
                             }
                         } else {
-                            onFailure(call, new IOException());
+                            onFailure(call, new EasyException());
                         }
                     }
                 }
