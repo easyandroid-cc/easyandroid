@@ -17,7 +17,6 @@ public final class RegexUtil {
 	/**
 	 * @Title: isPasswordValid
 	 * @Description: verify a valid password.
-	 * @param email
 	 * @return boolean
 	 * @throws null
 	 */

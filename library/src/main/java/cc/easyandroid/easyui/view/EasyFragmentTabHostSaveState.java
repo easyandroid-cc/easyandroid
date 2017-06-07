@@ -1,7 +1,5 @@
 package cc.easyandroid.easyui.view;
 
-import java.util.ArrayList;
-
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Bundle;
@@ -17,6 +15,8 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TabHost;
 import android.widget.TabWidget;
+
+import java.util.ArrayList;
 
 public class EasyFragmentTabHostSaveState extends TabHost implements TabHost.OnTabChangeListener {
 	private final ArrayList<TabInfo> mTabs = new ArrayList<TabInfo>();
@@ -299,7 +299,7 @@ public class EasyFragmentTabHostSaveState extends TabHost implements TabHost.OnT
 				if (mLastTab.fragment != null) {
 					// ft.detach(mLastTab.fragment);
 					ft.hide(mLastTab.fragment);
-					mLastTab.fragment.setUserVisibleHint(false);// TODO 手动调用显示
+					mLastTab.fragment.setUserVisibleHint(false);// TODO 手动调用隐藏
 				}
 			}
 			if (newTab != null) {
