@@ -99,7 +99,11 @@ public class CacheUtils {
 				cacheFile.mkdirs();
 			}
 			System.out.println("cacheFile="+cacheFile);
-			cachePath = cacheFile.getPath();
+			if(cacheFile!=null){
+				cachePath = cacheFile.getPath();
+			}else{
+				cachePath = context.getCacheDir().getPath();
+			}
 		} else {
 			cachePath = context.getCacheDir().getPath();
 		}
