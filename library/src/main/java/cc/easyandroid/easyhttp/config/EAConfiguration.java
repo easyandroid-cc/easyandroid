@@ -45,8 +45,8 @@ public class EAConfiguration {
         }
 
         public Builder(Context context) {
-            // 根据volley 缓存cache修改 ，不需要http协议就可保存
-//            easyHttpCache = EasyHttpCache.getInstance().initialize(context.getApplicationContext());
+            //根据volley 缓存cache修改 ，不需要http协议就可保存
+            //easyHttpCache = EasyHttpCache.getInstance().initialize(context.getApplicationContext());
             easyHttpCache =new EasyHttpCache(context.getApplicationContext());
         }
 
