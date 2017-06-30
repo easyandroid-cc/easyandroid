@@ -1,7 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.novoda.bintray-release'
 android {
-    compileSdkVersion 23
+    compileSdkVersion 22
     buildToolsVersion '23.0.1'
 
     defaultConfig {
@@ -39,7 +39,7 @@ allprojects {
 }
 dependencies {
 //    provided 'com.squareup.okhttp3:okhttp:3.2.0'
-    compile 'com.android.support:support-v4:23.1.1'
+    provided 'com.android.support:support-v4:23.1.1'
     provided 'com.google.code.gson:gson:2.2.4'
     compile 'com.github.franmontiel:PersistentCookieJar:v1.0.1'
     provided 'com.squareup.retrofit2:retrofit:2.1.0'
