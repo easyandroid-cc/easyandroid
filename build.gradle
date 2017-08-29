@@ -5,7 +5,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.2.0'
+        classpath 'com.android.tools.build:gradle:2.1.3'
 //        classpath 'com.novoda:bintray-release:+'
         classpath 'com.novoda:bintray-release:0.3.4'
         classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
@@ -16,7 +16,7 @@ buildscript {
 }
 
 allprojects {
-    repositories {//text
+    repositories {//text tt
         jcenter()
         maven { url "https://jitpack.io" }
     }

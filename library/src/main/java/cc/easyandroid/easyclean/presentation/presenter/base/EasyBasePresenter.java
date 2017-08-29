@@ -16,6 +16,8 @@
 
 package cc.easyandroid.easyclean.presentation.presenter.base;
 
+import java.util.concurrent.CopyOnWriteArrayList;
+
 import cc.easyandroid.easyclean.presentation.view.IEasyView;
 
 public class EasyBasePresenter<V extends IEasyView> implements EasyIPresenter<V> {
@@ -29,6 +31,9 @@ public class EasyBasePresenter<V extends IEasyView> implements EasyIPresenter<V>
     protected boolean isViewAttached() {
         return mEasyView != null;
     }
+
+    private CopyOnWriteArrayList<OnDestroyListener> onDestroyListeners = new CopyOnWriteArrayList<>();
+
     @Override
     public void attachView(V view) {
         this.mEasyView = view;
@@ -41,6 +46,9 @@ public class EasyBasePresenter<V extends IEasyView> implements EasyIPresenter<V>
 
     @Override
     public void detachView() {
+        for (OnDestroyListener listener : onDestroyListeners){
+            listener.onDestroy();
+        }
         if (mEasyView != null) {
             mEasyView = null;
         }
@@ -54,11 +62,33 @@ public class EasyBasePresenter<V extends IEasyView> implements EasyIPresenter<V>
     protected void onDetachView() {
 
     }
+
     protected void onCancel() {
 
     }
+
     @Override
     public void execute() {
 
     }
+
+    /**
+     * Adds a listener observing {@link #onDetachView}.
+     *
+     * @param listener a listener to add.
+     */
+    public void addOnDestroyListener(OnDestroyListener listener) {
+        onDestroyListeners.add(listener);
+    }
+
+    /**
+     * Removed a listener observing {@link #onDetachView}.
+     *
+     * @param listener a listener to remove.
+     */
+    public void removeOnDestroyListener(OnDestroyListener listener) {
+        onDestroyListeners.remove(listener);
+    }
+
+
 }

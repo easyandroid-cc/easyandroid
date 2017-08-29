@@ -3,6 +3,7 @@ package cc.easyandroid.easyui.view;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.os.Parcelable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
@@ -134,5 +135,10 @@ public class EasyAutoSearchClearEditText extends EditText implements View.OnFocu
             }
         }
         return super.onTouchEvent(event);
+    }
+
+    @Override
+    public void onRestoreInstanceState(Parcelable state) {
+        super.onRestoreInstanceState(state);
     }
 }

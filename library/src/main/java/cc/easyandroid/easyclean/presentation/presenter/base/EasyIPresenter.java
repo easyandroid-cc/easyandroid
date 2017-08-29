@@ -33,4 +33,17 @@ public interface EasyIPresenter<V extends IEasyView> {
 
     void execute();
 
+    void addOnDestroyListener(OnDestroyListener listener);
+
+    void removeOnDestroyListener(OnDestroyListener listener);
+
+    /**
+     * A callback to be invoked when a presenter is about to be destroyed.
+     */
+    interface OnDestroyListener {
+        /**
+         * Called before {@link EasyBasePresenter#onDetachView()}.
+         */
+        void onDestroy();
+    }
 }
